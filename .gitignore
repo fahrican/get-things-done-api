@@ -212,6 +212,9 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+# project files
+application.properties
+
 # Eclipse Gradle plugin generated files
 # Eclipse Core
 # JDT-specific (Eclipse Java Development Tools)
