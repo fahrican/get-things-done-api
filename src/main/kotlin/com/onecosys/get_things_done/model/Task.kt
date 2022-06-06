@@ -18,25 +18,25 @@ data class Task(
         val description: String,
 
         @Column(name = "is_reminder_set")
-        val isReminderSet: Boolean,
+        var isReminderSet: Boolean = false,
 
         @Column(name = "is_task_open")
-        val isTaskOpen: Boolean,
+        var isTaskOpen: Boolean = true,
 
         @Column(name = "created_on")
         val createdOn: LocalDateTime,
 
         @Column(name = "started_on")
-        val startedOn: LocalDateTime,
+        var startedOn: LocalDateTime?,
 
         @Column(name = "finished_on")
-        val finishedOn: LocalDateTime,
+        var finishedOn: LocalDateTime?,
 
         @Column(name = "time_interval")
         val timeInterval: String,
 
         @Column(name = "time_taken")
-        val timeTaken: Int
+        var timeTaken: Int?
 ) {
     val taskId: Long get() = id
 }

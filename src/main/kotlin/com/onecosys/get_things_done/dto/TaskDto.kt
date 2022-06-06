@@ -8,8 +8,8 @@ data class TaskDto(
         val isReminderSet: Boolean,
         val isTaskOpen: Boolean,
         val createdOn: LocalDateTime,
-        val startedOn: LocalDateTime,
-        val finishedOn: LocalDateTime,
+        val startedOn: LocalDateTime?,
+        val finishedOn: LocalDateTime?,
         val timeInterval: String,
-        val timeTaken: Int
+        val timeTaken: Int?
 )
