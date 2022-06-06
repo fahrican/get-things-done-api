@@ -2,7 +2,7 @@ package com.onecosys.get_things_done.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotBlank
 
 
 data class CreateTaskRequest(

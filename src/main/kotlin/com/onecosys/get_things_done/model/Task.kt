@@ -38,5 +38,5 @@ class Task {
     @Column(name = "time_taken")
     var timeTaken: Int? = null
 
-    val taskId: Long? get() = id?.let { it }
+    val taskId: Long? get() = id
 }
