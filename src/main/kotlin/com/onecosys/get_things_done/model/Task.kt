@@ -9,34 +9,34 @@ import javax.persistence.*
 @AllArgsConstructor
 @Entity
 @Table(name = "task")
-data class Task(
+class Task {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private var id: Long,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private val id: Long? = null
 
-        val description: String,
+    var description: String = ""
 
-        @Column(name = "is_reminder_set")
-        var isReminderSet: Boolean = false,
+    @Column(name = "is_reminder_set")
+    var isReminderSet: Boolean = false
 
-        @Column(name = "is_task_open")
-        var isTaskOpen: Boolean = true,
+    @Column(name = "is_task_open")
+    var isTaskOpen: Boolean = true
 
-        @Column(name = "created_on")
-        val createdOn: LocalDateTime,
+    @Column(name = "created_on")
+    var createdOn: LocalDateTime = LocalDateTime.now()
 
-        @Column(name = "started_on")
-        var startedOn: LocalDateTime?,
+    @Column(name = "started_on")
+    var startedOn: LocalDateTime? = null
 
-        @Column(name = "finished_on")
-        var finishedOn: LocalDateTime?,
+    @Column(name = "finished_on")
+    var finishedOn: LocalDateTime? = null
 
-        @Column(name = "time_interval")
-        val timeInterval: String,
+    @Column(name = "time_interval")
+    var timeInterval: String = ""
 
-        @Column(name = "time_taken")
-        var timeTaken: Int?
-) {
-    val taskId: Long get() = id
+    @Column(name = "time_taken")
+    var timeTaken: Int? = null
+
+    val taskId: Long? get() = id?.let { it }
 }
