@@ -3,17 +3,14 @@ package com.onecosys.get_things_done.controller
 import com.onecosys.get_things_done.dto.TaskDto
 import com.onecosys.get_things_done.request.CreateTaskRequest
 import com.onecosys.get_things_done.service.TaskService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
 @RestController
 class TaskController(private val service: TaskService) {
 
-    @GetMapping("/tasks")
+    @GetMapping("tasks")
     fun getAllTasks(): List<TaskDto> = service.getAllTasks()
 
 
