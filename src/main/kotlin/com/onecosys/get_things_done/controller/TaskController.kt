@@ -17,6 +17,11 @@ class TaskController(private val service: TaskService) {
     fun getAllTasks(): List<TaskDto> = service.getAllTasks()
 
 
+    @GetMapping("task/{id}")
+    fun getTaskById(@PathVariable id: Long): TaskDto {
+        return service.getTaskById(id)
+    }
+
     @PostMapping("create")
     fun createStudent(@Valid @RequestBody taskRequest: CreateTaskRequest): TaskDto {
         val task = service.createTask(taskRequest)

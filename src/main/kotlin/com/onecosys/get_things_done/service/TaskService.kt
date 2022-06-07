@@ -29,4 +29,9 @@ class TaskService(private val repository: TaskRepository) {
         task.timeTaken = taskRequest.timeTaken
         return repository.save(task)
     }
+
+    fun getTaskById(id: Long): TaskDto {
+        val task = repository.findTaskById(id)
+        return TaskDto(task.taskId, task.description, task.isReminderSet, task.isTaskOpen, task.createdOn, task.startedOn, task.finishedOn, task.timeInterval, task.timeTaken)
+    }
 }
