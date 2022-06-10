@@ -4,6 +4,7 @@ import com.onecosys.get_things_done.dto.TaskDto
 import com.onecosys.get_things_done.model.Task
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.request.CreateTaskRequest
+import com.onecosys.get_things_done.request.UpdateTaskRequest
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -51,6 +52,34 @@ class TaskService(private val repository: TaskRepository) {
             task.finishedOn,
             task.timeInterval,
             task.timeTaken
+        )
+    }
+
+    fun updateTask(taskRequest: UpdateTaskRequest?): TaskDto {
+        var savedTask = Task()
+        taskRequest?.let { tr ->
+            val task: Task = repository.findTaskById(tr.id)
+            if (tr.description.isNotEmpty()) {
+                task.description = tr.description
+                task.isReminderSet = tr.isReminderSet
+                task.isTaskOpen = tr.isTaskOpen
+                task.createdOn = tr.createdOn
+                task.finishedOn = tr.finishedOn
+                task.timeInterval = tr.timeInterval
+                task.timeTaken = tr.timeTaken
+            }
+            savedTask = repository.save(task)
+        }
+        return TaskDto(
+            savedTask.taskId,
+            savedTask.description,
+            savedTask.isReminderSet,
+            savedTask.isTaskOpen,
+            savedTask.createdOn,
+            savedTask.startedOn,
+            savedTask.finishedOn,
+            savedTask.timeInterval,
+            savedTask.timeTaken
         )
     }
 }
