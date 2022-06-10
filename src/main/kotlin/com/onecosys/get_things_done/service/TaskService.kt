@@ -82,4 +82,9 @@ class TaskService(private val repository: TaskRepository) {
             savedTask.timeTaken
         )
     }
+
+    fun deleteTask(id: Long): String {
+        repository.deleteById(id)
+        return "Task with id: $id has been deleted."
+    }
 }
