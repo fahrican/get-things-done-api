@@ -10,12 +10,21 @@ import java.util.stream.Collectors
 @Service
 class TaskService(private val repository: TaskRepository) {
 
-
-    fun getAllTasks(): List<TaskDto> = repository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList())
-
+    fun getAllTasks(): List<TaskDto> =
+        repository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList())
 
     private fun convertEntityToDto(task: Task): TaskDto {
-        return TaskDto(task.taskId, task.description, task.isReminderSet, task.isTaskOpen, task.createdOn, task.startedOn, task.finishedOn, task.timeInterval, task.timeTaken)
+        return TaskDto(
+            task.taskId,
+            task.description,
+            task.isReminderSet,
+            task.isTaskOpen,
+            task.createdOn,
+            task.startedOn,
+            task.finishedOn,
+            task.timeInterval,
+            task.timeTaken
+        )
     }
 
     fun createTask(taskRequest: CreateTaskRequest): Task {
@@ -32,6 +41,16 @@ class TaskService(private val repository: TaskRepository) {
 
     fun getTaskById(id: Long): TaskDto {
         val task = repository.findTaskById(id)
-        return TaskDto(task.taskId, task.description, task.isReminderSet, task.isTaskOpen, task.createdOn, task.startedOn, task.finishedOn, task.timeInterval, task.timeTaken)
+        return TaskDto(
+            task.taskId,
+            task.description,
+            task.isReminderSet,
+            task.isTaskOpen,
+            task.createdOn,
+            task.startedOn,
+            task.finishedOn,
+            task.timeInterval,
+            task.timeTaken
+        )
     }
 }
