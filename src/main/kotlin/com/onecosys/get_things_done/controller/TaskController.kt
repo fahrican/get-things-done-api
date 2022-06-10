@@ -13,7 +13,6 @@ class TaskController(private val service: TaskService) {
     @GetMapping("tasks")
     fun getAllTasks(): List<TaskDto> = service.getAllTasks()
 
-
     @GetMapping("task/{id}")
     fun getTaskById(@PathVariable id: Long): TaskDto {
         return service.getTaskById(id)
@@ -22,6 +21,16 @@ class TaskController(private val service: TaskService) {
     @PostMapping("create")
     fun createStudent(@Valid @RequestBody taskRequest: CreateTaskRequest): TaskDto {
         val task = service.createTask(taskRequest)
-        return TaskDto(task.taskId, task.description, task.isReminderSet, task.isTaskOpen, task.createdOn, task.startedOn, task.finishedOn, task.timeInterval, task.timeTaken)
+        return TaskDto(
+            task.taskId,
+            task.description,
+            task.isReminderSet,
+            task.isTaskOpen,
+            task.createdOn,
+            task.startedOn,
+            task.finishedOn,
+            task.timeInterval,
+            task.timeTaken
+        )
     }
 }
