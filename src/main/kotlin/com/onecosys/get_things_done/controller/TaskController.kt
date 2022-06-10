@@ -2,6 +2,7 @@ package com.onecosys.get_things_done.controller
 
 import com.onecosys.get_things_done.dto.TaskDto
 import com.onecosys.get_things_done.request.CreateTaskRequest
+import com.onecosys.get_things_done.request.UpdateTaskRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -32,5 +33,10 @@ class TaskController(private val service: TaskService) {
             task.timeInterval,
             task.timeTaken
         )
+    }
+
+    @PutMapping("update")
+    fun updateTask(@Valid @RequestBody taskRequest: UpdateTaskRequest?): TaskDto {
+        return service.updateTask(taskRequest)
     }
 }
