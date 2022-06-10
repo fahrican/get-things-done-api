@@ -39,4 +39,9 @@ class TaskController(private val service: TaskService) {
     fun updateTask(@Valid @RequestBody taskRequest: UpdateTaskRequest?): TaskDto {
         return service.updateTask(taskRequest)
     }
+
+    @DeleteMapping("delete/{id}")
+    fun removeStudent(@PathVariable id: Long): String {
+        return service.deleteTask(id)
+    }
 }
