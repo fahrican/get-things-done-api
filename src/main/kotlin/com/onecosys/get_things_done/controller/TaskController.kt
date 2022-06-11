@@ -44,4 +44,9 @@ class TaskController(private val service: TaskService) {
     fun removeStudent(@PathVariable id: Long): String {
         return service.deleteTask(id)
     }
+
+    @DeleteMapping("delete")
+    fun deleteStudent(@RequestParam id: Long): String {
+        return service.deleteTask(id)
+    }
 }
