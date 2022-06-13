@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 internal class TaskServiceTest {
 
     @RelaxedMockK
-    private lateinit var repository: TaskRepository
+    private lateinit var mockRepository: TaskRepository
 
     @InjectMockKs
     private lateinit var objectUnderTest: TaskService
@@ -36,7 +36,7 @@ internal class TaskServiceTest {
     @Test
     fun `when all tasks get fetched then check if the given size is correct`() {
         val expectedTasks = listOf(Task(), Task())
-        every { repository.findAll() } returns expectedTasks.toMutableList()
+        every { mockRepository.findAll() } returns expectedTasks.toMutableList()
 
         val actualList: List<TaskDto> = objectUnderTest.getAllTasks()
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
@@ -54,7 +54,7 @@ internal class TaskServiceTest {
         task.finishedOn = taskRequest.finishedOn
         task.timeTaken = taskRequest.timeTaken
 
-        every { repository.save(any()) } returns task
+        every { mockRepository.save(any()) } returns task
         val actualTask: Task = objectUnderTest.createTask(taskRequest)
 
         assertThat(actualTask.description).isEqualTo(taskRequest.description)
@@ -63,7 +63,7 @@ internal class TaskServiceTest {
     @Test
     fun `when get task by id is called then expect a task with id 2`() {
         val actualTask = Task()
-        every { repository.findTaskById(2) } returns actualTask
+        every { mockRepository.findTaskById(2) } returns actualTask
         val expectedTaskDto = objectUnderTest.getTaskById(2)
         assertThat(actualTask.taskId).isEqualTo(expectedTaskDto.id)
     }
@@ -71,8 +71,8 @@ internal class TaskServiceTest {
     @Test
     fun `when update task is called then expect actual and expected task created on field is equal`() {
         val actualTask = Task()
-        every { repository.findTaskById(2) } returns actualTask
-        every { repository.save(any()) } returns actualTask
+        every { mockRepository.findTaskById(2) } returns actualTask
+        every { mockRepository.save(any()) } returns actualTask
 
         val updateTaskRequest =
             UpdateTaskRequest(222, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0)
@@ -83,7 +83,7 @@ internal class TaskServiceTest {
     @Test
     fun `when delete task by id is called then check for return message`() {
         val actualTask = Task()
-        every { repository.save(any()) } returns actualTask
+        every { mockRepository.save(any()) } returns actualTask
 
         val actualText: String? = actualTask.taskId?.let { objectUnderTest.deleteTask(it) }
         val expectedText: String? = actualTask.taskId?.let { "Task with id: $it has been deleted." }
