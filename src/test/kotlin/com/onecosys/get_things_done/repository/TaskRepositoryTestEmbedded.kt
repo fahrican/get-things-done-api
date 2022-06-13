@@ -16,7 +16,7 @@ internal class TaskRepositoryTestEmbedded {
     private lateinit var repository: TaskRepository
 
     @Test
-    fun `should save task`() {
+    fun `when task is saved then check if it is properly saved`() {
         val task = Task()
         val savedTask: Task = repository.save(task)
         assertThat(savedTask).usingRecursiveComparison().ignoringFields("id").isEqualTo(task)
@@ -24,7 +24,7 @@ internal class TaskRepositoryTestEmbedded {
 
     @Test
     @Sql("classpath:test-data.sql")
-    fun `should save task through SQL file`() {
+    fun `when task saved through SQL file then check if it is not null`() {
             val task: Task = repository.findTaskById(111)
             assertThat(task).isNotNull
     }
