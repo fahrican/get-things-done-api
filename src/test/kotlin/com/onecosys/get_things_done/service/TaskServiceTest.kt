@@ -5,26 +5,28 @@ import com.onecosys.get_things_done.model.Task
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.request.CreateTaskRequest
 import com.onecosys.get_things_done.request.UpdateTaskRequest
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
 import java.time.LocalDateTime
 
-@ExtendWith(MockitoExtension::class)
 internal class TaskServiceTest {
 
-    @Mock
+    @RelaxedMockK
     private lateinit var repository: TaskRepository
 
     private lateinit var objectUnderTest: TaskService
 
     @BeforeEach
     fun setUp() {
+        MockKAnnotations.init(this)
         objectUnderTest = TaskService(repository)
     }
 
@@ -36,7 +38,7 @@ internal class TaskServiceTest {
     @Test
     fun `when all tasks get fetched then check if the given size is correct`() {
         val expectedTasks = listOf(Task(), Task())
-        Mockito.`when`(repository.findAll()).thenReturn(expectedTasks.toMutableList())
+        every { repository.findAll() } returns expectedTasks.toMutableList()
 
         val actualList: List<TaskDto> = objectUnderTest.getAllTasks()
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
@@ -54,9 +56,7 @@ internal class TaskServiceTest {
         task.finishedOn = taskRequest.finishedOn
         task.timeTaken = taskRequest.timeTaken
 
-        val testTask = Mockito.mock(Task::class.java)
-
-        Mockito.`when`(repository.save(Mockito.any(Task::class.java))).thenReturn(testTask)
+        every { repository.save(any()) } returns task
         val actualTask: Task = objectUnderTest.createTask(taskRequest)
 
         assertThat(actualTask.description).isEqualTo(taskRequest.description)
@@ -65,7 +65,7 @@ internal class TaskServiceTest {
     @Test
     fun `when get task by id is called then expect a task with id 2`() {
         val actualTask = Task()
-        Mockito.`when`(repository.findTaskById(2)).thenReturn(actualTask)
+        every {repository.findTaskById(2) } returns actualTask
         val expectedTaskDto = objectUnderTest.getTaskById(2)
         assertThat(actualTask.taskId).isEqualTo(expectedTaskDto.id)
     }
