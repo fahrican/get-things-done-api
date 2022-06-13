@@ -31,7 +31,6 @@ dependencies {
     // test stuff
     runtimeOnly("com.h2database:h2")
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
-    testImplementation("org.mockito:mockito-core:4.6.1")
     testImplementation("org.assertj:assertj-core:3.23.1")
     testImplementation("org.testcontainers:junit-jupiter:1.17.2")
     testImplementation("org.testcontainers:mysql:1.17.2")
