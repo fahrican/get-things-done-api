@@ -25,14 +25,14 @@ internal class TaskRepositoryTestEmbedded {
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check if it is not null`() {
-            val task: Task = repository.findTaskById(111)
-            assertThat(task).isNotNull
+        val task: Task = repository.findTaskById(111)
+        assertThat(task).isNotNull
     }
 
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check for the number of tasks`() {
-            val tasks: List<Task> = repository.findAll()
+        val tasks: List<Task> = repository.findAll()
         assertThat(tasks.size).isEqualTo(2)
     }
 
