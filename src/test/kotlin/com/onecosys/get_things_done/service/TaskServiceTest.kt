@@ -7,6 +7,7 @@ import com.onecosys.get_things_done.request.CreateTaskRequest
 import com.onecosys.get_things_done.request.UpdateTaskRequest
 import io.mockk.MockKAnnotations
 import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -19,12 +20,12 @@ internal class TaskServiceTest {
     @RelaxedMockK
     private lateinit var repository: TaskRepository
 
+    @InjectMockKs
     private lateinit var objectUnderTest: TaskService
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
-        objectUnderTest = TaskService(repository)
     }
 
     @AfterEach
@@ -42,7 +43,7 @@ internal class TaskServiceTest {
     }
 
     @Test
-    fun `when task gets created`() {
+    fun `when task gets created then check if it gets properly created`() {
         val taskRequest = CreateTaskRequest("test task", false, false, LocalDateTime.now(), null, null, "0d", 0)
         val task = Task()
         task.description = taskRequest.description
