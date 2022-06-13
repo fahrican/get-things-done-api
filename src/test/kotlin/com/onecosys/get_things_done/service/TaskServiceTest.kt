@@ -7,14 +7,11 @@ import com.onecosys.get_things_done.request.CreateTaskRequest
 import com.onecosys.get_things_done.request.UpdateTaskRequest
 import io.mockk.MockKAnnotations
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import java.time.LocalDateTime
 
 internal class TaskServiceTest {
@@ -65,25 +62,31 @@ internal class TaskServiceTest {
     @Test
     fun `when get task by id is called then expect a task with id 2`() {
         val actualTask = Task()
-        every {repository.findTaskById(2) } returns actualTask
+        every { repository.findTaskById(2) } returns actualTask
         val expectedTaskDto = objectUnderTest.getTaskById(2)
         assertThat(actualTask.taskId).isEqualTo(expectedTaskDto.id)
     }
 
-/*    @Test
-    fun `update the task`(){
+    @Test
+    fun `when update task is called then expect actual and expected task created on field is equal`() {
         val actualTask = Task()
-        Mockito.`when`(repository.findTaskById(2)).thenReturn(actualTask)
-        Mockito.`when`(repository.save(actualTask)).thenReturn(actualTask)
+        every { repository.findTaskById(2) } returns actualTask
+        every { repository.save(any()) } returns actualTask
 
-        val updateTaskRequest = UpdateTaskRequest(222, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0)
+        val updateTaskRequest =
+            UpdateTaskRequest(222, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0)
         val expectedDTo = objectUnderTest.updateTask(updateTaskRequest)
-        assertThat(actualTask.taskId).isEqualTo(expectedDTo.id)
-    }*/
+        assertThat(actualTask.createdOn).isEqualTo(expectedDTo.createdOn)
+    }
 
     @Test
-    fun `when delete task by id`() {
+    fun `when delete task by id is called then check for return message`() {
+        val actualTask = Task()
+        every { repository.save(any()) } returns actualTask
 
+        val actualText: String? = actualTask.taskId?.let { objectUnderTest.deleteTask(it) }
+        val expectedText: String? = actualTask.taskId?.let { "Task with id: $it has been deleted." }
+        assertThat(actualText).isEqualTo(expectedText)
     }
 
 }
