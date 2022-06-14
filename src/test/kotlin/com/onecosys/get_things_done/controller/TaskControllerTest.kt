@@ -1,6 +1,10 @@
 package com.onecosys.get_things_done.controller
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.get_things_done.dto.TaskDto
+import com.onecosys.get_things_done.model.Task
+import com.onecosys.get_things_done.request.CreateTaskRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -30,6 +34,8 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
     @MockBean
     private lateinit var mockService: TaskService
 
+    private val mapper = jacksonObjectMapper()
+
     private val dummyDto1 = TaskDto(
         33, "test1",
         isReminderSet = false,
@@ -43,6 +49,7 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
 
     @BeforeEach
     fun setUp() {
+        mapper.registerModule(JavaTimeModule())
     }
 
     @AfterEach
@@ -52,7 +59,8 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
     @Test
     fun `given tasks when fetch happen then check for size`() {
         val taskDto2 = TaskDto(
-            44, "test2",
+            44,
+            "test2",
             isReminderSet = false,
             isTaskOpen = false,
             createdOn = LocalDateTime.now(),
@@ -64,10 +72,8 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
 
         `when`(mockService.getAllTasks()).thenReturn(listOf(dummyDto1, taskDto2))
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/tasks"))
-            .andExpect(MockMvcResultMatchers.status().`is`(200))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.size()").value(2))
+        mockMvc.perform(MockMvcRequestBuilders.get("/tasks")).andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.size()").value(2))
     }
 
     @Test
@@ -82,7 +88,6 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `given one task when get task by id is called with string instead of int then check for bad request`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/task/404L"))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.perform(MockMvcRequestBuilders.get("/task/404L")).andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 }
