@@ -25,12 +25,12 @@ internal class TaskRepositoryTest {
 
     @Autowired
     private lateinit var repository: TaskRepository
-
+/*
     @Test
     fun shouldSaveTask() {
         val expectedTask = Task()
         val actualTask: Task = repository.save(expectedTask)
         assertThat(actualTask).usingRecursiveComparison().ignoringFields("id").isEqualTo(expectedTask)
 
-    }
+    }*/
 }
