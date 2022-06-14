@@ -39,9 +39,27 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fetch`() {
-        val taskDto1 = TaskDto(33, "test1", false, false, LocalDateTime.now(), null, null, "1d", 1)
-        val taskDto2 = TaskDto(44, "test2", false, false, LocalDateTime.now(), null, null, "2d", 2)
+    fun `given tasks when fetch happen then check for size`() {
+        val taskDto1 = TaskDto(
+            33, "test1",
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "1d",
+            timeTaken = 1
+        )
+        val taskDto2 = TaskDto(
+            44, "test2",
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2
+        )
 
         `when`(mockService.getAllTasks()).thenReturn(listOf(taskDto1, taskDto2))
 
