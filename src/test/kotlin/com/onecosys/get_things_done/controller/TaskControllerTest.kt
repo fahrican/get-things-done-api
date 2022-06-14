@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.get_things_done.dto.TaskDto
 import com.onecosys.get_things_done.model.Task
 import com.onecosys.get_things_done.request.CreateTaskRequest
+import com.onecosys.get_things_done.request.UpdateTaskRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -115,5 +116,42 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
         ).andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.timeTaken").value(task.timeTaken))
+    }
+
+    @Test
+    fun `given update task request when task gets updated then check for correct property`() {
+        val request = UpdateTaskRequest(
+            77,
+            "update task",
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2
+        )
+
+        val dummyDto = TaskDto(
+            44,
+            request.description,
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2
+        )
+
+        `when`(mockService.updateTask(request)).thenReturn(dummyDto)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.put("/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.description").value(dummyDto.description))
     }
 }
