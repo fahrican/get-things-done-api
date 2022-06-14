@@ -38,7 +38,8 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
     private val mapper = jacksonObjectMapper()
 
     private val dummyDto1 = TaskDto(
-        33, "test1",
+        33,
+        "test1",
         isReminderSet = false,
         isTaskOpen = false,
         createdOn = LocalDateTime.now(),
@@ -110,11 +111,9 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
         `when`(mockService.createTask(request)).thenReturn(task)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/create")
-                .contentType(MediaType.APPLICATION_JSON)
+            MockMvcRequestBuilders.post("/create").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
-        ).andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        ).andExpect(MockMvcResultMatchers.status().isOk).andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.timeTaken").value(task.timeTaken))
     }
 
@@ -147,11 +146,9 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
         `when`(mockService.updateTask(request)).thenReturn(dummyDto)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.put("/update")
-                .contentType(MediaType.APPLICATION_JSON)
+            MockMvcRequestBuilders.put("/update").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
-        ).andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        ).andExpect(MockMvcResultMatchers.status().isOk).andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.description").value(dummyDto.description))
     }
 }
