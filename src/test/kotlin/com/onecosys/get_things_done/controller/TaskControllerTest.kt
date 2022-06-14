@@ -30,6 +30,17 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
     @MockBean
     private lateinit var mockService: TaskService
 
+    val dummyDto1 = TaskDto(
+        33, "test1",
+        isReminderSet = false,
+        isTaskOpen = false,
+        createdOn = LocalDateTime.now(),
+        startedOn = null,
+        finishedOn = null,
+        timeInterval = "1d",
+        timeTaken = 1
+    )
+
     @BeforeEach
     fun setUp() {
     }
@@ -40,16 +51,6 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `given tasks when fetch happen then check for size`() {
-        val taskDto1 = TaskDto(
-            33, "test1",
-            isReminderSet = false,
-            isTaskOpen = false,
-            createdOn = LocalDateTime.now(),
-            startedOn = null,
-            finishedOn = null,
-            timeInterval = "1d",
-            timeTaken = 1
-        )
         val taskDto2 = TaskDto(
             44, "test2",
             isReminderSet = false,
@@ -61,9 +62,21 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
             timeTaken = 2
         )
 
-        `when`(mockService.getAllTasks()).thenReturn(listOf(taskDto1, taskDto2))
+        `when`(mockService.getAllTasks()).thenReturn(listOf(dummyDto1, taskDto2))
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/tasks")).andExpect(MockMvcResultMatchers.status().`is`(200))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.size()").value(2))
+        mockMvc.perform(MockMvcRequestBuilders.get("/tasks"))
+            .andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.size()").value(2))
+    }
+
+    @Test
+    fun `given one task`() {
+        `when`(mockService.getTaskById(33)).thenReturn(dummyDto1)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/task/${dummyDto1.id}"))
+            .andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.description").value("test1"));
     }
 }
