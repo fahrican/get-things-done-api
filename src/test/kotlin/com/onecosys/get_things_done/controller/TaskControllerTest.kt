@@ -30,7 +30,7 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
     @MockBean
     private lateinit var mockService: TaskService
 
-    val dummyDto1 = TaskDto(
+    private val dummyDto1 = TaskDto(
         33, "test1",
         isReminderSet = false,
         isTaskOpen = false,
@@ -71,12 +71,18 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `given one task`() {
+    fun `given one task when get task by id is called then check for correct description`() {
         `when`(mockService.getTaskById(33)).thenReturn(dummyDto1)
 
         mockMvc.perform(MockMvcRequestBuilders.get("/task/${dummyDto1.id}"))
             .andExpect(MockMvcResultMatchers.status().`is`(200))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.description").value("test1"));
+            .andExpect(jsonPath("$.description").value("test1"))
+    }
+
+    @Test
+    fun `given one task when get task by id is called with string instead of int then check for bad request`() {
+        mockMvc.perform(MockMvcRequestBuilders.get("/task/404L"))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 }
