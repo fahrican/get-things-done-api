@@ -114,6 +114,6 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
                 .content(mapper.writeValueAsString(request))
         ).andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.timeTaken").value(2))
+            .andExpect(jsonPath("$.timeTaken").value(task.timeTaken))
     }
 }
