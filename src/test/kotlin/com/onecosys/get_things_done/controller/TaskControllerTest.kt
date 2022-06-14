@@ -90,4 +90,30 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
     fun `given one task when get task by id is called with string instead of int then check for bad request`() {
         mockMvc.perform(MockMvcRequestBuilders.get("/task/404L")).andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
+
+    @Test
+    fun `given create task request when task gets created then check for correct property`() {
+        val request = CreateTaskRequest(
+            "test2",
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2
+        )
+
+        val task = Task()
+        task.timeTaken = 2
+        `when`(mockService.createTask(request)).thenReturn(task)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.timeTaken").value(2))
+    }
 }
