@@ -151,4 +151,19 @@ internal class TaskControllerTest(@Autowired private val mockMvc: MockMvc) {
         ).andExpect(MockMvcResultMatchers.status().isOk).andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.description").value(dummyDto.description))
     }
+
+    @Test
+    fun `given id for delete request when delete task is performed then check for the message`() {
+        val id = 33L
+        val expectedMessage = "Task with id: $id has been deleted."
+
+        `when`(mockService.deleteTask(id)).thenReturn(expectedMessage)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/delete/${id}")
+        ).andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().string(expectedMessage))
+    }
+
+
 }
