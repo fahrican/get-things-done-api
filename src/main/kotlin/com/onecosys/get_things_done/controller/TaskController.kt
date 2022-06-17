@@ -24,7 +24,7 @@ class TaskController(private val service: TaskService) {
     fun createStudent(@Valid @RequestBody taskRequest: CreateTaskRequest): TaskDto {
         val task = service.createTask(taskRequest)
         return TaskDto(
-            task.taskId,
+            task.id,
             task.description,
             task.isReminderSet,
             task.isTaskOpen,

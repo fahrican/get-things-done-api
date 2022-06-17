@@ -65,7 +65,7 @@ internal class TaskServiceTest {
         val actualTask = Task()
         every { mockRepository.findTaskById(2) } returns actualTask
         val expectedTaskDto = objectUnderTest.getTaskById(2)
-        assertThat(actualTask.taskId).isEqualTo(expectedTaskDto.id)
+        assertThat(actualTask.id).isEqualTo(expectedTaskDto.id)
     }
 
     @Test
@@ -85,8 +85,10 @@ internal class TaskServiceTest {
         val actualTask = Task()
         every { mockRepository.save(any()) } returns actualTask
 
-        val actualText: String? = actualTask.taskId?.let { objectUnderTest.deleteTask(it) }
-        val expectedText: String? = actualTask.taskId?.let { "Task with id: $it has been deleted." }
+        mockRepository.save(actualTask)
+
+        val actualText: String = objectUnderTest.deleteTask(actualTask.id )
+        val expectedText = "Task with id: ${actualTask.id} has been deleted."
         assertThat(actualText).isEqualTo(expectedText)
     }
 

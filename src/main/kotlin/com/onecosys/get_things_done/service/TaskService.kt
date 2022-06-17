@@ -16,7 +16,7 @@ class TaskService(private val repository: TaskRepository) {
 
     private fun convertEntityToDto(task: Task): TaskDto {
         return TaskDto(
-            task.taskId,
+            task.id,
             task.description,
             task.isReminderSet,
             task.isTaskOpen,
@@ -43,7 +43,7 @@ class TaskService(private val repository: TaskRepository) {
     fun getTaskById(id: Long): TaskDto {
         val task = repository.findTaskById(id)
         return TaskDto(
-            task.taskId,
+            task.id,
             task.description,
             task.isReminderSet,
             task.isTaskOpen,
@@ -71,7 +71,7 @@ class TaskService(private val repository: TaskRepository) {
             savedTask = repository.save(task)
         }
         return TaskDto(
-            savedTask.taskId,
+            savedTask.id,
             savedTask.description,
             savedTask.isReminderSet,
             savedTask.isTaskOpen,
