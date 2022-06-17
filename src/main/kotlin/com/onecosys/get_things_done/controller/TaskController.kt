@@ -9,6 +9,7 @@ import javax.validation.Valid
 
 
 @RestController
+@RequestMapping("api")
 class TaskController(private val service: TaskService) {
 
     @GetMapping("tasks")
