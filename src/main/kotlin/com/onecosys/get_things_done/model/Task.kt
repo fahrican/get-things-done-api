@@ -13,7 +13,7 @@ class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null
+    val id: Long? = null
 
     var description: String = ""
 
@@ -37,6 +37,4 @@ class Task {
 
     @Column(name = "time_taken")
     var timeTaken: Int? = null
-
-    val taskId: Long? get() = id
 }
