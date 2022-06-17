@@ -13,7 +13,7 @@ class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    val id: Long = 0
 
     var description: String = ""
 
