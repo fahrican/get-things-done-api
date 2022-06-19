@@ -4,6 +4,8 @@ import com.onecosys.get_things_done.dto.TaskDto
 import com.onecosys.get_things_done.request.CreateTaskRequest
 import com.onecosys.get_things_done.request.UpdateTaskRequest
 import com.onecosys.get_things_done.service.TaskService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -13,41 +15,43 @@ import javax.validation.Valid
 class TaskController(private val service: TaskService) {
 
     @GetMapping("tasks")
-    fun getAllTasks(): List<TaskDto> = service.getAllTasks()
+    fun getAllTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity(service.getAllTasks(), HttpStatus.OK)
 
     @GetMapping("task/{id}")
-    fun getTaskById(@PathVariable id: Long): TaskDto {
-        return service.getTaskById(id)
+    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> {
+        return ResponseEntity(service.getTaskById(id), HttpStatus.OK)
     }
 
     @PostMapping("create")
-    fun createStudent(@Valid @RequestBody taskRequest: CreateTaskRequest): TaskDto {
+    fun createStudent(@Valid @RequestBody taskRequest: CreateTaskRequest): ResponseEntity<TaskDto> {
         val task = service.createTask(taskRequest)
-        return TaskDto(
-            task.id,
-            task.description,
-            task.isReminderSet,
-            task.isTaskOpen,
-            task.createdOn,
-            task.startedOn,
-            task.finishedOn,
-            task.timeInterval,
-            task.timeTaken
+        return ResponseEntity(
+            TaskDto(
+                task.id,
+                task.description,
+                task.isReminderSet,
+                task.isTaskOpen,
+                task.createdOn,
+                task.startedOn,
+                task.finishedOn,
+                task.timeInterval,
+                task.timeTaken
+            ), HttpStatus.OK
         )
     }
 
     @PutMapping("update")
-    fun updateTask(@Valid @RequestBody taskRequest: UpdateTaskRequest?): TaskDto {
-        return service.updateTask(taskRequest)
+    fun updateTask(@Valid @RequestBody taskRequest: UpdateTaskRequest?): ResponseEntity<TaskDto> {
+        return ResponseEntity(service.updateTask(taskRequest), HttpStatus.OK)
     }
 
     @DeleteMapping("delete/{id}")
-    fun removeStudent(@PathVariable id: Long): String {
-        return service.deleteTask(id)
+    fun removeStudent(@PathVariable id: Long): ResponseEntity<String> {
+        return ResponseEntity(service.deleteTask(id), HttpStatus.OK)
     }
 
     @DeleteMapping("delete")
-    fun deleteStudent(@RequestParam id: Long): String {
-        return service.deleteTask(id)
+    fun deleteStudent(@RequestParam id: Long): ResponseEntity<String> {
+        return ResponseEntity(service.deleteTask(id), HttpStatus.OK)
     }
 }
