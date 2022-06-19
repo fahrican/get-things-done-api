@@ -18,9 +18,9 @@ class TaskController(private val service: TaskService) {
     fun getAllTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity(service.getAllTasks(), HttpStatus.OK)
 
     @GetMapping("task/{id}")
-    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> {
-        return ResponseEntity(service.getTaskById(id), HttpStatus.OK)
-    }
+    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> =
+        ResponseEntity(service.getTaskById(id), HttpStatus.OK)
+
 
     @PostMapping("create")
     fun createStudent(@Valid @RequestBody taskRequest: CreateTaskRequest): ResponseEntity<TaskDto> {
@@ -41,17 +41,16 @@ class TaskController(private val service: TaskService) {
     }
 
     @PutMapping("update")
-    fun updateTask(@Valid @RequestBody taskRequest: UpdateTaskRequest?): ResponseEntity<TaskDto> {
-        return ResponseEntity(service.updateTask(taskRequest), HttpStatus.OK)
-    }
+    fun updateTask(@Valid @RequestBody taskRequest: UpdateTaskRequest?): ResponseEntity<TaskDto> =
+        ResponseEntity(service.updateTask(taskRequest), HttpStatus.OK)
+
 
     @DeleteMapping("delete/{id}")
-    fun removeStudent(@PathVariable id: Long): ResponseEntity<String> {
-        return ResponseEntity(service.deleteTask(id), HttpStatus.OK)
-    }
+    fun removeStudent(@PathVariable id: Long): ResponseEntity<String> =
+        ResponseEntity(service.deleteTask(id), HttpStatus.OK)
+
 
     @DeleteMapping("delete")
-    fun deleteStudent(@RequestParam id: Long): ResponseEntity<String> {
-        return ResponseEntity(service.deleteTask(id), HttpStatus.OK)
-    }
+    fun deleteStudent(@RequestParam id: Long): ResponseEntity<String> =
+        ResponseEntity(service.deleteTask(id), HttpStatus.OK)
 }
