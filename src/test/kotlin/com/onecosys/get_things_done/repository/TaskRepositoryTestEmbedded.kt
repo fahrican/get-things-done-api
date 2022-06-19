@@ -25,6 +25,21 @@ internal class TaskRepositoryTestEmbedded {
     }
 
     @Test
+    fun `when task is saved then check if description is not null and unique`() {
+        // GIVEN
+        val task1 = Task()
+        task1.description = "test"
+        val task2 = Task()
+        task2.description = "test"
+        objectUnderTest.save(task1)
+        // WHEN
+        // THEN
+        assertThatThrownBy { objectUnderTest.save(task2) }
+            .hasMessageContaining("could not execute statement; SQL [n/a]; constraint [\"PUBLIC.UK_NUXJDIQ9O90T2L66B8NYURQ4T_INDEX_2 ON PUBLIC.TASK(DESCRIPTION NULLS FIRST) VALUES ( /* 1 */ 'test' )\"; SQL statement:")
+            .isInstanceOf(DataIntegrityViolationException::class.java)
+    }
+
+    @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check if it is not null`() {
         val task: Task = objectUnderTest.findTaskById(111)
