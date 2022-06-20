@@ -26,9 +26,10 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
 
     // test stuff
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     runtimeOnly("com.h2database:h2")
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation("org.assertj:assertj-core:3.23.1")
