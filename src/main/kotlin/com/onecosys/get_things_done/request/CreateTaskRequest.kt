@@ -6,29 +6,30 @@ import javax.validation.constraints.NotBlank
 
 
 data class CreateTaskRequest(
-        @NotBlank(message = "description can't be empty")
-        val description: String,
 
-        @JsonProperty("is_reminder_set")
-        val isReminderSet: Boolean,
+    @NotBlank(message = "description can't be empty")
+    val description: String,
 
-        @JsonProperty("is_task_open")
-        val isTaskOpen: Boolean,
+    @JsonProperty("is_reminder_set")
+    val isReminderSet: Boolean,
 
-        @NotBlank(message = "created_on can't be empty")
-        @JsonProperty("created_on")
-        val createdOn: LocalDateTime,
+    @JsonProperty("is_task_open")
+    val isTaskOpen: Boolean,
 
-        @JsonProperty("started_on")
-        val startedOn: LocalDateTime?,
+    @NotBlank(message = "created_on can't be empty")
+    @JsonProperty("created_on")
+    val createdOn: LocalDateTime,
 
-        @JsonProperty("finished_on")
-        val finishedOn: LocalDateTime?,
+    @JsonProperty("started_on")
+    val startedOn: LocalDateTime?,
 
-        @NotBlank(message = "time_interval can't be empty")
-        @JsonProperty("time_interval")
-        val timeInterval: String,
+    @JsonProperty("finished_on")
+    val finishedOn: LocalDateTime?,
 
-        @JsonProperty("time_taken")
-        val timeTaken: Int?
+    @NotBlank(message = "time_interval can't be empty")
+    @JsonProperty("time_interval")
+    val timeInterval: String,
+
+    @JsonProperty("time_taken")
+    val timeTaken: Int?
 )
