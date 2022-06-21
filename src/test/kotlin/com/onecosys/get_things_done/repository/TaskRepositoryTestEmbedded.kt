@@ -17,6 +17,8 @@ internal class TaskRepositoryTestEmbedded {
     @Autowired
     private lateinit var objectUnderTest: TaskRepository
 
+    private val numberOfRecordsInTestDataSql = 3
+
     @Test
     fun `when task is saved then check if it is properly saved`() {
         val task = Task()
@@ -50,7 +52,7 @@ internal class TaskRepositoryTestEmbedded {
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check for the number of tasks`() {
         val tasks: List<Task> = objectUnderTest.findAll()
-        assertThat(tasks.size).isEqualTo(2)
+        assertThat(tasks.size).isEqualTo(numberOfRecordsInTestDataSql)
     }
 
     @Test
@@ -58,6 +60,6 @@ internal class TaskRepositoryTestEmbedded {
     fun `when task saved through SQL file then remove it by id`() {
         val tasks: List<Task> = objectUnderTest.findAll()
         objectUnderTest.deleteById(222)
-        assertThat(tasks.size).isEqualTo(2)
+        assertThat(tasks.size).isEqualTo(numberOfRecordsInTestDataSql)
     }
 }
