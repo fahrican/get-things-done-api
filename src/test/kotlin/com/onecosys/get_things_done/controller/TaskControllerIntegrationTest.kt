@@ -59,7 +59,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    fun `given tasks when fetch happen then check for size`() {
+    fun `given all tasks when fetch happen then check for size`() {
         val taskDto2 = TaskDto(
             44,
             "test2",
@@ -74,8 +74,44 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
         `when`(mockService.getAllTasks()).thenReturn(listOf(dummyDto1, taskDto2))
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/all-tasks")).andExpect(MockMvcResultMatchers.status().`is`(200))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.size()").value(2))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/all-tasks"))
+            .andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.size()").value(2))
+    }
+
+    @Test
+    fun `given open tasks when fetch happen then check for size and isTaskOpen is true`() {
+        val taskDto2 = TaskDto(
+            44,
+            "test2",
+            isReminderSet = false,
+            isTaskOpen = true,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2
+        )
+
+        `when`(mockService.getAllOpenTasks()).thenReturn(listOf(taskDto2))
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/open-tasks"))
+            .andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.size()").value(1))
+            .andExpect(jsonPath("$[0].isTaskOpen").value(true))
+    }
+
+    @Test
+    fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
+        `when`(mockService.getAllClosedTasks()).thenReturn(listOf(dummyDto1))
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/closed-tasks"))
+            .andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.size()").value(1))
+            .andExpect(jsonPath("$[0].isTaskOpen").value(false))
     }
 
     @Test
@@ -90,7 +126,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given one task when get task by id is called with string instead of int then check for bad request`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/task/404L")).andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/task/404L"))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 
     @Test
@@ -161,8 +198,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/api/delete/${id}")
-        ).andExpect(MockMvcResultMatchers.status().`is`(200))
-            .andExpect(content().string(expectedMessage))
+        ).andExpect(MockMvcResultMatchers.status().`is`(200)).andExpect(content().string(expectedMessage))
     }
 
     @Test
@@ -173,10 +209,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         `when`(mockService.deleteTask(id)).thenReturn(expectedMessage)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.delete("/api/delete")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("id", "33")
-        ).andExpect(MockMvcResultMatchers.status().`is`(200))
-            .andExpect(content().string(expectedMessage))
+            MockMvcRequestBuilders.delete("/api/delete").contentType(MediaType.APPLICATION_JSON).param("id", "33")
+        ).andExpect(MockMvcResultMatchers.status().`is`(200)).andExpect(content().string(expectedMessage))
     }
 }
