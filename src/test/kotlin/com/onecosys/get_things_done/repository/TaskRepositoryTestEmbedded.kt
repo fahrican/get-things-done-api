@@ -18,6 +18,8 @@ internal class TaskRepositoryTestEmbedded {
     private lateinit var objectUnderTest: TaskRepository
 
     private val numberOfRecordsInTestDataSql = 3
+    private val numberOfClosedTasksInTestDataSql = 2
+    private val numberOfOpenTasksInTestDataSql = 1
 
     @Test
     fun `when task is saved then check if it is properly saved`() {
@@ -61,5 +63,19 @@ internal class TaskRepositoryTestEmbedded {
         val tasks: List<Task> = objectUnderTest.findAll()
         objectUnderTest.deleteById(222)
         assertThat(tasks.size).isEqualTo(numberOfRecordsInTestDataSql)
+    }
+
+    @Test
+    @Sql("classpath:test-data.sql")
+    fun `when task saved through SQL file then check for the number of open tasks`() {
+        val tasks: List<Task> = objectUnderTest.queryAllOpenTasks()
+        assertThat(tasks.size).isEqualTo(numberOfOpenTasksInTestDataSql)
+    }
+
+    @Test
+    @Sql("classpath:test-data.sql")
+    fun `when task saved through SQL file then check for the number of closed tasks`() {
+        val tasks: List<Task> = objectUnderTest.queryAllClosedTasks()
+        assertThat(tasks.size).isEqualTo(numberOfClosedTasksInTestDataSql)
     }
 }
