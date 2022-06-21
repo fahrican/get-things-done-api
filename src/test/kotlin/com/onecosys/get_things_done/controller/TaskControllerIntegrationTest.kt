@@ -148,9 +148,11 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         `when`(mockService.createTask(request)).thenReturn(task)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/create").contentType(MediaType.APPLICATION_JSON)
+            MockMvcRequestBuilders.post("/api/create")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
-        ).andExpect(MockMvcResultMatchers.status().isOk).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.timeTaken").value(task.timeTaken))
     }
 
@@ -183,9 +185,11 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         `when`(mockService.updateTask(request)).thenReturn(dummyDto)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.put("/api/update").contentType(MediaType.APPLICATION_JSON)
+            MockMvcRequestBuilders.put("/api/update")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
-        ).andExpect(MockMvcResultMatchers.status().isOk).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.description").value(dummyDto.description))
     }
 
@@ -198,7 +202,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/api/delete/${id}")
-        ).andExpect(MockMvcResultMatchers.status().`is`(200)).andExpect(content().string(expectedMessage))
+        ).andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().string(expectedMessage))
     }
 
     @Test
@@ -209,7 +214,9 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         `when`(mockService.deleteTask(id)).thenReturn(expectedMessage)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.delete("/api/delete").contentType(MediaType.APPLICATION_JSON).param("id", "33")
-        ).andExpect(MockMvcResultMatchers.status().`is`(200)).andExpect(content().string(expectedMessage))
+            MockMvcRequestBuilders.delete("/api/delete")
+                .contentType(MediaType.APPLICATION_JSON).param("id", "33")
+        ).andExpect(MockMvcResultMatchers.status().`is`(200))
+            .andExpect(content().string(expectedMessage))
     }
 }
