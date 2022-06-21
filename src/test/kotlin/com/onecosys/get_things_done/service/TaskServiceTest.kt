@@ -43,6 +43,26 @@ internal class TaskServiceTest {
     }
 
     @Test
+    fun `when open tasks get fetched then check if the first property has true for isTaskOpen`() {
+        val task1 = Task().apply { isTaskOpen = true }
+        val expectedTasks = listOf(task1)
+        every { mockRepository.queryAllOpenTasks() } returns expectedTasks.toMutableList()
+
+        val actualList: List<TaskDto> = objectUnderTest.getAllOpenTasks()
+        assertThat(actualList[0].isTaskOpen).isEqualTo(true)
+    }
+
+    @Test
+    fun `when open tasks get fetched then check if the first property has false for isTaskOpen`() {
+        val task1 = Task().apply { isTaskOpen = false }
+        val expectedTasks = listOf(task1)
+        every { mockRepository.queryAllClosedTasks() } returns expectedTasks.toMutableList()
+
+        val actualList: List<TaskDto> = objectUnderTest.getAllClosedTasks()
+        assertThat(actualList[0].isTaskOpen).isEqualTo(false)
+    }
+
+    @Test
     fun `when task gets created then check if it gets properly created`() {
         val taskRequest = CreateTaskRequest("test task", false, false, LocalDateTime.now(), null, null, "0d", 0)
         val task = Task()
@@ -87,7 +107,7 @@ internal class TaskServiceTest {
 
         mockRepository.save(actualTask)
 
-        val actualText: String = objectUnderTest.deleteTask(actualTask.id )
+        val actualText: String = objectUnderTest.deleteTask(actualTask.id)
         val expectedText = "Task with id: ${actualTask.id} has been deleted."
         assertThat(actualText).isEqualTo(expectedText)
     }
