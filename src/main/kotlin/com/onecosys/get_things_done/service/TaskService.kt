@@ -14,6 +14,12 @@ class TaskService(private val repository: TaskRepository) {
     fun getAllTasks(): List<TaskDto> =
         repository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList())
 
+    fun getAllOpenTasks(): List<TaskDto> =
+        repository.queryAllOpenTasks().stream().map(this::convertEntityToDto).collect(Collectors.toList())
+
+    fun getAllClosedTasks(): List<TaskDto> =
+        repository.queryAllClosedTasks().stream().map(this::convertEntityToDto).collect(Collectors.toList())
+
     private fun convertEntityToDto(task: Task): TaskDto {
         return TaskDto(
             task.id,

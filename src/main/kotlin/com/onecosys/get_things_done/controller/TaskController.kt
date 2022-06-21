@@ -14,13 +14,19 @@ import javax.validation.Valid
 @RequestMapping("api")
 class TaskController(private val service: TaskService) {
 
-    @GetMapping("tasks")
+    @GetMapping("all-tasks")
     fun getAllTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity(service.getAllTasks(), HttpStatus.OK)
+
+    @GetMapping("open-tasks")
+    fun getAllOpenTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity(service.getAllOpenTasks(), HttpStatus.OK)
+
+    @GetMapping("closed-tasks")
+    fun getAllFinishedTasks(): ResponseEntity<List<TaskDto>> =
+        ResponseEntity(service.getAllClosedTasks(), HttpStatus.OK)
 
     @GetMapping("task/{id}")
     fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> =
         ResponseEntity(service.getTaskById(id), HttpStatus.OK)
-
 
     @PostMapping("create")
     fun createStudent(@Valid @RequestBody taskRequest: CreateTaskRequest): ResponseEntity<TaskDto> {
@@ -44,11 +50,9 @@ class TaskController(private val service: TaskService) {
     fun updateTask(@Valid @RequestBody taskRequest: UpdateTaskRequest?): ResponseEntity<TaskDto> =
         ResponseEntity(service.updateTask(taskRequest), HttpStatus.OK)
 
-
     @DeleteMapping("delete/{id}")
     fun removeStudent(@PathVariable id: Long): ResponseEntity<String> =
         ResponseEntity(service.deleteTask(id), HttpStatus.OK)
-
 
     @DeleteMapping("delete")
     fun deleteStudent(@RequestParam id: Long): ResponseEntity<String> =
