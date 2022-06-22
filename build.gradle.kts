@@ -31,11 +31,10 @@ dependencies {
     // test stuff
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     runtimeOnly("com.h2database:h2")
-    // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation("org.assertj:assertj-core:3.23.1")
-    testImplementation("org.testcontainers:junit-jupiter:1.17.2")
-    testImplementation("org.testcontainers:mysql:1.17.2")
     testImplementation("io.mockk:mockk:1.12.4")
+    testImplementation("org.testcontainers:testcontainers:1.17.2")
+    testImplementation("org.testcontainers:mysql:1.17.2")
 }
 
 tasks.withType<KotlinCompile> {
