@@ -3,7 +3,7 @@ package com.onecosys.get_things_done.controller
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.get_things_done.dto.TaskDto
-import com.onecosys.get_things_done.model.Task
+import com.onecosys.get_things_done.entity.Task
 import com.onecosys.get_things_done.request.CreateTaskRequest
 import com.onecosys.get_things_done.request.UpdateTaskRequest
 import com.onecosys.get_things_done.service.TaskService

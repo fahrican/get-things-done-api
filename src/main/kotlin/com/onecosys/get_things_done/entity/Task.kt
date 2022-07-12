@@ -1,4 +1,4 @@
-package com.onecosys.get_things_done.model
+package com.onecosys.get_things_done.entity
 
 import lombok.AllArgsConstructor
 import lombok.NoArgsConstructor

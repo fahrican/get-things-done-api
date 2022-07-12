@@ -1,7 +1,7 @@
 package com.onecosys.get_things_done.repository
 
 import com.onecosys.get_things_done.AbstractContainerBaseTest
-import com.onecosys.get_things_done.model.Task
+import com.onecosys.get_things_done.entity.Task
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

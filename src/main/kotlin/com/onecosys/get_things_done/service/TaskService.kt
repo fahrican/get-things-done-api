@@ -1,7 +1,7 @@
 package com.onecosys.get_things_done.service
 
 import com.onecosys.get_things_done.dto.TaskDto
-import com.onecosys.get_things_done.model.Task
+import com.onecosys.get_things_done.entity.Task
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.request.CreateTaskRequest
 import com.onecosys.get_things_done.request.UpdateTaskRequest
