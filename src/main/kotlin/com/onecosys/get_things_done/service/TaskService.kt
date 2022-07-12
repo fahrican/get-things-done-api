@@ -1,10 +1,11 @@
 package com.onecosys.get_things_done.service
 
-import com.onecosys.get_things_done.dto.TaskDto
+import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.entity.Task
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.request.CreateTaskRequest
-import com.onecosys.get_things_done.request.UpdateTaskRequest
+import com.onecosys.get_things_done.model.request.CreateTaskRequest
+import com.onecosys.get_things_done.model.request.TaskRequest
+import com.onecosys.get_things_done.model.request.UpdateTaskRequest
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -30,19 +31,14 @@ class TaskService(private val repository: TaskRepository) {
             task.startedOn,
             task.finishedOn,
             task.timeInterval,
-            task.timeTaken
+            task.timeTaken,
+            task.priority
         )
     }
 
     fun createTask(taskRequest: CreateTaskRequest): Task {
         val task = Task()
-        task.description = taskRequest.description
-        task.isReminderSet = taskRequest.isReminderSet
-        task.isTaskOpen = taskRequest.isTaskOpen
-        task.createdOn = taskRequest.createdOn
-        task.startedOn = taskRequest.startedOn
-        task.finishedOn = taskRequest.finishedOn
-        task.timeTaken = taskRequest.timeTaken
+        assignValuesToEntity(task, taskRequest)
         return repository.save(task)
     }
 
@@ -57,7 +53,8 @@ class TaskService(private val repository: TaskRepository) {
             task.startedOn,
             task.finishedOn,
             task.timeInterval,
-            task.timeTaken
+            task.timeTaken,
+            task.priority
         )
     }
 
@@ -66,13 +63,7 @@ class TaskService(private val repository: TaskRepository) {
         taskRequest?.let { tr ->
             val task: Task = repository.findTaskById(tr.id)
             if (tr.description.isNotEmpty()) {
-                task.description = tr.description
-                task.isReminderSet = tr.isReminderSet
-                task.isTaskOpen = tr.isTaskOpen
-                task.createdOn = tr.createdOn
-                task.finishedOn = tr.finishedOn
-                task.timeInterval = tr.timeInterval
-                task.timeTaken = tr.timeTaken
+                assignValuesToEntity(task, tr)
             }
             savedTask = repository.save(task)
         }
@@ -85,8 +76,20 @@ class TaskService(private val repository: TaskRepository) {
             savedTask.startedOn,
             savedTask.finishedOn,
             savedTask.timeInterval,
-            savedTask.timeTaken
+            savedTask.timeTaken,
+            savedTask.priority
         )
+    }
+
+    private fun assignValuesToEntity(task: Task, tr: TaskRequest) {
+        task.description = tr.description
+        task.isReminderSet = tr.isReminderSet
+        task.isTaskOpen = tr.isTaskOpen
+        task.createdOn = tr.createdOn
+        task.finishedOn = tr.finishedOn
+        task.timeInterval = tr.timeInterval
+        task.timeTaken = tr.timeTaken
+        task.priority = tr.priority
     }
 
     fun deleteTask(id: Long): String {

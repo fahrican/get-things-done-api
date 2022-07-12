@@ -2,10 +2,11 @@ package com.onecosys.get_things_done.controller
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.get_things_done.dto.TaskDto
+import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.entity.Task
-import com.onecosys.get_things_done.request.CreateTaskRequest
-import com.onecosys.get_things_done.request.UpdateTaskRequest
+import com.onecosys.get_things_done.model.Priority
+import com.onecosys.get_things_done.model.request.CreateTaskRequest
+import com.onecosys.get_things_done.model.request.UpdateTaskRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -46,7 +47,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         startedOn = null,
         finishedOn = null,
         timeInterval = "1d",
-        timeTaken = 1
+        timeTaken = 1,
+        priority = Priority.LOW
     )
 
     @BeforeEach
@@ -69,7 +71,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
-            timeTaken = 2
+            timeTaken = 2,
+            priority = Priority.LOW
         )
 
         `when`(mockService.getAllTasks()).thenReturn(listOf(dummyDto1, taskDto2))
@@ -91,7 +94,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
-            timeTaken = 2
+            timeTaken = 2,
+            priority = Priority.LOW
         )
 
         `when`(mockService.getAllOpenTasks()).thenReturn(listOf(taskDto2))
@@ -140,7 +144,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
-            timeTaken = 2
+            timeTaken = 2,
+            priority = Priority.LOW
         )
 
         val task = Task()
@@ -167,7 +172,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
-            timeTaken = 2
+            timeTaken = 2,
+            priority = Priority.LOW
         )
 
         val dummyDto = TaskDto(
@@ -179,7 +185,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
-            timeTaken = 2
+            timeTaken = 2,
+            priority = Priority.LOW
         )
 
         `when`(mockService.updateTask(request)).thenReturn(dummyDto)

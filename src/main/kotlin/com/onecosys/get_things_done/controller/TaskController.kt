@@ -1,8 +1,8 @@
 package com.onecosys.get_things_done.controller
 
-import com.onecosys.get_things_done.dto.TaskDto
-import com.onecosys.get_things_done.request.CreateTaskRequest
-import com.onecosys.get_things_done.request.UpdateTaskRequest
+import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.request.CreateTaskRequest
+import com.onecosys.get_things_done.model.request.UpdateTaskRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -41,7 +41,8 @@ class TaskController(private val service: TaskService) {
                 task.startedOn,
                 task.finishedOn,
                 task.timeInterval,
-                task.timeTaken
+                task.timeTaken,
+                task.priority
             ), HttpStatus.OK
         )
     }

@@ -1,5 +1,6 @@
 package com.onecosys.get_things_done.entity
 
+import com.onecosys.get_things_done.model.Priority
 import lombok.AllArgsConstructor
 import lombok.NoArgsConstructor
 import java.time.LocalDateTime
@@ -38,4 +39,7 @@ class Task {
 
     @Column(name = "time_taken")
     var timeTaken: Int? = null
+
+    @Column(name = "priority")
+    var priority: Priority = Priority.LOW
 }
