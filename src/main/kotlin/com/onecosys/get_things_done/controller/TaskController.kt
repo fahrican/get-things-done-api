@@ -29,7 +29,7 @@ class TaskController(private val service: TaskService) {
         ResponseEntity(service.getTaskById(id), HttpStatus.OK)
 
     @PostMapping("create")
-    fun createStudent(@Valid @RequestBody taskRequest: CreateTaskRequest): ResponseEntity<TaskDto> {
+    fun createTask(@Valid @RequestBody taskRequest: CreateTaskRequest): ResponseEntity<TaskDto> {
         val task = service.createTask(taskRequest)
         return ResponseEntity(
             TaskDto(
