@@ -51,10 +51,10 @@ class TaskController(private val service: TaskService) {
         ResponseEntity(service.updateTask(taskRequest), HttpStatus.OK)
 
     @DeleteMapping("delete/{id}")
-    fun removeStudent(@PathVariable id: Long): ResponseEntity<String> =
+    fun deleteTaskWithUri(@PathVariable id: Long): ResponseEntity<String> =
         ResponseEntity(service.deleteTask(id), HttpStatus.OK)
 
     @DeleteMapping("delete")
-    fun deleteStudent(@RequestParam id: Long): ResponseEntity<String> =
+    fun deleteTaskWithParam(@RequestParam id: Long): ResponseEntity<String> =
         ResponseEntity(service.deleteTask(id), HttpStatus.OK)
 }
