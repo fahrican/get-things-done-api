@@ -41,7 +41,7 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun getTaskById(id: Long): TaskDto {
-        val task = repository.findTaskById(id)
+        val task: Task = repository.findTaskById(id)
         return TaskDto(
             task.id,
             task.description,
@@ -67,6 +67,28 @@ class TaskService(private val repository: TaskRepository) {
         }
         return TaskDto(
             savedTask.id,
+            savedTask.description,
+            savedTask.isReminderSet,
+            savedTask.isTaskOpen,
+            savedTask.createdOn,
+            savedTask.startedOn,
+            savedTask.finishedOn,
+            savedTask.timeInterval,
+            savedTask.timeTaken,
+            savedTask.priority
+        )
+    }
+
+    fun updateTask(id: Long, taskRequest: TaskRequest?): TaskDto {
+        val task: Task = repository.findTaskById(id)
+        taskRequest?.let { tr ->
+            if (tr.description.isNotEmpty()) {
+                assignValuesToEntity(task, tr)
+            }
+        }
+        val savedTask: Task = repository.save(task)
+        return TaskDto(
+            id,
             savedTask.description,
             savedTask.isReminderSet,
             savedTask.isTaskOpen,
