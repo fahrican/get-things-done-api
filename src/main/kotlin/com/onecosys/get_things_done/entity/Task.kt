@@ -40,6 +40,5 @@ class Task {
     @Column(name = "time_taken")
     var timeTaken: Int? = null
 
-    @Column(name = "priority")
     var priority: Priority = Priority.LOW
 }
