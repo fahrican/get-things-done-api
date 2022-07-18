@@ -1,8 +1,7 @@
 package com.onecosys.get_things_done.controller
 
 import com.onecosys.get_things_done.model.dto.TaskDto
-import com.onecosys.get_things_done.model.request.CreateTaskRequest
-import com.onecosys.get_things_done.model.request.UpdateTaskRequest
+import com.onecosys.get_things_done.model.request.TaskRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -29,7 +28,7 @@ class TaskController(private val service: TaskService) {
         ResponseEntity(service.getTaskById(id), HttpStatus.OK)
 
     @PostMapping("create")
-    fun createTask(@Valid @RequestBody taskRequest: CreateTaskRequest): ResponseEntity<TaskDto> {
+    fun createTask(@Valid @RequestBody taskRequest: TaskRequest): ResponseEntity<TaskDto> {
         val task = service.createTask(taskRequest)
         return ResponseEntity(
             TaskDto(
@@ -48,7 +47,7 @@ class TaskController(private val service: TaskService) {
     }
 
     @PutMapping("update")
-    fun updateTask(@Valid @RequestBody taskRequest: UpdateTaskRequest?): ResponseEntity<TaskDto> =
+    fun updateTask(@Valid @RequestBody taskRequest: TaskRequest?): ResponseEntity<TaskDto> =
         ResponseEntity(service.updateTask(taskRequest), HttpStatus.OK)
 
     @DeleteMapping("delete/{id}")

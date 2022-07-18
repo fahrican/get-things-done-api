@@ -1,25 +1,41 @@
 package com.onecosys.get_things_done.model.request
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.onecosys.get_things_done.model.Priority
 import java.time.LocalDateTime
+import javax.validation.constraints.NotBlank
 
-interface TaskRequest {
+data class TaskRequest(
 
-    val description: String
+    @NotBlank(message = "task id can't be empty")
+    val id: Long,
 
-    val isReminderSet: Boolean
+    @NotBlank(message = "description can't be empty")
+    val description: String,
 
-    val isTaskOpen: Boolean
+    @JsonProperty("is_reminder_set")
+    val isReminderSet: Boolean,
 
-    val createdOn: LocalDateTime
+    @JsonProperty("is_task_open")
+    val isTaskOpen: Boolean,
 
-    val startedOn: LocalDateTime?
+    @NotBlank(message = "created_on can't be empty")
+    @JsonProperty("created_on")
+    val createdOn: LocalDateTime,
 
-    val finishedOn: LocalDateTime?
+    @JsonProperty("started_on")
+    val startedOn: LocalDateTime?,
 
-    val timeInterval: String
+    @JsonProperty("finished_on")
+    val finishedOn: LocalDateTime?,
 
-    val timeTaken: Int?
+    @NotBlank(message = "time_interval can't be empty")
+    @JsonProperty("time_interval")
+    val timeInterval: String,
 
+    @JsonProperty("time_taken")
+    val timeTaken: Int?,
+
+    @JsonProperty("priority")
     val priority: Priority
-}
+)

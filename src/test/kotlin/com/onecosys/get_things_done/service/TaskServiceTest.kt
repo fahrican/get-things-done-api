@@ -3,9 +3,8 @@ package com.onecosys.get_things_done.service
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.entity.Task
 import com.onecosys.get_things_done.model.Priority
+import com.onecosys.get_things_done.model.request.TaskRequest
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.model.request.CreateTaskRequest
-import com.onecosys.get_things_done.model.request.UpdateTaskRequest
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -66,7 +65,7 @@ internal class TaskServiceTest {
     @Test
     fun `when task gets created then check if it gets properly created`() {
         val taskRequest =
-            CreateTaskRequest("test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
+            TaskRequest(0, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
         val task = Task()
         task.description = taskRequest.description
         task.isReminderSet = taskRequest.isReminderSet
@@ -97,7 +96,7 @@ internal class TaskServiceTest {
         every { mockRepository.save(any()) } returns actualTask
 
         val updateTaskRequest =
-            UpdateTaskRequest(222, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
+            TaskRequest(222, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
         val expectedDTo = objectUnderTest.updateTask(updateTaskRequest)
         assertThat(actualTask.createdOn).isEqualTo(expectedDTo.createdOn)
     }

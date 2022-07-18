@@ -3,9 +3,7 @@ package com.onecosys.get_things_done.service
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.entity.Task
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.model.request.CreateTaskRequest
 import com.onecosys.get_things_done.model.request.TaskRequest
-import com.onecosys.get_things_done.model.request.UpdateTaskRequest
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -36,7 +34,7 @@ class TaskService(private val repository: TaskRepository) {
         )
     }
 
-    fun createTask(taskRequest: CreateTaskRequest): Task {
+    fun createTask(taskRequest: TaskRequest): Task {
         val task = Task()
         assignValuesToEntity(task, taskRequest)
         return repository.save(task)
@@ -58,7 +56,7 @@ class TaskService(private val repository: TaskRepository) {
         )
     }
 
-    fun updateTask(taskRequest: UpdateTaskRequest?): TaskDto {
+    fun updateTask(taskRequest: TaskRequest?): TaskDto {
         var savedTask = Task()
         taskRequest?.let { tr ->
             val task: Task = repository.findTaskById(tr.id)
