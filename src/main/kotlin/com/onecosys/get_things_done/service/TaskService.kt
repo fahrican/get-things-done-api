@@ -110,6 +110,7 @@ class TaskService(private val repository: TaskRepository) {
         task.timeInterval = tr.timeInterval
         task.timeTaken = tr.timeTaken
         task.priority = tr.priority
+        task.startedOn = tr.startedOn
     }
 
     fun deleteTask(id: Long): String {
