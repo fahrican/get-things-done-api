@@ -201,6 +201,47 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
+    fun `given update task via id when task gets updated then check for correct property`() {
+        val id = 77L
+        val dummyRequest = TaskRequest(
+            id,
+            "update task",
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2,
+            priority = Priority.LOW
+        )
+
+        val dummyDto = TaskDto(
+            44,
+            dummyRequest.description,
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2,
+            priority = Priority.LOW
+        )
+
+        `when`(mockService.updateTask(id, dummyRequest)).thenReturn(dummyDto)
+
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.put("/api/update/${id}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(dummyRequest))
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.description").value(dummyDto.description))
+    }
+
+    @Test
     fun `given id for delete request when delete task is performed then check for the message`() {
         val id = 33L
         val expectedMessage = "Task with id: $id has been deleted."
