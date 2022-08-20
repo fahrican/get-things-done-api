@@ -90,7 +90,7 @@ internal class TaskServiceTest {
     }
 
     @Test
-    fun `when update task is called then expect actual and expected task created on field is equal`() {
+    fun `when update task is called with one argument then expect actual and expected task created on field is equal`() {
         val actualTask = Task()
         every { mockRepository.findTaskById(2) } returns actualTask
         every { mockRepository.save(any()) } returns actualTask
@@ -98,6 +98,18 @@ internal class TaskServiceTest {
         val updateTaskRequest =
             TaskRequest(222, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
         val expectedDTo = objectUnderTest.updateTask(updateTaskRequest)
+        assertThat(actualTask.createdOn).isEqualTo(expectedDTo.createdOn)
+    }
+    @Test
+    fun `when update task is called with id and request model as arguments then expect actual and expected task created on field is equal`() {
+        val actualTask = Task()
+        every { mockRepository.findTaskById(2) } returns actualTask
+        every { mockRepository.save(any()) } returns actualTask
+
+        val id = 222L
+        val updateTaskRequest =
+            TaskRequest(id, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
+        val expectedDTo = objectUnderTest.updateTask(id, updateTaskRequest)
         assertThat(actualTask.createdOn).isEqualTo(expectedDTo.createdOn)
     }
 
