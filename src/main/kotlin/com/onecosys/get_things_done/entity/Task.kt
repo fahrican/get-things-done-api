@@ -13,7 +13,12 @@ import javax.persistence.*
 class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+        name = "task_sequence", sequenceName = "task_sequence", allocationSize = 1
+    )
+    @GeneratedValue(
+        generator = "task_sequence", strategy = GenerationType.SEQUENCE
+    )
     val id: Long = 0
 
     @Column(nullable = false, unique = true)
@@ -40,5 +45,6 @@ class Task {
     @Column(name = "time_taken")
     var timeTaken: Int? = null
 
+    @Enumerated(EnumType.STRING)
     var priority: Priority = Priority.LOW
 }
