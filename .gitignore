@@ -214,6 +214,7 @@ gradle-app.setting
 
 # project files
 application.properties
+application.yml
 
 # Eclipse Gradle plugin generated files
 # Eclipse Core
