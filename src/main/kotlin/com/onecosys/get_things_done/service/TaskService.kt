@@ -2,6 +2,8 @@ package com.onecosys.get_things_done.service
 
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.entity.Task
+import com.onecosys.get_things_done.exception.BadRequestException
+import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.model.request.TaskRequest
 import org.springframework.stereotype.Service
@@ -114,6 +116,9 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun deleteTask(id: Long): String {
+        if (!repository.existsById(id)) {
+            throw TaskNotFoundException("Task with ID: $id does not exist!")
+        }
         repository.deleteById(id)
         return "Task with id: $id has been deleted."
     }
