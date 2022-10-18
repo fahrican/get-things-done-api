@@ -37,6 +37,9 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun createTask(taskRequest: TaskRequest): Task {
+        if (repository.doesDescriptionExist(taskRequest.description)) {
+            throw BadRequestException("There is already a task with description: ${taskRequest.description}")
+        }
         val task = Task()
         assignValuesToEntity(task, taskRequest)
         return repository.save(task)

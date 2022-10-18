@@ -15,4 +15,7 @@ interface TaskRepository : JpaRepository<Task, Long> {
 
     @Query(value = "SELECT * FROM task WHERE is_task_open = FALSE", nativeQuery = true)
     fun queryAllClosedTasks(): List<Task>
+
+    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN TRUE ELSE FALSE END FROM Task t WHERE t.description = ?1")
+    fun doesDescriptionExist(description: String): Boolean
 }
