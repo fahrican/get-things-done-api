@@ -46,6 +46,9 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun getTaskById(id: Long): TaskDto {
+        if (!repository.existsById(id)) {
+            throw TaskNotFoundException("Task with ID: $id does not exist!")
+        }
         val task: Task = repository.findTaskById(id)
         return TaskDto(
             task.id,
@@ -85,6 +88,9 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun updateTask(id: Long, taskRequest: TaskRequest?): TaskDto {
+        if (!repository.existsById(id)) {
+            throw TaskNotFoundException("Task with ID: $id does not exist!")
+        }
         val task: Task = repository.findTaskById(id)
         taskRequest?.let { tr ->
             if (tr.description.isNotEmpty()) {
