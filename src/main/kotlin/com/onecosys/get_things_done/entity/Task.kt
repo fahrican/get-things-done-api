@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor
 import lombok.NoArgsConstructor
 import java.time.LocalDateTime
 import javax.persistence.*
+import javax.validation.constraints.NotNull
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,27 +25,28 @@ class Task {
     @Column(nullable = false, unique = true)
     var description: String = ""
 
-    @Column(name = "is_reminder_set")
+    @Column(name = "is_reminder_set", nullable = false)
     var isReminderSet: Boolean = false
 
-    @Column(name = "is_task_open")
+    @Column(name = "is_task_open", nullable = false)
     var isTaskOpen: Boolean = true
 
-    @Column(name = "created_on")
+    @Column(name = "created_on", nullable = false)
     var createdOn: LocalDateTime = LocalDateTime.now()
 
-    @Column(name = "started_on")
+    @Column(name = "started_on", nullable = true)
     var startedOn: LocalDateTime? = null
 
-    @Column(name = "finished_on")
+    @Column(name = "finished_on", nullable = true)
     var finishedOn: LocalDateTime? = null
 
-    @Column(name = "time_interval")
+    @Column(name = "time_interval", nullable = false)
     var timeInterval: String = ""
 
-    @Column(name = "time_taken")
+    @Column(name = "time_taken", nullable = false)
     var timeTaken: Int? = null
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     var priority: Priority = Priority.LOW
 }
