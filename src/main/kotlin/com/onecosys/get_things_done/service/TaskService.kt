@@ -50,41 +50,23 @@ class TaskService(private val repository: TaskRepository) {
             throw TaskNotFoundException("Task with ID: $id does not exist!")
         }
         val task: Task = repository.findTaskById(id)
-        return TaskDto(
-            task.id,
-            task.description,
-            task.isReminderSet,
-            task.isTaskOpen,
-            task.createdOn,
-            task.startedOn,
-            task.finishedOn,
-            task.timeInterval,
-            task.timeTaken,
-            task.priority
-        )
+        return convertEntityToDto(task)
     }
 
     fun updateTask(taskRequest: TaskRequest?): TaskDto {
-        var savedTask = Task()
         taskRequest?.let { tr ->
+            if (!repository.existsById(taskRequest.id)) {
+                throw TaskNotFoundException("Task with ID: ${taskRequest.id} does not exist!")
+            }
+            val savedTask: Task
             val task: Task = repository.findTaskById(tr.id)
             if (tr.description.isNotEmpty()) {
                 assignValuesToEntity(task, tr)
             }
             savedTask = repository.save(task)
+            return convertEntityToDto(savedTask)
         }
-        return TaskDto(
-            savedTask.id,
-            savedTask.description,
-            savedTask.isReminderSet,
-            savedTask.isTaskOpen,
-            savedTask.createdOn,
-            savedTask.startedOn,
-            savedTask.finishedOn,
-            savedTask.timeInterval,
-            savedTask.timeTaken,
-            savedTask.priority
-        )
+        throw BadRequestException("Update task failed!")
     }
 
     fun updateTask(id: Long, taskRequest: TaskRequest?): TaskDto {
@@ -98,18 +80,7 @@ class TaskService(private val repository: TaskRepository) {
             }
         }
         val savedTask: Task = repository.save(task)
-        return TaskDto(
-            id,
-            savedTask.description,
-            savedTask.isReminderSet,
-            savedTask.isTaskOpen,
-            savedTask.createdOn,
-            savedTask.startedOn,
-            savedTask.finishedOn,
-            savedTask.timeInterval,
-            savedTask.timeTaken,
-            savedTask.priority
-        )
+        return convertEntityToDto(savedTask)
     }
 
     private fun assignValuesToEntity(task: Task, tr: TaskRequest) {
