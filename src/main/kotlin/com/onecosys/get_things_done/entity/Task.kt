@@ -10,7 +10,10 @@ import javax.validation.constraints.NotNull
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "task")
+@Table(
+    name = "task",
+    uniqueConstraints = [UniqueConstraint(name = "uk_task_description", columnNames = ["description"])]
+)
 class Task {
 
     @Id
@@ -22,7 +25,7 @@ class Task {
     )
     val id: Long = 0
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "description", nullable = false, unique = true)
     var description: String = ""
 
     @Column(name = "is_reminder_set", nullable = false)
