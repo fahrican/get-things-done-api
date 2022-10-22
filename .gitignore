@@ -215,7 +215,7 @@ gradle-app.setting
 # project files
 application.properties
 application.yml
-application-test-postgres.yml
+application-dev.yml
 
 # Eclipse Gradle plugin generated files
 # Eclipse Core
