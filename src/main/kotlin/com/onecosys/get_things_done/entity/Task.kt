@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor
 import lombok.NoArgsConstructor
 import java.time.LocalDateTime
 import javax.persistence.*
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 @NoArgsConstructor
@@ -25,6 +26,7 @@ class Task {
     )
     val id: Long = 0
 
+    @NotBlank
     @Column(name = "description", nullable = false, unique = true)
     var description: String = ""
 
@@ -46,7 +48,7 @@ class Task {
     @Column(name = "time_interval", nullable = false)
     var timeInterval: String = ""
 
-    @Column(name = "time_taken", nullable = false)
+    @Column(name = "time_taken", nullable = true)
     var timeTaken: Int? = null
 
     @NotNull
