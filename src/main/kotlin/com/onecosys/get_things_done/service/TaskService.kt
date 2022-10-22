@@ -46,18 +46,14 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun getTaskById(id: Long): TaskDto {
-        if (!repository.existsById(id)) {
-            throw TaskNotFoundException("Task with ID: $id does not exist!")
-        }
+        checkForTaskId(id)
         val task: Task = repository.findTaskById(id)
         return convertEntityToDto(task)
     }
 
     fun updateTask(taskRequest: TaskRequest?): TaskDto {
         taskRequest?.let { tr ->
-            if (!repository.existsById(taskRequest.id)) {
-                throw TaskNotFoundException("Task with ID: ${taskRequest.id} does not exist!")
-            }
+            checkForTaskId(tr.id)
             val savedTask: Task
             val task: Task = repository.findTaskById(tr.id)
             if (tr.description.isNotEmpty()) {
@@ -70,9 +66,7 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun updateTask(id: Long, taskRequest: TaskRequest?): TaskDto {
-        if (!repository.existsById(id)) {
-            throw TaskNotFoundException("Task with ID: $id does not exist!")
-        }
+        checkForTaskId(id)
         val task: Task = repository.findTaskById(id)
         taskRequest?.let { tr ->
             if (tr.description.isNotEmpty()) {
@@ -96,10 +90,14 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun deleteTask(id: Long): String {
+        checkForTaskId(id)
+        repository.deleteById(id)
+        return "Task with id: $id has been deleted."
+    }
+
+    fun checkForTaskId(id: Long) {
         if (!repository.existsById(id)) {
             throw TaskNotFoundException("Task with ID: $id does not exist!")
         }
-        repository.deleteById(id)
-        return "Task with id: $id has been deleted."
     }
 }
