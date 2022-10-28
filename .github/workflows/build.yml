@@ -1,5 +1,5 @@
 name: CI
-on: [push]
+on: [ push ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,6 +10,6 @@ jobs:
         with:
           java-version: 18
           distribution: 'adopt'
-          cache: gradle
-      - name: Build with Gradle
-        run: ./gradlew build
+      - uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
