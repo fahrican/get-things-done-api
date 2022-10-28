@@ -2,6 +2,7 @@ package com.onecosys.get_things_done.service
 
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.entity.Task
+import com.onecosys.get_things_done.exception.BadRequestException
 import com.onecosys.get_things_done.model.Priority
 import com.onecosys.get_things_done.model.request.TaskRequest
 import com.onecosys.get_things_done.repository.TaskRepository
@@ -13,6 +14,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 
 internal class TaskServiceTest {
@@ -82,9 +84,39 @@ internal class TaskServiceTest {
     }
 
     @Test
+    fun `when task gets created with non unique description then check for bad request exception`() {
+        val taskRequest2 =
+            TaskRequest(2, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
+        val task2 = Task()
+        task2.description = taskRequest2.description
+        task2.isReminderSet = taskRequest2.isReminderSet
+        task2.isTaskOpen = taskRequest2.isTaskOpen
+        task2.createdOn = taskRequest2.createdOn
+        task2.startedOn = taskRequest2.startedOn
+        task2.finishedOn = taskRequest2.finishedOn
+        task2.timeTaken = taskRequest2.timeTaken
+
+        every { mockRepository.save(any()) } throws BadRequestException("There is already a task with description: ${task2.description}")
+
+        assertThrows<BadRequestException> {
+        objectUnderTest.createTask(taskRequest2)
+            objectUnderTest.createTask(
+                TaskRequest(4, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
+            )
+        }
+    }
+/*
+
+    @Test
     fun `when get task by id is called then expect a task with id 2`() {
+        val taskRequest =
+            TaskRequest(2, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
         val actualTask = Task()
-        every { mockRepository.findTaskById(2) } returns actualTask
+
+        every { mockRepository.save(any()) } returns actualTask
+        objectUnderTest.createTask(taskRequest)
+
+        every { mockRepository.findTaskById(any()) } returns actualTask
         val expectedTaskDto = objectUnderTest.getTaskById(2)
         assertThat(actualTask.id).isEqualTo(expectedTaskDto.id)
     }
@@ -100,6 +132,7 @@ internal class TaskServiceTest {
         val expectedDTo = objectUnderTest.updateTask(updateTaskRequest)
         assertThat(actualTask.createdOn).isEqualTo(expectedDTo.createdOn)
     }
+
     @Test
     fun `when update task is called with id and request model as arguments then expect actual and expected task created on field is equal`() {
         val actualTask = Task()
@@ -124,5 +157,6 @@ internal class TaskServiceTest {
         val expectedText = "Task with id: ${actualTask.id} has been deleted."
         assertThat(actualText).isEqualTo(expectedText)
     }
+*/
 
 }
