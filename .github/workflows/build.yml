@@ -8,6 +8,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: 8398a7/action-slack@v3
+            with:
+              status: ${{ job.status }}
+              fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+              text: 'CICD ongoing... :eyes:'
+            env:
+              SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       - uses: actions/checkout@v2
       - uses: gradle/wrapper-validation-action@v1
       - name: Set up JDK 18
@@ -30,3 +37,10 @@ jobs:
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: 8398a7/action-slack@v3
+          with:
+            status: ${{ job.status }}
+            fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+            text: ':white_check_mark: pushed fahrican/get-things-done-be:${{steps.build-number.outputs.BUILD_NUMBER}} to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done-be'
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
