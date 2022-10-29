@@ -55,7 +55,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: user/app:latest
+          tags: fahrican/get-things-done:latest
+          context: .
 
       - uses: 8398a7/action-slack@v3
         with:
