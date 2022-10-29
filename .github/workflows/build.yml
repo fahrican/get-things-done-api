@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3
         with:
           image: fahrican/get-things-done-be
           registry: docker.io
