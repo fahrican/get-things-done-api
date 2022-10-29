@@ -17,26 +17,45 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       - uses: actions/checkout@v2
       - uses: gradle/wrapper-validation-action@v1
+
       - name: Set up JDK 18
         uses: actions/setup-java@v2
         with:
           java-version: 18
           distribution: 'adopt'
           cache: gradle
+
       - name: Build with Gradle
         run: ./gradlew build
+
       - name: Archive test report
         uses: actions/upload-artifact@v2
         with:
           name: Test report
           path: build/reports/tests/test
-      - name: Build and Push Docker Image
-        uses: mr-smithers-excellent/docker-build-push@v4
+
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
-          image: fahrican/get-things-done-be
-          registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: my-docker-hub-namespace/my-docker-hub-repository
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
