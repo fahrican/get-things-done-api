@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Stop script on first error
-set -e
+set -ex -o pipefail
 
 IMAGE_NAME=fahrican/get-things-done
 IMAGE_TAG=latest
@@ -9,6 +9,9 @@ SERVER_PUBLIC_KEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDkS4uqIEcjoHNnI+7x/xVk6f
 
 echo "${SSH_KEY}" | base64 -d > ssh_key
 chmod 600 ssh_key # private keys need to have strict permission to be accepted by SSH agent
+
+# .ssh folder
+mkdir .ssh
 
 # Add production server to known hosts
 echo "${SERVER_PUBLIC_KEY}" | base64 -d >> ~/.ssh/known_hosts
