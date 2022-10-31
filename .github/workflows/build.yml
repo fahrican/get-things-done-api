@@ -46,3 +46,8 @@ jobs:
           text: ':white_check_mark: pushed fahrican/get-things-done:${{steps.build-number.outputs.BUILD_NUMBER}} to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      script: ./deploy.sh
