@@ -50,4 +50,5 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: .github/workflows/deploy.sh
+      - uses: actions/checkout@v3
+      - run: ./.github/workflows/deploy.sh
