@@ -49,4 +49,5 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    run: ./deploy.sh
+    steps:
+      run: ./deploy.sh
