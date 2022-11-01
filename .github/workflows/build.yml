@@ -8,10 +8,8 @@ on:
       - master
 
 env:
-  - name: SSH_KEY
-    value: ${{ secrets.SSH_KEY }}
-  - name: SERVER_PUBLIC_KEY
-    value: ${{ secrets.SERVER_PUBLIC_KEY }}
+  SSH_KEY: ${{ secrets.SSH_KEY }}
+  SERVER_PUBLIC_KEY: ${{ secrets.SERVER_PUBLIC_KEY }}
 
 jobs:
   build:
