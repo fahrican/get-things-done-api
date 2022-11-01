@@ -7,11 +7,11 @@ echo "$SSH_KEY" > ssh_key
 chmod 600 ssh_key # private keys need to have strict permission to be accepted by SSH agent
 
 # .ssh folder
-mkdir .ssh
-touch .ssh/known_hosts
+mkdir ~/.ssh
+touch ~/.ssh/known_hosts
 
 # Add production server to known hosts
-echo "$SERVER_PUBLIC_KEY" >> .ssh/known_hosts
+echo "$SERVER_PUBLIC_KEY" >> ~/.ssh/known_hosts
 
 echo "Deploying via remote SSH"
 ssh -i ssh_key "fahri@134.209.251.159" \
