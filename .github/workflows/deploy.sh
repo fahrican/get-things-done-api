@@ -8,6 +8,7 @@ chmod 600 ssh_key # private keys need to have strict permission to be accepted b
 
 # .ssh folder
 mkdir .ssh
+touch known_hosts
 
 # Add production server to known hosts
 echo "$SERVER_PUBLIC_KEY" >> ~/.ssh/known_hosts
