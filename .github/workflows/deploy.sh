@@ -6,7 +6,7 @@ set -ex -o pipefail
 IMAGE_NAME=fahrican/get-things-done
 IMAGE_TAG=latest
 
-echo "${SSH_KEY}" | base64 -d > ssh_key
+echo "${secrets.SSH_KEY}" | base64 -d > ssh_key
 chmod 600 ssh_key # private keys need to have strict permission to be accepted by SSH agent
 
 # .ssh folder
