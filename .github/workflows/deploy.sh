@@ -11,7 +11,7 @@ mkdir .ssh
 touch .ssh/known_hosts
 
 # Add production server to known hosts
-echo "$SERVER_PUBLIC_KEY" >> ~/.ssh/known_hosts
+echo "$SERVER_PUBLIC_KEY" >> .ssh/known_hosts
 
 echo "Deploying via remote SSH"
 ssh -i ssh_key "fahri@134.209.251.159" \
