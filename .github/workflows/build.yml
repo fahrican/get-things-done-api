@@ -64,7 +64,21 @@ jobs:
       - name: Label approved pull requests
         uses: abinoda/label-when-approved-action@1.0.5
         env:
-          APPROVALS: "1"
+          APPROVALS: "2"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ADD_LABEL: "approved"
           REMOVE_LABEL: "awaiting%20review"
+
+  deploy:
+    needs: labelWhenApproved
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: 'Digital Ocean deployment started... :grimacing: :crossed_fingers:'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - uses: actions/checkout@v3
+      - run: ./.github/workflows/deploy.sh
