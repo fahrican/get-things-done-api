@@ -1,11 +1,8 @@
 name: CI
 on:
-  push:
-    branches:
-      - master
-  pull_request:
+  pull_request_review:
     types:
-      - closed
+      - submitted
 
 env:
   SSH_KEY: ${{ secrets.SSH_KEY }}
