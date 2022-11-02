@@ -23,4 +23,4 @@ sshpass -p "$USER_PW" ssh -o StrictHostKeyChecking=no "fahri@134.209.251.159" \
   && docker run --init -d --name live-container -p 9091:9091 fahrican/get-things-done:latest \
   && docker system prune -af" # remove unused images to free up space
 
-echo "Successfully deployed, hooray!"
+echo "Successfully deployed, hoooooray!"
