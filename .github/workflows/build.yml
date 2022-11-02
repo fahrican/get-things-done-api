@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - master
+  pull_request_review:
+    branches:
+      - master
 
 env:
   SSH_KEY: ${{ secrets.SSH_KEY }}
@@ -52,3 +55,16 @@ jobs:
           text: ':white_check_mark: pushed fahrican/get-things-done:${{steps.build-number.outputs.BUILD_NUMBER}} to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  labelWhenApproved:
+    needs: build
+    name: Label when approved
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label approved pull requests
+        uses: abinoda/label-when-approved-action@1.0.5
+        env:
+          APPROVALS: "1"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ADD_LABEL: "approved"
+          REMOVE_LABEL: "awaiting%20review"
