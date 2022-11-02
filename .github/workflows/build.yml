@@ -56,21 +56,9 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  labelWhenApproved:
-    needs: build
-    name: Label when approved
-    runs-on: ubuntu-latest
-    steps:
-      - name: Label approved pull requests
-        uses: abinoda/label-when-approved-action@1.0.5
-        env:
-          APPROVALS: "2"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ADD_LABEL: "approved"
-          REMOVE_LABEL: "awaiting%20review"
-
   deploy:
-    needs: labelWhenApproved
+    needs: build
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: 8398a7/action-slack@v3
