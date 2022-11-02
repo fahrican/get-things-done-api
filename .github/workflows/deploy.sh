@@ -16,7 +16,7 @@ echo "$SERVER_PUBLIC_KEY" >> ~/.ssh/known_hosts
 
 echo "Deploying via remote SSH"
 
-sshpass -p "$USER_PW" ssh -o StrictHostKeyChecking=no -i ssh_key "fahri@134.209.251.159" \
+sshpass -p "$USER_PW" ssh -o StrictHostKeyChecking=no "fahri@134.209.251.159" \
   "docker pull fahrican/get-things-done:latest \
   && docker stop live-container \
   && docker rm live-container \
