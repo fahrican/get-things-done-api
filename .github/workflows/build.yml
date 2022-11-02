@@ -55,7 +55,7 @@ jobs:
 
   deploy:
     needs: build
-    if: ${{ github.event.pull_request.merged }}
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: 8398a7/action-slack@v3
