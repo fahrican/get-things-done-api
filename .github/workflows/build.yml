@@ -6,9 +6,6 @@ on:
   pull_request:
     branches:
       - master
-  pull_request_review:
-    branches:
-      - master
 
 env:
   SSH_KEY: ${{ secrets.SSH_KEY }}
@@ -58,7 +55,7 @@ jobs:
 
   deploy:
     needs: build
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: 8398a7/action-slack@v3
