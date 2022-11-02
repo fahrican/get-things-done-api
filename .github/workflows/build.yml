@@ -6,9 +6,8 @@ on:
   pull_request:
     branches:
       - master
-  pull_request_review:
-    branches:
-      - master
+    types:
+      - closed
 
 env:
   SSH_KEY: ${{ secrets.SSH_KEY }}
