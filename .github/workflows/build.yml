@@ -13,6 +13,7 @@ env:
   USER_PW: ${{ secrets.USER_PW }}
   DB_PW: ${{ secrets.DB_PW }}
   DB_URL: ${{ secrets.DB_URL }}
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
 
 jobs:
   build:

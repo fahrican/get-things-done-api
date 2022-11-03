@@ -9,10 +9,12 @@ server:
     include-stacktrace: on_param
   port: 9091
 spring:
+  config:
+    import: file:../../.github/workflows/build.yml
   datasource:
     password: ${DB_PW}
     url: ${DB_URL}
-    username: postgres
+    username: ${DB_USERNAME}
   jpa:
     database: postgresql
     hibernate:
