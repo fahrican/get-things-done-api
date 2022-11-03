@@ -20,7 +20,8 @@ sshpass -p "$USER_PW" ssh -o StrictHostKeyChecking=no "fahri@134.209.251.159" \
   "docker pull fahrican/get-things-done:latest \
   && docker stop get-things-done-be \
   && docker rm get-things-done-be \
-  && docker run --init -d --name get-things-done-be -p 9091:9091 fahrican/get-things-done:latest \
+  && docker rmi fahrican/get-things-done \
+  && docker run -d --name get-things-done-be -p 9091:9091 fahrican/get-things-done:latest \
   && docker system prune -af" # remove unused images to free up space
 
 echo "Successfully deployed, hoooooray!"
