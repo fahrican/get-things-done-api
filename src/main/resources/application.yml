@@ -1,0 +1,25 @@
+logging:
+  file:
+    name: app.log
+server:
+  address: 0.0.0.0
+  error:
+    include-binding-errors: always
+    include-message: always
+    include-stacktrace: on_param
+  port: ${{ secrets.SERVER_PORT }}
+spring:
+  datasource:
+    password: ${{ secrets.DB_PW }}
+    url: ${{ secrets.DB_URL }}
+    username: ${{ secrets.DB_USERNAME }}
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: true
