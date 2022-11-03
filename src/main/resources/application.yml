@@ -7,12 +7,12 @@ server:
     include-binding-errors: always
     include-message: always
     include-stacktrace: on_param
-  port: ${{ secrets.SERVER_PORT }}
+  port: ${ secrets.SERVER_PORT }
 spring:
   datasource:
-    password: ${{ secrets.DB_PW }}
-    url: ${{ secrets.DB_URL }}
-    username: ${{ secrets.DB_USERNAME }}
+    password: ${ secrets.DB_PW }
+    url: ${ secrets.DB_URL }
+    username: ${ secrets.DB_USERNAME }
   jpa:
     database: postgresql
     hibernate:
