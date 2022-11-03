@@ -10,8 +10,8 @@ server:
   port: 9091
 spring:
   datasource:
-    password: Supabase1002!
-    url: jdbc:postgresql://db.crczuqtlzwnhibqlwgxz.supabase.co:5432/postgres
+    password: ${DB_PW}
+    url: ${DB_URL}
     username: postgres
   jpa:
     database: postgresql

@@ -11,6 +11,8 @@ env:
   SSH_KEY: ${{ secrets.SSH_KEY }}
   SERVER_PUBLIC_KEY: ${{ secrets.SERVER_PUBLIC_KEY }}
   USER_PW: ${{ secrets.USER_PW }}
+  DB_PW: ${{ secrets.DB_PW }}
+  DB_URL: ${{ secrets.DB_URL }}
 
 jobs:
   build:
