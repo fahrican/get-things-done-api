@@ -213,8 +213,6 @@ gradle-app.setting
 .gradletasknamecache
 
 # project files
-application.properties
-application.yml
 application-dev.yml
 application-staging.yml
 
