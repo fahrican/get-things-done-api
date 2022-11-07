@@ -13,6 +13,7 @@ WORKDIR /app
 COPY --from=builder /build/build/libs/get_things_done-0.0.1-SNAPSHOT.jar get_things_done.jar
 
 USER app
-ENTRYPOINT ["java", "-jar", "-DSPRING_DATASOURCE_URL=${DATASOURCE_URL}", \
+ENTRYPOINT ["java", "-jar", "-DSERVER_PORT=${SERVER_PORT}", \
+                            "-DSPRING_DATASOURCE_URL=${DATASOURCE_URL}", \
                             "-DSPRING_DATASOURCE_USERNAME=${DATASOURCE_USERNAME}", \
                             "-DSPRING_DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}",   "get_things_done.jar"]
