@@ -11,7 +11,7 @@ env:
   SSH_KEY: ${{ secrets.SSH_KEY }}
   SERVER_PUBLIC_KEY: ${{ secrets.SERVER_PUBLIC_KEY }}
   USER_PW: ${{ secrets.USER_PW }}
-  $USER_PLUS_DROPLET: ${{ secrets.$USER_PLUS_DROPLET }}
+  USER_PLUS_DROPLET: ${{ secrets.USER_PLUS_DROPLET }}
   SERVER_PORT: ${{ secrets.SERVER_PORT }}
   DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
   DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
