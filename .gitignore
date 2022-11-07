@@ -213,7 +213,6 @@ gradle-app.setting
 .gradletasknamecache
 
 # project files
-application-dev.yml
 application-staging.yml
 
 # Eclipse Gradle plugin generated files

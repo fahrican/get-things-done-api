@@ -7,12 +7,12 @@ server:
     include-binding-errors: always
     include-message: always
     include-stacktrace: on_param
-  port: 9091
+  port: ${SERVER_PORT}
 spring:
   datasource:
-    password: Supabase1002!
-    url: jdbc:postgresql://db.crczuqtlzwnhibqlwgxz.supabase.co:5432/postgres
-    username: postgres
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    url: ${DATASOURCE_URL}
   jpa:
     database: postgresql
     hibernate:
