@@ -8,8 +8,6 @@ on:
       - master
 
 env:
-  SSH_KEY: ${{ secrets.SSH_KEY }}
-  SERVER_PUBLIC_KEY: ${{ secrets.SERVER_PUBLIC_KEY }}
   USER_PW: ${{ secrets.USER_PW }}
   USER_PLUS_DROPLET: ${{ secrets.USER_PLUS_DROPLET }}
   SERVER_PORT: ${{ secrets.SERVER_PORT }}
