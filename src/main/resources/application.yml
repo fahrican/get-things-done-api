@@ -10,11 +10,11 @@ server:
   port: ${SERVER_PORT:8080}
 spring:
   datasource:
-    username: ${DATASOURCE_USERNAME:#{sa}}
-    password: ${DATASOURCE_PASSWORD:#{''}}
-    url: ${DATASOURCE_URL:#{jdbc:h2:mem:testdb}}
+    username: ${DATASOURCE_USERNAME:sa}
+    password: ${DATASOURCE_PASSWORD:''}
+    url: ${DATASOURCE_URL:jdbc:h2:mem:testdb}
   jpa:
-    database: ${JPA_DATABASE:#{h2}}
+    database: ${JPA_DATABASE:h2}
     hibernate:
       ddl-auto: update
     properties:
