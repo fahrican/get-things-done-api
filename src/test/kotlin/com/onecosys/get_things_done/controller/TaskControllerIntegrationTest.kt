@@ -2,9 +2,9 @@ package com.onecosys.get_things_done.controller
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.entity.Task
 import com.onecosys.get_things_done.model.Priority
+import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.request.TaskRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.junit.jupiter.api.AfterEach
@@ -15,10 +15,8 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
@@ -60,7 +58,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     @AfterEach
     fun tearDown() {
     }
-/*
+
     @Test
     fun `given all tasks when fetch happen then check for size`() {
         val taskDto2 = TaskDto(
@@ -268,5 +266,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 .contentType(MediaType.APPLICATION_JSON).param("id", "33")
         ).andExpect(MockMvcResultMatchers.status().`is`(200))
             .andExpect(content().string(expectedMessage))
-    }*/
+    }
+
 }
