@@ -60,7 +60,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     @AfterEach
     fun tearDown() {
     }
-/*
+
     @Test
     fun `given all tasks when fetch happen then check for size`() {
         val taskDto2 = TaskDto(
@@ -268,5 +268,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 .contentType(MediaType.APPLICATION_JSON).param("id", "33")
         ).andExpect(MockMvcResultMatchers.status().`is`(200))
             .andExpect(content().string(expectedMessage))
-    }*/
+    }
+
 }
