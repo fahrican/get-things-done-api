@@ -37,6 +37,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     private val mapper = jacksonObjectMapper()
 
+    private val taskId: Long = 33
     private val dummyDto1 = TaskDto(
         33,
         "test1",
@@ -195,22 +196,20 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given id for delete request when delete task is performed then check for the message`() {
-        val id = 33L
-        val expectedMessage = "Task with id: $id has been deleted."
+        val expectedMessage = "Task with id: $taskId has been deleted."
 
-        `when`(mockService.deleteTask(id)).thenReturn(expectedMessage)
+        `when`(mockService.deleteTask(taskId)).thenReturn(expectedMessage)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.delete("/api/delete/${id}")
+            MockMvcRequestBuilders.delete("/api/delete/${taskId}")
         ).andExpect(MockMvcResultMatchers.status().`is`(200)).andExpect(content().string(expectedMessage))
     }
 
     @Test
     fun `given id for delete request when delete task is performed then check for the message1`() {
-        val id: Long = 33
-        val expectedMessage = "Task with id: $id has been deleted."
+        val expectedMessage = "Task with id: $taskId has been deleted."
 
-        `when`(mockService.deleteTask(id)).thenReturn(expectedMessage)
+        `when`(mockService.deleteTask(taskId)).thenReturn(expectedMessage)
 
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/api/delete").contentType(MediaType.APPLICATION_JSON).param("id", "33")
