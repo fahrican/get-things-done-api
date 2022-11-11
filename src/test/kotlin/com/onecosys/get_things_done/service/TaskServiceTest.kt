@@ -2,6 +2,7 @@ package com.onecosys.get_things_done.service
 
 import com.onecosys.get_things_done.entity.Task
 import com.onecosys.get_things_done.exception.BadRequestException
+import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.model.Priority
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.request.TaskRequest
@@ -99,21 +100,33 @@ internal class TaskServiceTest {
 
         assertThat(exception.message).isEqualTo("There is already a task with description: feed the cat")
     }
-/*
+
+    @Test
+    fun `when get task by id is called then expect a specific description`() {
+        val task = Task()
+        task.description = "getTaskById"
+        every { mockRepository.existsById(any()) } returns true
+        every { mockRepository.findTaskById(any()) } returns task
+        val taskId: Long = 1234
+
+        val taskDto = objectUnderTest.getTaskById(taskId)
+
+        assertThat(taskDto.description).isEqualTo("getTaskById")
+    }
 
     @Test
     fun `when get task by id is called then expect a task with id 2`() {
-        val taskRequest =
-            TaskRequest(2, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
-        val actualTask = Task()
+        every { mockRepository.existsById(any()) } returns false
 
-        every { mockRepository.save(any()) } returns actualTask
-        objectUnderTest.createTask(taskRequest)
 
-        every { mockRepository.findTaskById(any()) } returns actualTask
-        val expectedTaskDto = objectUnderTest.getTaskById(2)
-        assertThat(actualTask.id).isEqualTo(expectedTaskDto.id)
+        val exception = assertThrows<TaskNotFoundException> {
+            objectUnderTest.getTaskById(123)
+        }
+
+        assertThat(exception.message).isEqualTo("Task with ID: 123 does not exist!")
     }
+
+    /*
 
     @Test
     fun `when update task is called with one argument then expect actual and expected task created on field is equal`() {
