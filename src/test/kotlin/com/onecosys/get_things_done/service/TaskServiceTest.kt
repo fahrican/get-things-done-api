@@ -1,22 +1,25 @@
 package com.onecosys.get_things_done.service
 
-import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.entity.Task
 import com.onecosys.get_things_done.exception.BadRequestException
 import com.onecosys.get_things_done.model.Priority
+import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.request.TaskRequest
 import com.onecosys.get_things_done.repository.TaskRepository
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import java.time.LocalDateTime
 
+@ExtendWith(MockKExtension::class)
 internal class TaskServiceTest {
 
     @RelaxedMockK
@@ -85,25 +88,16 @@ internal class TaskServiceTest {
 
     @Test
     fun `when task gets created with non unique description then check for bad request exception`() {
-        val taskRequest2 =
-            TaskRequest(2, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
-        val task2 = Task()
-        task2.description = taskRequest2.description
-        task2.isReminderSet = taskRequest2.isReminderSet
-        task2.isTaskOpen = taskRequest2.isTaskOpen
-        task2.createdOn = taskRequest2.createdOn
-        task2.startedOn = taskRequest2.startedOn
-        task2.finishedOn = taskRequest2.finishedOn
-        task2.timeTaken = taskRequest2.timeTaken
+        val taskRequest =
+            TaskRequest(4, "feed the cat", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
 
-        every { mockRepository.save(any()) } throws BadRequestException("There is already a task with description: ${task2.description}")
+        every { mockRepository.doesDescriptionExist(any()) } returns true
 
-        assertThrows<BadRequestException> {
-        objectUnderTest.createTask(taskRequest2)
-            objectUnderTest.createTask(
-                TaskRequest(4, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
-            )
+        val exception = assertThrows<BadRequestException> {
+            objectUnderTest.createTask(taskRequest)
         }
+
+        assertThat(exception.message).isEqualTo("There is already a task with description: feed the cat")
     }
 /*
 
