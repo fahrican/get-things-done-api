@@ -123,6 +123,17 @@ internal class TaskServiceTest {
         assertThat(exception.message).isEqualTo("Task with ID: 123 does not exist!")
     }
 
+    @Test
+    fun `when delete task by id is called then check for return message`() {
+        val taskId: Long = 1234
+
+        every { mockRepository.existsById(any()) } returns true
+
+        val deleteTaskMsg: String = objectUnderTest.deleteTask(taskId)
+
+        assertThat(deleteTaskMsg).isEqualTo("Task with id: $taskId has been deleted.")
+    }
+
     /*
 
     @Test
@@ -148,18 +159,6 @@ internal class TaskServiceTest {
             TaskRequest(id, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
         val expectedDTo = objectUnderTest.updateTask(id, updateTaskRequest)
         assertThat(actualTask.createdOn).isEqualTo(expectedDTo.createdOn)
-    }
-
-    @Test
-    fun `when delete task by id is called then check for return message`() {
-        val actualTask = Task()
-        every { mockRepository.save(any()) } returns actualTask
-
-        mockRepository.save(actualTask)
-
-        val actualText: String = objectUnderTest.deleteTask(actualTask.id)
-        val expectedText = "Task with id: ${actualTask.id} has been deleted."
-        assertThat(actualText).isEqualTo(expectedText)
     }
 */
 
