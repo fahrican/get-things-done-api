@@ -12,7 +12,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -170,21 +169,4 @@ internal class TaskServiceTest {
 
         assertThat(exception.message).isEqualTo("Update task failed!")
     }
-
-    /*
-
-    @Test
-    fun `when update task is called with id and request model as arguments then expect actual and expected task created on field is equal`() {
-        val actualTask = Task()
-        every { mockRepository.findTaskById(2) } returns actualTask
-        every { mockRepository.save(any()) } returns actualTask
-
-        val id = 222L
-        val updateTaskRequest =
-            TaskRequest(id, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
-        val expectedDTo = objectUnderTest.updateTask(id, updateTaskRequest)
-        assertThat(actualTask.createdOn).isEqualTo(expectedDTo.createdOn)
-    }
-*/
-
 }
