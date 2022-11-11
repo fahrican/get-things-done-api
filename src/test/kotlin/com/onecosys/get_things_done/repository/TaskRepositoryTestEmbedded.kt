@@ -2,9 +2,12 @@ package com.onecosys.get_things_done.repository
 
 import com.onecosys.get_things_done.entity.Task
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.AssertionsForClassTypes
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.jdbc.Sql
 
@@ -63,8 +66,9 @@ internal class TaskRepositoryTestEmbedded {
         assertThat(tasks.size).isEqualTo(numberOfClosedTasksInTestDataSql)
     }
 
-/*
+
     @Test
+    @Disabled
     fun `when task is saved then check if description is not null and unique`() {
         // GIVEN
         val task1 = Task()
@@ -83,5 +87,5 @@ internal class TaskRepositoryTestEmbedded {
 
         //assertThat(objectUnderTest.findTaskById(1L).description).isEqualTo(objectUnderTest.findTaskById(2L).description)
     }
-*/
+
 }
