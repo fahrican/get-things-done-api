@@ -12,6 +12,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -135,17 +136,22 @@ internal class TaskServiceTest {
     }
 
     @Test
-    fun `when update task is called with task request argument then expect actual and expected task created on field is equal`() {
+    fun `when update task is called with task request argument then expect specific description fpr actual task`() {
         val task = Task()
+        task.description = "test task"
         val taskRequest =
-            TaskRequest(task.id, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
-        task.description = taskRequest.description
-        task.isReminderSet = taskRequest.isReminderSet
-        task.isTaskOpen = taskRequest.isTaskOpen
-        task.createdOn = taskRequest.createdOn
-        task.startedOn = taskRequest.startedOn
-        task.finishedOn = taskRequest.finishedOn
-        task.timeTaken = taskRequest.timeTaken
+            TaskRequest(
+                task.id,
+                task.description,
+                false,
+                false,
+                LocalDateTime.now(),
+                null,
+                null,
+                "0d",
+                0,
+                Priority.LOW
+            )
 
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskById(any()) } returns task
@@ -153,7 +159,16 @@ internal class TaskServiceTest {
 
         val actualTask = objectUnderTest.updateTask(taskRequest)
 
-        assertThat(actualTask.description).isEqualTo(taskRequest.description)
+        assertThat(actualTask.description).isEqualTo("test task")
+    }
+
+    @Test
+    fun `when update task is called with task request argument then expect bad request exception`() {
+        val taskRequest: TaskRequest? = null
+
+        val exception = assertThrows<BadRequestException> { objectUnderTest.updateTask(taskRequest) }
+
+        assertThat(exception.message).isEqualTo("Update task failed!")
     }
 
     /*
