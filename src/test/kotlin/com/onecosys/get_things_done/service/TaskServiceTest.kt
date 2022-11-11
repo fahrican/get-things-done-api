@@ -29,6 +29,8 @@ internal class TaskServiceTest {
     @InjectMockKs
     private lateinit var objectUnderTest: TaskService
 
+    private val task = Task()
+
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
@@ -50,8 +52,8 @@ internal class TaskServiceTest {
 
     @Test
     fun `when open tasks get fetched then check if the first property has true for isTaskOpen`() {
-        val task1 = Task().apply { isTaskOpen = true }
-        val expectedTasks = listOf(task1)
+        task.isTaskOpen = true
+        val expectedTasks = listOf(task)
         every { mockRepository.queryAllOpenTasks() } returns expectedTasks.toMutableList()
 
         val actualList: List<TaskDto> = objectUnderTest.getAllOpenTasks()
@@ -60,8 +62,8 @@ internal class TaskServiceTest {
 
     @Test
     fun `when open tasks get fetched then check if the first property has false for isTaskOpen`() {
-        val task1 = Task().apply { isTaskOpen = false }
-        val expectedTasks = listOf(task1)
+        task.isTaskOpen = false
+        val expectedTasks = listOf(task)
         every { mockRepository.queryAllClosedTasks() } returns expectedTasks.toMutableList()
 
         val actualList: List<TaskDto> = objectUnderTest.getAllClosedTasks()
@@ -72,7 +74,6 @@ internal class TaskServiceTest {
     fun `when task gets created then check if it gets properly created`() {
         val taskRequest =
             TaskRequest(0, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
-        val task = Task()
         task.description = taskRequest.description
         task.isReminderSet = taskRequest.isReminderSet
         task.isTaskOpen = taskRequest.isTaskOpen
@@ -103,7 +104,6 @@ internal class TaskServiceTest {
 
     @Test
     fun `when get task by id is called then expect a specific description`() {
-        val task = Task()
         task.description = "getTaskById"
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskById(any()) } returns task
@@ -136,7 +136,6 @@ internal class TaskServiceTest {
 
     @Test
     fun `when update task is called with task request argument then expect specific description fpr actual task`() {
-        val task = Task()
         task.description = "test task"
         val taskRequest =
             TaskRequest(
