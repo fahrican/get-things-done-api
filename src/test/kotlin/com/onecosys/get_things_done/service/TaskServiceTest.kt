@@ -30,6 +30,7 @@ internal class TaskServiceTest {
     private lateinit var objectUnderTest: TaskService
 
     private val task = Task()
+    private lateinit var taskRequest: TaskRequest
 
     @BeforeEach
     fun setUp() {
@@ -72,8 +73,18 @@ internal class TaskServiceTest {
 
     @Test
     fun `when task gets created then check if it gets properly created`() {
-        val taskRequest =
-            TaskRequest(0, "test task", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
+        taskRequest = TaskRequest(
+            0,
+            "test task",
+            false,
+            false,
+            LocalDateTime.now(),
+            null,
+            null,
+            "0d",
+            0,
+            Priority.LOW
+        )
         task.description = taskRequest.description
         task.isReminderSet = taskRequest.isReminderSet
         task.isTaskOpen = taskRequest.isTaskOpen
@@ -91,7 +102,17 @@ internal class TaskServiceTest {
     @Test
     fun `when task gets created with non unique description then check for bad request exception`() {
         val taskRequest =
-            TaskRequest(4, "feed the cat", false, false, LocalDateTime.now(), null, null, "0d", 0, Priority.LOW)
+            TaskRequest(
+                4,
+                "feed the cat",
+                false,
+                false, LocalDateTime.now(),
+                null,
+                null,
+                "0d",
+                0,
+                Priority.LOW
+            )
 
         every { mockRepository.doesDescriptionExist(any()) } returns true
 
