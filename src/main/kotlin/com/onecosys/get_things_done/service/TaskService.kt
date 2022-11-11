@@ -84,18 +84,6 @@ class TaskService(private val repository: TaskRepository) {
         throw BadRequestException("Update task failed!")
     }
 
-    fun updateTask(id: Long, taskRequest: TaskRequest?): TaskDto {
-        checkForTaskId(id)
-        val task: Task = repository.findTaskById(id)
-        taskRequest?.let { tr ->
-            if (tr.description.isNotEmpty()) {
-                assignValuesToEntity(task, tr)
-            }
-        }
-        val savedTask: Task = repository.save(task)
-        return convertEntityToDto(savedTask)
-    }
-
     fun deleteTask(id: Long): String {
         checkForTaskId(id)
         repository.deleteById(id)
