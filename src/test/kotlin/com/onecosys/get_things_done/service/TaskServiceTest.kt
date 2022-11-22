@@ -34,6 +34,18 @@ internal class TaskServiceTest {
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
+        taskRequest = TaskRequest(
+            0,
+            "test task",
+            false,
+            false,
+            LocalDateTime.now(),
+            null,
+            null,
+            "0d",
+            0,
+            Priority.LOW
+        )
     }
 
     @Test
@@ -67,18 +79,6 @@ internal class TaskServiceTest {
 
     @Test
     fun `when task gets created then check if it gets properly created`() {
-        taskRequest = TaskRequest(
-            0,
-            "test task",
-            false,
-            false,
-            LocalDateTime.now(),
-            null,
-            null,
-            "0d",
-            0,
-            Priority.LOW
-        )
         task.description = taskRequest.description
         task.isReminderSet = taskRequest.isReminderSet
         task.isTaskOpen = taskRequest.isTaskOpen
@@ -95,26 +95,36 @@ internal class TaskServiceTest {
 
     @Test
     fun `when task gets created with non unique description then check for bad request exception`() {
-        val taskRequest =
-            TaskRequest(
-                4,
-                "feed the cat",
-                false,
-                false, LocalDateTime.now(),
-                null,
-                null,
-                "0d",
-                0,
-                Priority.LOW
-            )
-
         every { mockRepository.doesDescriptionExist(any()) } returns true
 
         val exception = assertThrows<BadRequestException> {
             objectUnderTest.createTask(taskRequest)
         }
 
-        assertThat(exception.message).isEqualTo("There is already a task with description: feed the cat")
+        assertThat(exception.message).isEqualTo("There is already a task with description: test task")
+    }
+
+    @Test
+    fun `when save task is called then check if argument could be captured`() {
+        // GIVEN
+        val taskSlot = slot<Task>()
+
+        task.description = taskRequest.description
+        task.isReminderSet = taskRequest.isReminderSet
+        task.isTaskOpen = taskRequest.isTaskOpen
+        task.createdOn = taskRequest.createdOn
+        task.startedOn = taskRequest.startedOn
+        task.finishedOn = taskRequest.finishedOn
+        task.timeTaken = taskRequest.timeTaken
+
+        // WHEN
+        every { mockRepository.save(capture(taskSlot)) } returns task
+        val actualTask: Task = objectUnderTest.createTask(taskRequest)
+
+        // THEN
+        assertThat(taskSlot.captured.id).isEqualTo(actualTask.id)
+        assertThat(taskSlot.captured.description).isEqualTo(actualTask.description)
+        assertThat(taskSlot.captured.priority).isEqualTo(actualTask.priority)
     }
 
     @Test
@@ -182,40 +192,5 @@ internal class TaskServiceTest {
         val exception = assertThrows<BadRequestException> { objectUnderTest.updateTask(taskRequest) }
 
         assertThat(exception.message).isEqualTo("Update task failed!")
-    }
-
-    @Test
-    fun `when save task is called then check if argument could be captured`() {
-        // GIVEN
-        val taskSlot = slot<Task>()
-
-        taskRequest = TaskRequest(
-            5,
-            "test argument captor",
-            false,
-            false,
-            LocalDateTime.now(),
-            null,
-            null,
-            "0d",
-            0,
-            Priority.LOW
-        )
-        task.description = taskRequest.description
-        task.isReminderSet = taskRequest.isReminderSet
-        task.isTaskOpen = taskRequest.isTaskOpen
-        task.createdOn = taskRequest.createdOn
-        task.startedOn = taskRequest.startedOn
-        task.finishedOn = taskRequest.finishedOn
-        task.timeTaken = taskRequest.timeTaken
-
-        // WHEN
-        every { mockRepository.save(capture(taskSlot)) } returns task
-        val actualTask: Task = objectUnderTest.createTask(taskRequest)
-
-        // THEN
-        assertThat(taskSlot.captured.id).isEqualTo(actualTask.id)
-        assertThat(taskSlot.captured.description).isEqualTo(actualTask.description)
-        assertThat(taskSlot.captured.priority).isEqualTo(actualTask.priority)
     }
 }
