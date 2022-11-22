@@ -102,6 +102,8 @@ internal class TaskServiceTest {
         }
 
         assertThat(exception.message).isEqualTo("There is already a task with description: test task")
+
+        verify { mockRepository.save(any()) wasNot called }
     }
 
     @Test
