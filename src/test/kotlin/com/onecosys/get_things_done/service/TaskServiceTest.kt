@@ -122,6 +122,8 @@ internal class TaskServiceTest {
         val actualTask: Task = objectUnderTest.createTask(taskRequest)
 
         // THEN
+        verify { mockRepository.save(capture(taskSlot)) }
+
         assertThat(taskSlot.captured.id).isEqualTo(actualTask.id)
         assertThat(taskSlot.captured.description).isEqualTo(actualTask.description)
         assertThat(taskSlot.captured.priority).isEqualTo(actualTask.priority)
