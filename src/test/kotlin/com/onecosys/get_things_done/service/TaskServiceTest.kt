@@ -7,16 +7,19 @@ import com.onecosys.get_things_done.model.Priority
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.request.TaskRequest
 import com.onecosys.get_things_done.repository.TaskRepository
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import java.time.LocalDateTime
 
+
+@ExtendWith(MockKExtension::class)
 internal class TaskServiceTest {
 
     @RelaxedMockK
@@ -179,5 +182,37 @@ internal class TaskServiceTest {
         val exception = assertThrows<BadRequestException> { objectUnderTest.updateTask(taskRequest) }
 
         assertThat(exception.message).isEqualTo("Update task failed!")
+    }
+
+    @Test
+    fun `can add task`() {
+        taskRequest = TaskRequest(
+            0,
+            "test task",
+            false,
+            false,
+            LocalDateTime.now(),
+            null,
+            null,
+            "0d",
+            0,
+            Priority.LOW
+        )
+        task.description = taskRequest.description
+        task.isReminderSet = taskRequest.isReminderSet
+        task.isTaskOpen = taskRequest.isTaskOpen
+        task.createdOn = taskRequest.createdOn
+        task.startedOn = taskRequest.startedOn
+        task.finishedOn = taskRequest.finishedOn
+        task.timeTaken = taskRequest.timeTaken
+
+        val taskSlot = slot<Task>()
+
+        every { mockRepository.save(capture(taskSlot)) } returns task
+
+        val actualTask: Task = objectUnderTest.createTask(taskRequest)
+
+
+        assertThat(taskSlot.captured.description).isEqualTo(task.description)
     }
 }
