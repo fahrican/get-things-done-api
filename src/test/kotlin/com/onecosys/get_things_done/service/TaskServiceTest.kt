@@ -145,6 +145,8 @@ internal class TaskServiceTest {
         val exception = assertThrows<TaskNotFoundException> { objectUnderTest.getTaskById(123) }
 
         assertThat(exception.message).isEqualTo("Task with ID: 123 does not exist!")
+
+        verify { mockRepository.findTaskById(any()) wasNot called }
     }
 
     @Test
