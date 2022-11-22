@@ -150,6 +150,19 @@ internal class TaskServiceTest {
     }
 
     @Test
+    fun `when find task by id is called then check if argument could be captured`() {
+        val taskIdSlot = slot<Long>()
+
+        every { mockRepository.existsById(any()) } returns true
+        every { mockRepository.findTaskById(capture(taskIdSlot)) } returns task
+        objectUnderTest.getTaskById(2345)
+
+
+        verify { mockRepository.findTaskById(capture(taskIdSlot)) }
+        assertThat(taskIdSlot.captured).isEqualTo(2345)
+    }
+
+    @Test
     fun `when delete task by id is called then check for return message`() {
         val taskId: Long = 1234
 
