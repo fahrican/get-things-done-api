@@ -109,7 +109,6 @@ internal class TaskServiceTest {
     @Test
     fun `when save task is called then check if argument could be captured`() {
         val taskSlot = slot<Task>()
-
         task.description = taskRequest.description
         task.isReminderSet = taskRequest.isReminderSet
         task.isTaskOpen = taskRequest.isTaskOpen
