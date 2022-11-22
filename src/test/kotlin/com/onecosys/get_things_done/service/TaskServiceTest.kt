@@ -185,10 +185,13 @@ internal class TaskServiceTest {
     }
 
     @Test
-    fun `can add task`() {
+    fun `when save task is called then check if argument could be captured`() {
+        // GIVEN
+        val taskSlot = slot<Task>()
+
         taskRequest = TaskRequest(
-            0,
-            "test task",
+            5,
+            "test argument captor",
             false,
             false,
             LocalDateTime.now(),
@@ -206,13 +209,13 @@ internal class TaskServiceTest {
         task.finishedOn = taskRequest.finishedOn
         task.timeTaken = taskRequest.timeTaken
 
-        val taskSlot = slot<Task>()
-
+        // WHEN
         every { mockRepository.save(capture(taskSlot)) } returns task
-
         val actualTask: Task = objectUnderTest.createTask(taskRequest)
 
-
-        assertThat(taskSlot.captured.description).isEqualTo(task.description)
+        // THEN
+        assertThat(taskSlot.captured.id).isEqualTo(actualTask.id)
+        assertThat(taskSlot.captured.description).isEqualTo(actualTask.description)
+        assertThat(taskSlot.captured.priority).isEqualTo(actualTask.priority)
     }
 }
