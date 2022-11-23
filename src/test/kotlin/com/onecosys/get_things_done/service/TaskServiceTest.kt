@@ -167,6 +167,19 @@ internal class TaskServiceTest {
         assertThat(deleteTaskMsg).isEqualTo("Task with id: $taskId has been deleted.")
     }
 
+
+    @Test
+    fun `when delete by task id is called then check if argument could be captured`() {
+        val taskIdSlot = slot<Long>()
+
+        every { mockRepository.existsById(any()) } returns true
+        every { mockRepository.deleteById(capture(taskIdSlot)) } returns Unit
+        objectUnderTest.deleteTask(234)
+
+        verify { mockRepository.deleteById(capture(taskIdSlot)) }
+        assertThat(taskIdSlot.captured).isEqualTo(234)
+    }
+
     @Test
     fun `when update task is called with task request argument then expect specific description fpr actual task`() {
         task.description = "test task"
