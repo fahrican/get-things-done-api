@@ -206,5 +206,7 @@ internal class TaskServiceTest {
         val exception = assertThrows<BadRequestException> { objectUnderTest.updateTask(taskRequest) }
 
         assertThat(exception.message).isEqualTo("Update task failed!")
+
+        verify { mockRepository.save(any()) wasNot called }
     }
 }
