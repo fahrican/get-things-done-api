@@ -52,8 +52,8 @@ internal class TaskServiceTest {
     fun `when all tasks get fetched then check if the given size is correct`() {
         val expectedTasks = listOf(Task(), Task())
         every { mockRepository.findAll() } returns expectedTasks.toMutableList()
-
         val actualList: List<TaskDto> = objectUnderTest.getAllTasks()
+
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
     }
 
@@ -62,8 +62,8 @@ internal class TaskServiceTest {
         task.isTaskOpen = true
         val expectedTasks = listOf(task)
         every { mockRepository.queryAllOpenTasks() } returns expectedTasks.toMutableList()
-
         val actualList: List<TaskDto> = objectUnderTest.getAllOpenTasks()
+
         assertThat(actualList[0].isTaskOpen).isEqualTo(true)
     }
 
@@ -72,8 +72,8 @@ internal class TaskServiceTest {
         task.isTaskOpen = false
         val expectedTasks = listOf(task)
         every { mockRepository.queryAllClosedTasks() } returns expectedTasks.toMutableList()
-
         val actualList: List<TaskDto> = objectUnderTest.getAllClosedTasks()
+
         assertThat(actualList[0].isTaskOpen).isEqualTo(false)
     }
 
@@ -102,7 +102,6 @@ internal class TaskServiceTest {
         }
 
         assertThat(exception.message).isEqualTo("There is already a task with description: test task")
-
         verify { mockRepository.save(any()) wasNot called }
     }
 
@@ -131,9 +130,7 @@ internal class TaskServiceTest {
         task.description = "getTaskById"
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskById(any()) } returns task
-        val taskId: Long = 1234
-
-        val taskDto = objectUnderTest.getTaskById(taskId)
+        val taskDto = objectUnderTest.getTaskById(1234)
 
         assertThat(taskDto.description).isEqualTo("getTaskById")
     }
@@ -145,7 +142,6 @@ internal class TaskServiceTest {
         val exception = assertThrows<TaskNotFoundException> { objectUnderTest.getTaskById(123) }
 
         assertThat(exception.message).isEqualTo("Task with ID: 123 does not exist!")
-
         verify { mockRepository.findTaskById(any()) wasNot called }
     }
 
@@ -157,7 +153,6 @@ internal class TaskServiceTest {
         every { mockRepository.findTaskById(capture(taskIdSlot)) } returns task
         objectUnderTest.getTaskById(2345)
 
-
         verify { mockRepository.findTaskById(capture(taskIdSlot)) }
         assertThat(taskIdSlot.captured).isEqualTo(2345)
     }
@@ -167,7 +162,6 @@ internal class TaskServiceTest {
         val taskId: Long = 1234
 
         every { mockRepository.existsById(any()) } returns true
-
         val deleteTaskMsg: String = objectUnderTest.deleteTask(taskId)
 
         assertThat(deleteTaskMsg).isEqualTo("Task with id: $taskId has been deleted.")
@@ -193,7 +187,6 @@ internal class TaskServiceTest {
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskById(any()) } returns task
         every { mockRepository.save(any()) } returns task
-
         val actualTask = objectUnderTest.updateTask(taskRequest)
 
         assertThat(actualTask.description).isEqualTo("test task")
@@ -206,7 +199,6 @@ internal class TaskServiceTest {
         val exception = assertThrows<BadRequestException> { objectUnderTest.updateTask(taskRequest) }
 
         assertThat(exception.message).isEqualTo("Update task failed!")
-
         verify { mockRepository.save(any()) wasNot called }
     }
 }
