@@ -37,14 +37,14 @@ internal class TaskServiceTest {
         taskRequest = TaskRequest(
             0,
             "test task",
-            false,
-            false,
-            LocalDateTime.now(),
-            null,
-            null,
-            "0d",
-            0,
-            Priority.LOW
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "0d",
+            timeTaken = 0,
+            priority = Priority.LOW
         )
     }
 
@@ -187,14 +187,14 @@ internal class TaskServiceTest {
             TaskRequest(
                 task.id,
                 task.description,
-                false,
-                false,
-                LocalDateTime.now(),
-                null,
-                null,
-                "0d",
-                0,
-                Priority.LOW
+                isReminderSet = false,
+                isTaskOpen = false,
+                createdOn = LocalDateTime.now(),
+                startedOn = null,
+                finishedOn = null,
+                timeInterval = "0d",
+                timeTaken = 0,
+                priority = Priority.LOW
             )
 
         every { mockRepository.existsById(any()) } returns true
