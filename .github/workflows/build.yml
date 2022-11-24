@@ -25,7 +25,7 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'CICD ongoing... :eyes:'
+          text: 'CI/CD ongoing... :eyes: بسم الله الرحمن الرحيم'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       - uses: actions/checkout@v3
