@@ -5,11 +5,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.jdbc.Sql
 
 @DataJpaTest(properties = ["spring.jpa.properties.javax.persistence.validation.mode=none"])
-@ActiveProfiles("test")
 internal class TaskRepositoryTestEmbedded {
 
     @Autowired
@@ -19,13 +17,6 @@ internal class TaskRepositoryTestEmbedded {
     private val numberOfClosedTasksInTestDataSql = 2
     private val numberOfOpenTasksInTestDataSql = 1
 
-
-    @Test
-    fun `when task is saved then check if it is properly saved`() {
-        val task = Task()
-        val savedTask: Task = objectUnderTest.save(task)
-        assertThat(savedTask).usingRecursiveComparison().ignoringFields("id").isEqualTo(task)
-    }
 
     @Test
     @Sql("classpath:test-data.sql")
@@ -63,25 +54,22 @@ internal class TaskRepositoryTestEmbedded {
         assertThat(tasks.size).isEqualTo(numberOfClosedTasksInTestDataSql)
     }
 
-/*
     @Test
-    fun `when task is saved then check if description is not null and unique`() {
-        // GIVEN
-        val task1 = Task()
-        task1.description = "test"
-        val task2 = Task()
-        task2.description = "test"
-        objectUnderTest.save(task1)
-        //objectUnderTest.save(task2)
+    @Sql("classpath:test-data.sql")
+    fun `when task created check then check if descriptions already exists`() {
+        val task = Task()
+        task.description = "test todo"
+        val isDescriptionAlreadyGiven = objectUnderTest.doesDescriptionExist(task.description)
 
-        // WHEN
-        // THEN
-        AssertionsForClassTypes.assertThatThrownBy { objectUnderTest.save(task2) }
-            .hasMessageContaining("could not execute statement; SQL [n/a]; constraint [\"PUBLIC.UK_NUXJDIQ9O90T2L66B8NYURQ4T_INDEX_2 ON PUBLIC.TASK(DESCRIPTION NULLS FIRST) VALUES ( /* 1 */ 'test' )\"; SQL statement:")
-            .isInstanceOf(DataIntegrityViolationException::class.java)
-
-
-        //assertThat(objectUnderTest.findTaskById(1L).description).isEqualTo(objectUnderTest.findTaskById(2L).description)
+        assertThat(isDescriptionAlreadyGiven).isTrue
     }
-*/
+
+    @Test
+    @Sql("classpath:test-data.sql")
+    fun `when task created check then check if descriptions does not exists`() {
+        val description = "feed the cat"
+        val isDescriptionAvailable = objectUnderTest.doesDescriptionExist(description)
+
+        assertThat(!isDescriptionAvailable).isTrue
+    }
 }

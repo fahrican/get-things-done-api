@@ -16,5 +16,6 @@ USER app
 ENTRYPOINT ["java", "-jar", "-DSERVER_PORT=${SERVER_PORT}", \
                             "-DSPRING_JPA_DATABASE=${JPA_DATABASE}", \
                             "-DSPRING_DATASOURCE_URL=${DATASOURCE_URL}", \
+                            "-DSPRING_DATASOURCE_DRIVER_CLASS_NAME=${DATASOURCE_DRIVER_CLASS_NAME}", \
                             "-DSPRING_DATASOURCE_USERNAME=${DATASOURCE_USERNAME}", \
                             "-DSPRING_DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}",   "get_things_done.jar"]
