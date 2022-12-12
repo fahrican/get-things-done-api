@@ -28,8 +28,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
-    implementation("org.hibernate:hibernate-core:5.6.12.Final")
-    implementation("org.hibernate:hibernate-entitymanager:5.6.12.Final")
+    // hibernate-core & hibernate-entitymanager needs to be same version
+    implementation("org.hibernate:hibernate-core:5.6.14.Final")
+    implementation("org.hibernate:hibernate-entitymanager:5.6.14.Final")
 
 
     // test stuff
