@@ -27,7 +27,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
     implementation("org.hibernate:hibernate-core:5.6.12.Final")
     implementation("org.hibernate:hibernate-entitymanager:5.6.12.Final")
 
@@ -37,8 +37,8 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     testImplementation("org.assertj:assertj-core:3.23.1")
     testImplementation("io.mockk:mockk:1.13.2")
-    testImplementation("org.testcontainers:testcontainers:1.17.4")
-    testImplementation("org.testcontainers:mysql:1.17.4")
+    testImplementation("org.testcontainers:testcontainers:1.17.6")
+    testImplementation("org.testcontainers:mysql:1.17.6")
 }
 
 tasks.withType<KotlinCompile> {
