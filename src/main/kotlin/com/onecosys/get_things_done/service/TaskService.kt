@@ -3,11 +3,16 @@ package com.onecosys.get_things_done.service
 import com.onecosys.get_things_done.data.model.dto.TaskDto
 import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.exception.BadRequestException
 import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
+import kotlin.reflect.full.memberProperties
+import org.springframework.util.ReflectionUtils
+import java.lang.reflect.Field
+
 
 @Service
 class TaskService(private val repository: TaskRepository) {
@@ -54,34 +59,38 @@ class TaskService(private val repository: TaskRepository) {
     fun getAllClosedTasks(): List<TaskDto> =
         repository.queryAllClosedTasks().stream().map(this::convertEntityToDto).collect(Collectors.toList())
 
-
-    fun createTask(createRequest: TaskCreateRequest): Task {
-        if (repository.doesDescriptionExist(createRequest.description)) {
-            throw BadRequestException("There is already a task with description: ${createRequest.description}")
-        }
-        val task = Task()
-        assignValuesToEntity(task, createRequest)
-        return repository.save(task)
-    }
-
     fun getTaskById(id: Long): TaskDto {
         checkForTaskId(id)
         val task: Task = repository.findTaskById(id)
         return convertEntityToDto(task)
     }
 
-    fun updateTask(createRequest: TaskCreateRequest?): TaskDto {
-        createRequest?.let { tr ->
-            checkForTaskId(tr.id)
-            val savedTask: Task
-            val task: Task = repository.findTaskById(tr.id)
-            if (tr.description.isNotEmpty()) {
-                assignValuesToEntity(task, tr)
-            }
-            savedTask = repository.save(task)
-            return convertEntityToDto(savedTask)
+    fun createTask(createRequest: TaskCreateRequest): TaskDto {
+        if (repository.doesDescriptionExist(createRequest.description)) {
+            throw BadRequestException("There is already a task with description: ${createRequest.description}")
         }
-        throw BadRequestException("Update task failed!")
+        val task = Task()
+        assignValuesToEntity(task, createRequest)
+        val savedTask = repository.save(task)
+        return convertEntityToDto(savedTask)
+    }
+
+    fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskDto {
+        checkForTaskId(id)
+        val existingTask: Task = repository.findTaskById(id)
+
+        for (prop in TaskUpdateRequest::class.memberProperties) {
+            if (prop.get(updateRequest) != null) {
+                val field: Field? = ReflectionUtils.findField(Task::class.java, prop.name)
+                field?.let {
+                    it.isAccessible = true
+                    ReflectionUtils.setField(it, existingTask, prop.get(updateRequest))
+                }
+            }
+        }
+
+        val savedTask: Task = repository.save(existingTask)
+        return convertEntityToDto(savedTask)
     }
 
     fun deleteTask(id: Long): String {
