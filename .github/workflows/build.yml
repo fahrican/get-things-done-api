@@ -60,7 +60,7 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'Digital Ocean deployment started... :grimacing: :crossed_fingers:'
+          text: 'Digital Ocean deployment started... :grimacing: :crossed_fingers: ان شاء الله خير'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       - uses: actions/checkout@v3
