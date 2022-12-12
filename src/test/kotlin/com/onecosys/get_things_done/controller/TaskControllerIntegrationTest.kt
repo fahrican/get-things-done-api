@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.data.model.Priority
 import com.onecosys.get_things_done.data.model.dto.TaskDto
-import com.onecosys.get_things_done.data.model.request.TaskRequest
+import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -138,7 +138,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given create task request when task gets created then check for correct property`() {
-        val request = TaskRequest(
+        val request = TaskCreateRequest(
             0,
             "test for db",
             isReminderSet = false,
@@ -167,7 +167,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given update task request when task gets updated then check for correct property`() {
-        val request = TaskRequest(
+        val request = TaskCreateRequest(
             77,
             "update task",
             isReminderSet = false,

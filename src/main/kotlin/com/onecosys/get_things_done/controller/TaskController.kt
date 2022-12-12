@@ -1,7 +1,7 @@
 package com.onecosys.get_things_done.controller
 
 import com.onecosys.get_things_done.data.model.dto.TaskDto
-import com.onecosys.get_things_done.data.model.request.TaskRequest
+import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,8 +28,8 @@ class TaskController(private val service: TaskService) {
         ResponseEntity(service.getTaskById(id), HttpStatus.OK)
 
     @PostMapping("create")
-    fun createTask(@Valid @RequestBody taskRequest: TaskRequest): ResponseEntity<TaskDto> {
-        val task = service.createTask(taskRequest)
+    fun createTask(@Valid @RequestBody createRequest: TaskCreateRequest): ResponseEntity<TaskDto> {
+        val task = service.createTask(createRequest)
         return ResponseEntity(
             TaskDto(
                 task.id,
@@ -47,8 +47,8 @@ class TaskController(private val service: TaskService) {
     }
 
     @PutMapping("update")
-    fun updateTaskWithObject(@Valid @RequestBody taskRequest: TaskRequest?): ResponseEntity<TaskDto> =
-        ResponseEntity(service.updateTask(taskRequest), HttpStatus.OK)
+    fun updateTaskWithObject(@Valid @RequestBody createRequest: TaskCreateRequest?): ResponseEntity<TaskDto> =
+        ResponseEntity(service.updateTask(createRequest), HttpStatus.OK)
 
     @DeleteMapping("delete/{id}")
     fun deleteTaskWithUri(@PathVariable id: Long): ResponseEntity<String> =

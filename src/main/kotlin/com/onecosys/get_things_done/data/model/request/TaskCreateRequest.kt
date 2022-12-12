@@ -4,7 +4,7 @@ import com.onecosys.get_things_done.data.model.Priority
 import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
 
-data class TaskRequest(
+data class TaskCreateRequest(
 
     @NotBlank(message = "task id can't be empty")
     val id: Long,

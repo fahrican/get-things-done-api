@@ -2,7 +2,7 @@ package com.onecosys.get_things_done.service
 
 import com.onecosys.get_things_done.data.model.dto.TaskDto
 import com.onecosys.get_things_done.data.entity.Task
-import com.onecosys.get_things_done.data.model.request.TaskRequest
+import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.exception.BadRequestException
 import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
@@ -27,7 +27,7 @@ class TaskService(private val repository: TaskRepository) {
         )
     }
 
-    private fun assignValuesToEntity(task: Task, tr: TaskRequest) {
+    private fun assignValuesToEntity(task: Task, tr: TaskCreateRequest) {
         task.description = tr.description
         task.isReminderSet = tr.isReminderSet
         task.isTaskOpen = tr.isTaskOpen
@@ -55,12 +55,12 @@ class TaskService(private val repository: TaskRepository) {
         repository.queryAllClosedTasks().stream().map(this::convertEntityToDto).collect(Collectors.toList())
 
 
-    fun createTask(taskRequest: TaskRequest): Task {
-        if (repository.doesDescriptionExist(taskRequest.description)) {
-            throw BadRequestException("There is already a task with description: ${taskRequest.description}")
+    fun createTask(createRequest: TaskCreateRequest): Task {
+        if (repository.doesDescriptionExist(createRequest.description)) {
+            throw BadRequestException("There is already a task with description: ${createRequest.description}")
         }
         val task = Task()
-        assignValuesToEntity(task, taskRequest)
+        assignValuesToEntity(task, createRequest)
         return repository.save(task)
     }
 
@@ -70,8 +70,8 @@ class TaskService(private val repository: TaskRepository) {
         return convertEntityToDto(task)
     }
 
-    fun updateTask(taskRequest: TaskRequest?): TaskDto {
-        taskRequest?.let { tr ->
+    fun updateTask(createRequest: TaskCreateRequest?): TaskDto {
+        createRequest?.let { tr ->
             checkForTaskId(tr.id)
             val savedTask: Task
             val task: Task = repository.findTaskById(tr.id)
