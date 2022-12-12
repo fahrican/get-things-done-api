@@ -2,10 +2,10 @@ package com.onecosys.get_things_done.controller
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.get_things_done.entity.Task
-import com.onecosys.get_things_done.model.Priority
-import com.onecosys.get_things_done.model.dto.TaskDto
-import com.onecosys.get_things_done.model.request.TaskRequest
+import com.onecosys.get_things_done.data.model.Priority
+import com.onecosys.get_things_done.data.model.dto.TaskDto
+import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -138,7 +138,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given create task request when task gets created then check for correct property`() {
-        val request = TaskRequest(
+        val request = TaskCreateRequest(
             0,
             "test for db",
             isReminderSet = false,
@@ -150,10 +150,20 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             timeTaken = 2,
             priority = Priority.LOW
         )
-        val task = Task()
-        task.timeTaken = 2
+        val taskDto = TaskDto(
+            0,
+            "test for db",
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2,
+            priority = Priority.LOW
+        )
 
-        `when`(mockService.createTask(request)).thenReturn(task)
+        `when`(mockService.createTask(request)).thenReturn(taskDto)
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/create")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -162,17 +172,15 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
         resultActions.andExpect(MockMvcResultMatchers.status().isOk)
         resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.timeTaken").value(task.timeTaken))
+        resultActions.andExpect(jsonPath("$.timeTaken").value(taskDto.timeTaken))
     }
 
     @Test
     fun `given update task request when task gets updated then check for correct property`() {
-        val request = TaskRequest(
-            77,
+        val request = TaskUpdateRequest(
             "update task",
             isReminderSet = false,
             isTaskOpen = false,
-            createdOn = LocalDateTime.now(),
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
@@ -181,7 +189,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         )
         val dummyDto = TaskDto(
             44,
-            request.description,
+            request.description ?: "",
             isReminderSet = false,
             isTaskOpen = false,
             createdOn = LocalDateTime.now(),
@@ -192,9 +200,9 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             priority = Priority.LOW
         )
 
-        `when`(mockService.updateTask(request)).thenReturn(dummyDto)
+        `when`(mockService.updateTask(dummyDto.id!!, request)).thenReturn(dummyDto)
         val resultActions: ResultActions = mockMvc.perform(
-            MockMvcRequestBuilders.put("/api/update")
+            MockMvcRequestBuilders.patch("/api/update/${dummyDto.id}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
         )

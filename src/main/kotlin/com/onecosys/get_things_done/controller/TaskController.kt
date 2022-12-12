@@ -1,7 +1,8 @@
 package com.onecosys.get_things_done.controller
 
-import com.onecosys.get_things_done.model.dto.TaskDto
-import com.onecosys.get_things_done.model.request.TaskRequest
+import com.onecosys.get_things_done.data.model.dto.TaskDto
+import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,27 +29,17 @@ class TaskController(private val service: TaskService) {
         ResponseEntity(service.getTaskById(id), HttpStatus.OK)
 
     @PostMapping("create")
-    fun createTask(@Valid @RequestBody taskRequest: TaskRequest): ResponseEntity<TaskDto> {
-        val task = service.createTask(taskRequest)
-        return ResponseEntity(
-            TaskDto(
-                task.id,
-                task.description,
-                task.isReminderSet,
-                task.isTaskOpen,
-                task.createdOn,
-                task.startedOn,
-                task.finishedOn,
-                task.timeInterval,
-                task.timeTaken,
-                task.priority
-            ), HttpStatus.OK
-        )
-    }
+    fun createTask(
+        @Valid @RequestBody createRequest: TaskCreateRequest
+    ): ResponseEntity<TaskDto> = ResponseEntity(service.createTask(createRequest), HttpStatus.OK)
 
-    @PutMapping("update")
-    fun updateTaskWithObject(@Valid @RequestBody taskRequest: TaskRequest?): ResponseEntity<TaskDto> =
-        ResponseEntity(service.updateTask(taskRequest), HttpStatus.OK)
+
+    @PatchMapping("update/{id}")
+    fun updateTask(
+        @PathVariable id: Long,
+        @Valid @RequestBody updateRequest: TaskUpdateRequest
+    ): ResponseEntity<TaskDto> = ResponseEntity(service.updateTask(id, updateRequest), HttpStatus.OK)
+
 
     @DeleteMapping("delete/{id}")
     fun deleteTaskWithUri(@PathVariable id: Long): ResponseEntity<String> =
