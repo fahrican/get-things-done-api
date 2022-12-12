@@ -6,6 +6,7 @@ import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.data.model.Priority
 import com.onecosys.get_things_done.data.model.dto.TaskDto
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.repository.TaskRepository
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
@@ -88,9 +89,9 @@ internal class TaskServiceTest {
         task.timeTaken = createRequest.timeTaken
 
         every { mockRepository.save(any()) } returns task
-        val actualTask: Task = objectUnderTest.createTask(createRequest)
+        val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
 
-        assertThat(actualTask.description).isEqualTo(createRequest.description)
+        assertThat(actualTaskDto.description).isEqualTo(createRequest.description)
     }
 
     @Test
@@ -117,12 +118,12 @@ internal class TaskServiceTest {
         task.timeTaken = createRequest.timeTaken
 
         every { mockRepository.save(capture(taskSlot)) } returns task
-        val actualTask: Task = objectUnderTest.createTask(createRequest)
+        val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
 
         verify { mockRepository.save(capture(taskSlot)) }
-        assertThat(taskSlot.captured.id).isEqualTo(actualTask.id)
-        assertThat(taskSlot.captured.description).isEqualTo(actualTask.description)
-        assertThat(taskSlot.captured.priority).isEqualTo(actualTask.priority)
+        assertThat(taskSlot.captured.id).isEqualTo(actualTaskDto.id)
+        assertThat(taskSlot.captured.description).isEqualTo(actualTaskDto.description)
+        assertThat(taskSlot.captured.priority).isEqualTo(actualTaskDto.priority)
     }
 
     @Test
@@ -183,13 +184,11 @@ internal class TaskServiceTest {
     @Test
     fun `when update task is called with task request argument then expect specific description fpr actual task`() {
         task.description = "test task"
-        val createRequest =
-            TaskCreateRequest(
-                task.id,
+        val updateRequest =
+            TaskUpdateRequest(
                 task.description,
                 isReminderSet = false,
                 isTaskOpen = false,
-                createdOn = LocalDateTime.now(),
                 startedOn = null,
                 finishedOn = null,
                 timeInterval = "0d",
@@ -200,18 +199,8 @@ internal class TaskServiceTest {
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskById(any()) } returns task
         every { mockRepository.save(any()) } returns task
-        val actualTask = objectUnderTest.updateTask(createRequest)
+        val actualTask = objectUnderTest.updateTask(task.id, updateRequest)
 
         assertThat(actualTask.description).isEqualTo("test task")
-    }
-
-    @Test
-    fun `when update task is called with task request argument then expect bad request exception`() {
-        val createRequest: TaskCreateRequest? = null
-
-        val exception = assertThrows<BadRequestException> { objectUnderTest.updateTask(createRequest) }
-
-        assertThat(exception.message).isEqualTo("Update task failed!")
-        verify { mockRepository.save(any()) wasNot called }
     }
 }
