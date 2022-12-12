@@ -1,11 +1,11 @@
 package com.onecosys.get_things_done.service
 
-import com.onecosys.get_things_done.entity.Task
+import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.exception.BadRequestException
 import com.onecosys.get_things_done.exception.TaskNotFoundException
-import com.onecosys.get_things_done.model.Priority
-import com.onecosys.get_things_done.model.dto.TaskDto
-import com.onecosys.get_things_done.model.request.TaskRequest
+import com.onecosys.get_things_done.data.model.Priority
+import com.onecosys.get_things_done.data.model.dto.TaskDto
+import com.onecosys.get_things_done.data.model.request.TaskRequest
 import com.onecosys.get_things_done.repository.TaskRepository
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs

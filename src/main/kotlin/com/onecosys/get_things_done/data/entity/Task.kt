@@ -1,6 +1,6 @@
-package com.onecosys.get_things_done.entity
+package com.onecosys.get_things_done.data.entity
 
-import com.onecosys.get_things_done.model.Priority
+import com.onecosys.get_things_done.data.model.Priority
 import lombok.AllArgsConstructor
 import lombok.NoArgsConstructor
 import java.time.LocalDateTime
