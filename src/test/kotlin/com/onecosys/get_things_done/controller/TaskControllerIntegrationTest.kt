@@ -10,14 +10,12 @@ import com.onecosys.get_things_done.service.TaskService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -27,7 +25,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import java.time.LocalDateTime
 
 
-@RunWith(SpringRunner::class)
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(controllers = [TaskController::class])
 internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: MockMvc) {
@@ -71,15 +68,16 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             timeTaken = 2,
             priority = Priority.LOW
         )
+        val taskDtos = listOf(dummyDto1, taskDto2)
 
         // WHEN
-        `when`(mockService.getAllTasks()).thenReturn(listOf(dummyDto1, taskDto2))
+        `when`(mockService.getAllTasks()).thenReturn(taskDtos)
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/all-tasks"))
 
         // THEN
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.size()").value(2))
+        resultActions.andExpect(jsonPath("$.size()").value(taskDtos.size))
     }
 
     @Test
@@ -103,7 +101,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
         resultActions.andExpect(jsonPath("$.size()").value(1))
-        resultActions.andExpect(jsonPath("$[0].isTaskOpen").value(true))
+        resultActions.andExpect(jsonPath("$[0].isTaskOpen").value(taskDto2.isTaskOpen))
     }
 
     @Test
@@ -116,7 +114,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
         resultActions.andExpect(jsonPath("$.size()").value(1))
-        resultActions.andExpect(jsonPath("$[0].isTaskOpen").value(false))
+        resultActions.andExpect(jsonPath("$[0].isTaskOpen").value(dummyDto1.isTaskOpen))
     }
 
     @Test
@@ -126,7 +124,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.description").value("test1"))
+        resultActions.andExpect(jsonPath("$.description").value(dummyDto1.description))
     }
 
     @Test
