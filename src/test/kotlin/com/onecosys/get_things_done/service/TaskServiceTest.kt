@@ -29,6 +29,7 @@ internal class TaskServiceTest {
     @InjectMockKs
     private lateinit var objectUnderTest: TaskService
 
+    private val taskId: Long = 234
     private val task = Task()
     private lateinit var createRequest: TaskCreateRequest
 
@@ -138,8 +139,6 @@ internal class TaskServiceTest {
 
     @Test
     fun `when get task by id is called then expect a task not found exception`() {
-        val taskId: Long = 123
-
         every { mockRepository.existsById(any()) } returns false
         val exception = assertThrows<TaskNotFoundException> { objectUnderTest.getTaskById(taskId) }
 
@@ -161,8 +160,6 @@ internal class TaskServiceTest {
 
     @Test
     fun `when delete task by id is called then check for return message`() {
-        val taskId: Long = 1234
-
         every { mockRepository.existsById(any()) } returns true
         val deleteTaskMsg: String = objectUnderTest.deleteTask(taskId)
 
@@ -173,7 +170,6 @@ internal class TaskServiceTest {
     @Test
     fun `when delete by task id is called then check if argument could be captured`() {
         val taskIdSlot = slot<Long>()
-        val taskId: Long = 234
 
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.deleteById(capture(taskIdSlot)) } returns Unit
