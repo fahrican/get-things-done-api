@@ -35,9 +35,9 @@ internal class TaskRepositoryTestEmbedded {
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then remove it by id`() {
-        val tasks: List<Task> = objectUnderTest.findAll()
         objectUnderTest.deleteById(222)
-        assertThat(tasks.size).isEqualTo(numberOfRecordsInTestDataSql)
+        val tasks: List<Task> = objectUnderTest.findAll()
+        assertThat(tasks.size).isEqualTo(2)
     }
 
     @Test
@@ -57,9 +57,7 @@ internal class TaskRepositoryTestEmbedded {
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task created check then check if descriptions already exists`() {
-        val task = Task()
-        task.description = "test todo"
-        val isDescriptionAlreadyGiven = objectUnderTest.doesDescriptionExist(task.description)
+        val isDescriptionAlreadyGiven = objectUnderTest.doesDescriptionExist("test todo")
 
         assertThat(isDescriptionAlreadyGiven).isTrue
     }
@@ -67,8 +65,7 @@ internal class TaskRepositoryTestEmbedded {
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task created check then check if descriptions does not exists`() {
-        val description = "feed the cat"
-        val isDescriptionAvailable = objectUnderTest.doesDescriptionExist(description)
+        val isDescriptionAvailable = objectUnderTest.doesDescriptionExist("feed the cat")
 
         assertThat(!isDescriptionAvailable).isTrue
     }
