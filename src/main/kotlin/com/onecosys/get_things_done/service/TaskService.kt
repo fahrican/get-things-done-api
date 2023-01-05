@@ -7,6 +7,7 @@ import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.exception.BadRequestException
 import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.helper.toDto
+import com.onecosys.get_things_done.helper.toEntity
 import com.onecosys.get_things_done.repository.TaskRepository
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
@@ -17,18 +18,6 @@ import java.lang.reflect.Field
 
 @Service
 class TaskService(private val repository: TaskRepository) {
-
-    private fun assignValuesToEntity(task: Task, tr: TaskCreateRequest) {
-        task.description = tr.description
-        task.isReminderSet = tr.isReminderSet
-        task.isTaskOpen = tr.isTaskOpen
-        task.createdOn = tr.createdOn
-        task.finishedOn = tr.finishedOn
-        task.timeInterval = tr.timeInterval
-        task.timeTaken = tr.timeTaken
-        task.priority = tr.priority
-        task.startedOn = tr.startedOn
-    }
 
     private fun checkForTaskId(id: Long) {
         if (!repository.existsById(id)) {
@@ -53,7 +42,7 @@ class TaskService(private val repository: TaskRepository) {
             throw BadRequestException("There is already a task with description: ${createRequest.description}")
         }
         val task = Task()
-        assignValuesToEntity(task, createRequest)
+        task.toEntity(createRequest)
         val savedTask = repository.save(task)
         return savedTask.toDto()
     }

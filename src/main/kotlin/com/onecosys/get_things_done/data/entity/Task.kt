@@ -1,14 +1,10 @@
 package com.onecosys.get_things_done.data.entity
 
-import lombok.AllArgsConstructor
-import lombok.NoArgsConstructor
 import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(
     name = "task",

@@ -25,8 +25,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("mysql:mysql-connector-java")
     runtimeOnly("org.postgresql:postgresql")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
     // hibernate-core & hibernate-entitymanager needs to be same version
     implementation("org.hibernate:hibernate-core:5.6.14.Final")
