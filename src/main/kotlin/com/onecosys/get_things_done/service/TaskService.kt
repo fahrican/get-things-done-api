@@ -6,6 +6,7 @@ import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.exception.BadRequestException
 import com.onecosys.get_things_done.exception.TaskNotFoundException
+import com.onecosys.get_things_done.helper.toDto
 import com.onecosys.get_things_done.repository.TaskRepository
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
@@ -16,21 +17,6 @@ import java.lang.reflect.Field
 
 @Service
 class TaskService(private val repository: TaskRepository) {
-
-    private fun convertEntityToDto(task: Task): TaskDto {
-        return TaskDto(
-            task.id,
-            task.description,
-            task.isReminderSet,
-            task.isTaskOpen,
-            task.createdOn,
-            task.startedOn,
-            task.finishedOn,
-            task.timeInterval,
-            task.timeTaken,
-            task.priority
-        )
-    }
 
     private fun assignValuesToEntity(task: Task, tr: TaskCreateRequest) {
         task.description = tr.description
@@ -50,19 +36,16 @@ class TaskService(private val repository: TaskRepository) {
         }
     }
 
-    fun getAllTasks(): List<TaskDto> =
-        repository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList())
+    fun getAllTasks(): List<TaskDto> = repository.findAll().stream().map { it.toDto() }.collect(Collectors.toList())
 
-    fun getAllOpenTasks(): List<TaskDto> =
-        repository.queryAllOpenTasks().stream().map(this::convertEntityToDto).collect(Collectors.toList())
+    fun getAllOpenTasks(): List<TaskDto> = repository.queryAllOpenTasks().stream().map { it.toDto() }.collect(Collectors.toList())
 
-    fun getAllClosedTasks(): List<TaskDto> =
-        repository.queryAllClosedTasks().stream().map(this::convertEntityToDto).collect(Collectors.toList())
+    fun getAllClosedTasks(): List<TaskDto> = repository.queryAllClosedTasks().stream().map { it.toDto() }.collect(Collectors.toList())
 
     fun getTaskById(id: Long): TaskDto {
         checkForTaskId(id)
         val task: Task = repository.findTaskById(id)
-        return convertEntityToDto(task)
+        return task.toDto()
     }
 
     fun createTask(createRequest: TaskCreateRequest): TaskDto {
@@ -72,7 +55,7 @@ class TaskService(private val repository: TaskRepository) {
         val task = Task()
         assignValuesToEntity(task, createRequest)
         val savedTask = repository.save(task)
-        return convertEntityToDto(savedTask)
+        return savedTask.toDto()
     }
 
     fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskDto {
@@ -90,7 +73,7 @@ class TaskService(private val repository: TaskRepository) {
         }
 
         val savedTask: Task = repository.save(existingTask)
-        return convertEntityToDto(savedTask)
+        return savedTask.toDto()
     }
 
     fun deleteTask(id: Long): String {
