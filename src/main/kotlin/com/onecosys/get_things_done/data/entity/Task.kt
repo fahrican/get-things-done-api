@@ -14,7 +14,7 @@ class Task {
 
     @Id
     @SequenceGenerator(
-        name = "task_sequence", sequenceName = "task_sequence", allocationSize = 1
+        name = "task_sequence", sequenceName = "task_sequence", initialValue = 1, allocationSize = 1
     )
     @GeneratedValue(
         generator = "task_sequence", strategy = GenerationType.SEQUENCE

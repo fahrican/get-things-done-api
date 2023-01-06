@@ -6,8 +6,7 @@ import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.exception.BadRequestException
 import com.onecosys.get_things_done.exception.TaskNotFoundException
-import com.onecosys.get_things_done.helper.toDto
-import com.onecosys.get_things_done.helper.toEntity
+import com.onecosys.get_things_done.helper.Mapper
 import com.onecosys.get_things_done.repository.TaskRepository
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
@@ -19,22 +18,27 @@ import java.lang.reflect.Field
 @Service
 class TaskService(private val repository: TaskRepository) {
 
+    private val mapper = Mapper()
+
     private fun checkForTaskId(id: Long) {
         if (!repository.existsById(id)) {
             throw TaskNotFoundException("Task with ID: $id does not exist!")
         }
     }
 
-    fun getAllTasks(): List<TaskDto> = repository.findAll().stream().map { it.toDto() }.collect(Collectors.toList())
+    fun getAllTasks(): List<TaskDto> =
+        repository.findAll().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
 
-    fun getAllOpenTasks(): List<TaskDto> = repository.queryAllOpenTasks().stream().map { it.toDto() }.collect(Collectors.toList())
+    fun getAllOpenTasks(): List<TaskDto> =
+        repository.queryAllOpenTasks().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
 
-    fun getAllClosedTasks(): List<TaskDto> = repository.queryAllClosedTasks().stream().map { it.toDto() }.collect(Collectors.toList())
+    fun getAllClosedTasks(): List<TaskDto> =
+        repository.queryAllClosedTasks().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
 
     fun getTaskById(id: Long): TaskDto {
         checkForTaskId(id)
         val task: Task = repository.findTaskById(id)
-        return task.toDto()
+        return mapper.toDto(task)
     }
 
     fun createTask(createRequest: TaskCreateRequest): TaskDto {
@@ -42,9 +46,9 @@ class TaskService(private val repository: TaskRepository) {
             throw BadRequestException("There is already a task with description: ${createRequest.description}")
         }
         val task = Task()
-        task.toEntity(createRequest)
+        mapper.toEntity(createRequest, task)
         val savedTask = repository.save(task)
-        return savedTask.toDto()
+        return mapper.toDto(savedTask)
     }
 
     fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskDto {
@@ -62,7 +66,7 @@ class TaskService(private val repository: TaskRepository) {
         }
 
         val savedTask: Task = repository.save(existingTask)
-        return savedTask.toDto()
+        return mapper.toDto(savedTask)
     }
 
     fun deleteTask(id: Long): String {

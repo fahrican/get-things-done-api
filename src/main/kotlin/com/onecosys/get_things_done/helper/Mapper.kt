@@ -4,27 +4,31 @@ import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.data.model.dto.TaskDto
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 
-fun Task.toDto() = TaskDto(
-        this.id,
-        this.description,
-        this.isReminderSet,
-        this.isTaskOpen,
-        this.createdOn,
-        this.startedOn,
-        this.finishedOn,
-        this.timeInterval,
-        this.timeTaken,
-        this.priority
-)
-
-fun Task.toEntity(request: TaskCreateRequest) {
-    this.description = request.description
-    this.isReminderSet = request.isReminderSet
-    this.isTaskOpen = request.isTaskOpen
-    this.createdOn = request.createdOn
-    this.finishedOn = request.finishedOn
-    this.timeInterval = request.timeInterval
-    this.timeTaken = request.timeTaken
-    this.priority = request.priority
-    this.startedOn = request.startedOn
+class Mapper {
+    
+    fun toDto(entity: Task) = TaskDto(
+        entity.id,
+        entity.description,
+        entity.isReminderSet,
+        entity.isTaskOpen,
+        entity.createdOn,
+        entity.startedOn,
+        entity.finishedOn,
+        entity.timeInterval,
+        entity.timeTaken,
+        entity.priority
+    )
+    
+    fun toEntity(request: TaskCreateRequest, entity: Task): Task {
+        entity.description = request.description
+        entity.isReminderSet = request.isReminderSet
+        entity.isTaskOpen = request.isTaskOpen
+        entity.createdOn = request.createdOn
+        entity.finishedOn = request.finishedOn
+        entity.timeInterval = request.timeInterval
+        entity.timeTaken = request.timeTaken
+        entity.priority = request.priority
+        entity.startedOn = request.startedOn
+        return entity
+    }
 }
