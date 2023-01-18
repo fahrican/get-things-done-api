@@ -1,15 +1,15 @@
 package com.onecosys.get_things_done.service
 
-import com.onecosys.get_things_done.data.entity.Task
-import com.onecosys.get_things_done.exception.BadRequestException
-import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.data.entity.Priority
+import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.data.model.dto.TaskDto
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
+import com.onecosys.get_things_done.exception.BadRequestException
+import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
+import com.onecosys.get_things_done.util.TaskMapperImpl
 import io.mockk.*
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
@@ -26,7 +26,8 @@ internal class TaskServiceTest {
     @RelaxedMockK
     private lateinit var mockRepository: TaskRepository
 
-    @InjectMockKs
+    private val mapper = TaskMapperImpl()
+
     private lateinit var objectUnderTest: TaskService
 
     private val taskId: Long = 234
@@ -37,17 +38,18 @@ internal class TaskServiceTest {
     fun setUp() {
         MockKAnnotations.init(this)
         createRequest = TaskCreateRequest(
-            0,
-            "test task",
-            isReminderSet = false,
-            isTaskOpen = false,
-            createdOn = LocalDateTime.now(),
-            startedOn = null,
-            finishedOn = null,
-            timeInterval = "0d",
-            timeTaken = 0,
-            priority = Priority.LOW
+                0,
+                "test task",
+                isReminderSet = false,
+                isTaskOpen = false,
+                createdOn = LocalDateTime.now(),
+                startedOn = null,
+                finishedOn = null,
+                timeInterval = "0d",
+                timeTaken = 0,
+                priority = Priority.LOW
         )
+        objectUnderTest = TaskServiceImpl(mockRepository, mapper)
     }
 
     @Test
@@ -183,16 +185,16 @@ internal class TaskServiceTest {
     fun `when update task is called with task request argument then expect specific description fpr actual task`() {
         task.description = "test task"
         val updateRequest =
-            TaskUpdateRequest(
-                task.description,
-                isReminderSet = false,
-                isTaskOpen = false,
-                startedOn = null,
-                finishedOn = null,
-                timeInterval = "0d",
-                timeTaken = 0,
-                priority = Priority.LOW
-            )
+                TaskUpdateRequest(
+                        task.description,
+                        isReminderSet = false,
+                        isTaskOpen = false,
+                        startedOn = null,
+                        finishedOn = null,
+                        timeInterval = "0d",
+                        timeTaken = 0,
+                        priority = Priority.LOW
+                )
 
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskById(any()) } returns task
