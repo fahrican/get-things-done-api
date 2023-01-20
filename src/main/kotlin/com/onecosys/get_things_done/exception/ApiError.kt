@@ -8,7 +8,8 @@ data class ApiError(
         private val _message: String?,
         val status: HttpStatus,
         val code: Int = status.value(),
-        val timestamp: LocalDateTime = LocalDateTime.now()
+        val timestamp: LocalDateTime = LocalDateTime.now(),
+        val path: String? = null
 ){
     val message: String
         get() = _message ?: "Something went wrong"

@@ -23,7 +23,7 @@ class TaskServiceImpl(
 ) : TaskService {
 
     override fun getAllTasks(): List<TaskDto> =
-            repository.findAll().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
+            repository.queryAllTasks().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
 
     override fun getAllOpenTasks(): List<TaskDto> =
             repository.queryAllOpenTasks().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
@@ -39,10 +39,10 @@ class TaskServiceImpl(
 
     override fun createTask(createRequest: TaskCreateRequest): TaskDto {
         if (createRequest.description.length < MIN_DESCRIPTION_LENGTH || createRequest.description.length > MAX_DESCRIPTION_LENGTH) {
-            throw BadRequestException("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+            throw BadRequestException(message = "Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
         }
         if (repository.doesDescriptionExist(createRequest.description)) {
-            throw BadRequestException("There is already a task with description: ${createRequest.description}")
+            throw BadRequestException(message = "There is already a task with description: ${createRequest.description}")
         }
         val task = Task()
         mapper.toEntity(createRequest, task)
@@ -76,7 +76,7 @@ class TaskServiceImpl(
 
     private fun checkForTaskId(id: Long) {
         if (!repository.existsById(id)) {
-            throw TaskNotFoundException("Task with ID: $id does not exist!")
+            throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
         }
     }
 }

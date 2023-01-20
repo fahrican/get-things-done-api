@@ -4,19 +4,20 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.client.HttpClientErrorException
 
 @ControllerAdvice
 class TaskException {
 
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequestException(badRequestException: BadRequestException): ResponseEntity<ApiError> {
-        val error = ApiError(_message = badRequestException.message, status = HttpStatus.BAD_REQUEST)
+        val error = ApiError(_message = badRequestException.message, status = badRequestException.httpStatus)
         return ResponseEntity(error, error.status)
     }
 
     @ExceptionHandler(TaskNotFoundException::class)
     fun handleTaskNotFoundException(taskNotFoundException: TaskNotFoundException): ResponseEntity<ApiError> {
-        val error = ApiError(_message = taskNotFoundException.message, status = HttpStatus.NOT_FOUND)
+        val error = ApiError(_message = taskNotFoundException.message, status = taskNotFoundException.httpStatus)
         return ResponseEntity(error, error.status)
     }
 
@@ -27,7 +28,6 @@ class TaskException {
     }
 }
 
-//TODO: Try to use HttpClientErrorException() or
-data class TaskNotFoundException(override val message: String): RuntimeException()
+data class TaskNotFoundException(val httpStatus: HttpStatus = HttpStatus.NOT_FOUND, override val message: String) : HttpClientErrorException(httpStatus, message)
 
-data class BadRequestException(override val message: String): RuntimeException()
+data class BadRequestException(val httpStatus: HttpStatus = HttpStatus.BAD_REQUEST, override val message: String) : HttpClientErrorException(httpStatus, message)
