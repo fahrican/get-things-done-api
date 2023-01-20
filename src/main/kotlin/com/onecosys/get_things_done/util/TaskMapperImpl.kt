@@ -24,7 +24,6 @@ class TaskMapperImpl : TaskMapper {
         entity.description = request.description
         entity.isReminderSet = request.isReminderSet
         entity.isTaskOpen = request.isTaskOpen
-        entity.createdOn = request.createdOn
         entity.finishedOn = request.finishedOn
         entity.timeInterval = request.timeInterval
         entity.timeTaken = request.timeTaken
