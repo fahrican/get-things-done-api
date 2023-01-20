@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import java.time.LocalDateTime
 
 
 @ExtendWith(MockKExtension::class)
@@ -54,7 +53,7 @@ internal class TaskServiceTest {
     fun `when all tasks get fetched then check if the given size is correct`() {
         val expectedTasks = listOf(Task(), Task())
 
-        every { mockRepository.findAll() } returns expectedTasks.toMutableList()
+        every { mockRepository.queryAllTasks() } returns expectedTasks.toMutableList()
         val actualList: List<TaskDto> = objectUnderTest.getAllTasks()
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
