@@ -11,13 +11,13 @@ class TaskException {
 
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequestException(badRequestException: BadRequestException): ResponseEntity<ApiError> {
-        val error = ApiError(_message = badRequestException.message, status = badRequestException.httpStatus)
+        val error = ApiError(_message = badRequestException.message, status = badRequestException.statusCode)
         return ResponseEntity(error, error.status)
     }
 
     @ExceptionHandler(TaskNotFoundException::class)
     fun handleTaskNotFoundException(taskNotFoundException: TaskNotFoundException): ResponseEntity<ApiError> {
-        val error = ApiError(_message = taskNotFoundException.message, status = taskNotFoundException.httpStatus)
+        val error = ApiError(_message = taskNotFoundException.message, status = taskNotFoundException.statusCode)
         return ResponseEntity(error, error.status)
     }
 
@@ -28,6 +28,6 @@ class TaskException {
     }
 }
 
-data class TaskNotFoundException(val httpStatus: HttpStatus = HttpStatus.NOT_FOUND, override val message: String) : HttpClientErrorException(httpStatus, message)
+data class TaskNotFoundException(override val message: String) : HttpClientErrorException(HttpStatus.NOT_FOUND, message)
 
-data class BadRequestException(val httpStatus: HttpStatus = HttpStatus.BAD_REQUEST, override val message: String) : HttpClientErrorException(httpStatus, message)
+data class BadRequestException(override val message: String) : HttpClientErrorException(HttpStatus.BAD_REQUEST, message)
