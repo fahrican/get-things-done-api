@@ -1,9 +1,10 @@
-package com.onecosys.get_things_done.controller
+package com.onecosys.get_things_done.web.rest
 
 import com.onecosys.get_things_done.data.model.dto.TaskDto
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.service.TaskService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -28,7 +29,7 @@ class TaskController(private val service: TaskService) {
     @PostMapping("create")
     fun createTask(
             @Valid @RequestBody createRequest: TaskCreateRequest
-    ): ResponseEntity<TaskDto> = ResponseEntity.ok(service.createTask(createRequest))
+    ): ResponseEntity<TaskDto> = ResponseEntity(service.createTask(createRequest), HttpStatus.CREATED)
 
     @PatchMapping("update/{id}")
     fun updateTask(
