@@ -1,4 +1,4 @@
-package com.onecosys.get_things_done.config
+package com.onecosys.get_things_done.web.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
