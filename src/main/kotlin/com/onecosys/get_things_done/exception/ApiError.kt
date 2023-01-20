@@ -4,11 +4,8 @@ import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 
 data class ApiError(
-        private val _message: String?,
+        val message: String? = "Something went wrong",
         val status: HttpStatus,
         val code: Int = status.value(),
         val timestamp: LocalDateTime = LocalDateTime.now(),
-){
-    val message: String
-        get() = _message ?: "Something went wrong"
-}
+)
