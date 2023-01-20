@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TaskRepository : JpaRepository<Task, Long> {
 
+    //TODO: Add query for all tasks and use for all ASC for ID
     fun findTaskById(id: Long): Task
 
     @Query(value = "SELECT * FROM task WHERE is_task_open = TRUE", nativeQuery = true)
