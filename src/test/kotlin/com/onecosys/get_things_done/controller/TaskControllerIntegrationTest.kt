@@ -7,6 +7,7 @@ import com.onecosys.get_things_done.data.model.dto.TaskDto
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.service.TaskService
+import com.onecosys.get_things_done.web.rest.TaskController
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -137,11 +138,9 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     @Test
     fun `given create task request when task gets created then check for correct property`() {
         val request = TaskCreateRequest(
-            0,
-            "test for db",
+            description = "test for db",
             isReminderSet = false,
             isTaskOpen = false,
-            createdOn = LocalDateTime.now(),
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",

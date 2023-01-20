@@ -38,11 +38,9 @@ internal class TaskServiceTest {
     fun setUp() {
         MockKAnnotations.init(this)
         createRequest = TaskCreateRequest(
-                0,
                 "test task",
                 isReminderSet = false,
                 isTaskOpen = false,
-                createdOn = LocalDateTime.now(),
                 startedOn = null,
                 finishedOn = null,
                 timeInterval = "0d",
@@ -89,7 +87,6 @@ internal class TaskServiceTest {
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
-        task.createdOn = createRequest.createdOn
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
         task.timeTaken = createRequest.timeTaken
@@ -115,7 +112,6 @@ internal class TaskServiceTest {
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
-        task.createdOn = createRequest.createdOn
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
         task.timeTaken = createRequest.timeTaken
