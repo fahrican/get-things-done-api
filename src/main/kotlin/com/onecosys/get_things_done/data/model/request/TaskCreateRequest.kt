@@ -3,30 +3,27 @@ package com.onecosys.get_things_done.data.model.request
 import com.onecosys.get_things_done.data.entity.Priority
 import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Size
 
 data class TaskCreateRequest(
 
-    @NotBlank(message = "task id can't be empty")
-    val id: Long,
+        @Size(min = MIN_DESCRIPTION_LENGTH, max = MAX_DESCRIPTION_LENGTH)
+        val description: String,
 
-    @NotBlank(message = "description can't be empty")
-    val description: String,
+        val isReminderSet: Boolean,
 
-    val isReminderSet: Boolean,
+        val isTaskOpen: Boolean,
 
-    val isTaskOpen: Boolean,
+        val startedOn: LocalDateTime?,
 
-    @NotBlank(message = "created_on can't be empty")
-    val createdOn: LocalDateTime,
+        val finishedOn: LocalDateTime?,
 
-    val startedOn: LocalDateTime?,
+        @NotBlank(message = "time_interval can't be empty")
+        val timeInterval: String,
 
-    val finishedOn: LocalDateTime?,
+        val timeTaken: Int?,
 
-    @NotBlank(message = "time_interval can't be empty")
-    val timeInterval: String,
-
-    val timeTaken: Int?,
-
-    val priority: Priority
+        val priority: Priority
 )
+const val MIN_DESCRIPTION_LENGTH: Int = 3
+const val MAX_DESCRIPTION_LENGTH: Int = 255
