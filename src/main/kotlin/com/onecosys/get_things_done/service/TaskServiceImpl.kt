@@ -2,6 +2,8 @@ package com.onecosys.get_things_done.service
 
 import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.data.model.dto.TaskDto
+import com.onecosys.get_things_done.data.model.request.MAX_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.data.model.request.MIN_DESCRIPTION_LENGTH
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.exception.BadRequestException
@@ -9,10 +11,10 @@ import com.onecosys.get_things_done.exception.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapper
 import org.springframework.stereotype.Service
-import java.util.stream.Collectors
-import kotlin.reflect.full.memberProperties
 import org.springframework.util.ReflectionUtils
 import java.lang.reflect.Field
+import java.util.stream.Collectors
+import kotlin.reflect.full.memberProperties
 
 @Service
 class TaskServiceImpl(
@@ -36,6 +38,9 @@ class TaskServiceImpl(
     }
 
     override fun createTask(createRequest: TaskCreateRequest): TaskDto {
+        if (createRequest.description.length < MIN_DESCRIPTION_LENGTH || createRequest.description.length > MAX_DESCRIPTION_LENGTH) {
+            throw BadRequestException("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        }
         if (repository.doesDescriptionExist(createRequest.description)) {
             throw BadRequestException("There is already a task with description: ${createRequest.description}")
         }
