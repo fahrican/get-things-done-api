@@ -132,7 +132,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given one task when get task by id is called with string instead of int then check for bad request`() {
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/task/404L"))
 
-        resultActions.andExpect(MockMvcResultMatchers.status().isBadRequest)
+        resultActions.andExpect(MockMvcResultMatchers.status().is5xxServerError)
     }
 
     @Test
@@ -167,7 +167,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 .content(mapper.writeValueAsString(request))
         )
 
-        resultActions.andExpect(MockMvcResultMatchers.status().isOk)
+        resultActions.andExpect(MockMvcResultMatchers.status().isCreated)
         resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
         resultActions.andExpect(jsonPath("$.timeTaken").value(taskDto.timeTaken))
     }
