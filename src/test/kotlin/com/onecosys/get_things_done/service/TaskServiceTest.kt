@@ -3,6 +3,8 @@ package com.onecosys.get_things_done.service
 import com.onecosys.get_things_done.data.entity.Priority
 import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.data.model.dto.TaskDto
+import com.onecosys.get_things_done.data.model.request.MAX_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.data.model.request.MIN_DESCRIPTION_LENGTH
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.exception.BadRequestException
@@ -102,6 +104,42 @@ internal class TaskServiceTest {
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(createRequest) }
 
         assertThat(exception.message).isEqualTo("There is already a task with description: test task")
+        verify { mockRepository.save(any()) wasNot called }
+    }
+
+    @Test
+    fun `when client wants to create a task with description more than 255 characters then check for bad request exception`() {
+        val taskRequest = TaskCreateRequest(
+                description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to,  took a galley of type and scrambled",
+                isReminderSet = false,
+                isTaskOpen = false,
+                startedOn = null,
+                finishedOn = null,
+                timeInterval = "0d",
+                timeTaken = 0,
+                priority = Priority.LOW
+        )
+
+        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
+        assertThat(exception.message).isEqualTo("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        verify { mockRepository.save(any()) wasNot called }
+    }
+
+    @Test
+    fun `when client wants to create a task with description less than 3 characters then check for bad request exception`() {
+        val taskRequest = TaskCreateRequest(
+                description = "ab",
+                isReminderSet = false,
+                isTaskOpen = false,
+                startedOn = null,
+                finishedOn = null,
+                timeInterval = "0d",
+                timeTaken = 0,
+                priority = Priority.LOW
+        )
+
+        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
+        assertThat(exception.message).isEqualTo("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
         verify { mockRepository.save(any()) wasNot called }
     }
 
