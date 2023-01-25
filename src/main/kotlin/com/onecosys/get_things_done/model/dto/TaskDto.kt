@@ -1,6 +1,6 @@
-package com.onecosys.get_things_done.data.dto
+package com.onecosys.get_things_done.model.dto
 
-import com.onecosys.get_things_done.data.entity.Priority
+import com.onecosys.get_things_done.model.entity.Priority
 import java.time.LocalDateTime
 
 data class TaskDto(

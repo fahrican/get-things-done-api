@@ -1,7 +1,7 @@
-package com.onecosys.get_things_done.data.entity
+package com.onecosys.get_things_done.model.entity
 
-import com.onecosys.get_things_done.data.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.data.request.MIN_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
 import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotNull

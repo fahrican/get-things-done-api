@@ -1,6 +1,6 @@
-package com.onecosys.get_things_done.data.request
+package com.onecosys.get_things_done.model.request
 
-import com.onecosys.get_things_done.data.entity.Priority
+import com.onecosys.get_things_done.model.entity.Priority
 import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size

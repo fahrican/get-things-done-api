@@ -1,11 +1,11 @@
 package com.onecosys.get_things_done.service
 
-import com.onecosys.get_things_done.data.entity.Task
-import com.onecosys.get_things_done.data.dto.TaskDto
-import com.onecosys.get_things_done.data.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.data.request.MIN_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.data.request.TaskCreateRequest
-import com.onecosys.get_things_done.data.request.TaskUpdateRequest
+import com.onecosys.get_things_done.model.entity.Task
+import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository

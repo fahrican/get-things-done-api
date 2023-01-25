@@ -1,8 +1,8 @@
 package com.onecosys.get_things_done.web.rest
 
-import com.onecosys.get_things_done.data.dto.TaskDto
-import com.onecosys.get_things_done.data.request.TaskCreateRequest
-import com.onecosys.get_things_done.data.request.TaskUpdateRequest
+import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.service.TaskService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
