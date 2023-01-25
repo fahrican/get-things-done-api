@@ -34,7 +34,7 @@ class Task {
     var isTaskOpen: Boolean = true
 
     @Column(name = "created_on", nullable = false)
-    val createdOn: LocalDateTime = LocalDateTime.now()
+    var createdOn: LocalDateTime = LocalDateTime.now()
 
     @Column(name = "started_on", nullable = true)
     var startedOn: LocalDateTime? = null

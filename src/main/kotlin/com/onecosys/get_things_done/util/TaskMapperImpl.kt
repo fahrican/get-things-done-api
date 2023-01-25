@@ -4,6 +4,8 @@ import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.data.model.dto.TaskDto
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import org.springframework.stereotype.Component
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Component
 class TaskMapperImpl : TaskMapper {
@@ -20,10 +22,11 @@ class TaskMapperImpl : TaskMapper {
             entity.priority
     )
 
-    override fun toEntity(request: TaskCreateRequest, entity: Task): Task {
+    override fun toEntity(request: TaskCreateRequest, clock: Clock, entity: Task): Task {
         entity.description = request.description
         entity.isReminderSet = request.isReminderSet
         entity.isTaskOpen = request.isTaskOpen
+        entity.createdOn = LocalDateTime.now(clock)
         entity.finishedOn = request.finishedOn
         entity.timeInterval = request.timeInterval
         entity.timeTaken = request.timeTaken

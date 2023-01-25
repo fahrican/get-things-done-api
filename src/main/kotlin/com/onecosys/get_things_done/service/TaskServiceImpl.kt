@@ -10,6 +10,7 @@ import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapper
+import com.onecosys.get_things_done.util.TaskTimestamp
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
 import java.lang.reflect.Field
@@ -18,18 +19,19 @@ import kotlin.reflect.full.memberProperties
 
 @Service
 class TaskServiceImpl(
-        private val repository: TaskRepository,
-        private val mapper: TaskMapper
+    private val repository: TaskRepository,
+    private val mapper: TaskMapper,
+    private val taskTimestamp: TaskTimestamp
 ) : TaskService {
 
     override fun getAllTasks(): List<TaskDto> =
-            repository.queryAllTasks().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
+        repository.queryAllTasks().stream().map { entity -> mapper.toDto(entity) }.collect(Collectors.toList())
 
     override fun getAllOpenTasks(): List<TaskDto> =
-            repository.queryAllOpenTasks().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
+        repository.queryAllOpenTasks().stream().map { entity -> mapper.toDto(entity) }.collect(Collectors.toList())
 
     override fun getAllClosedTasks(): List<TaskDto> =
-            repository.queryAllClosedTasks().stream().map { mapper.toDto(it) }.collect(Collectors.toList())
+        repository.queryAllClosedTasks().stream().map { entity -> mapper.toDto(entity) }.collect(Collectors.toList())
 
     override fun getTaskById(id: Long): TaskDto {
         checkForTaskId(id)
@@ -45,7 +47,7 @@ class TaskServiceImpl(
             throw BadRequestException(message = "There is already a task with description: ${createRequest.description}")
         }
         val task = Task()
-        mapper.toEntity(createRequest, task)
+        mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), task)
         val savedTask = repository.save(task)
         return mapper.toDto(savedTask)
     }

@@ -11,6 +11,7 @@ import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapperImpl
+import com.onecosys.get_things_done.util.TaskTimestamp
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import java.time.*
 
 
 @ExtendWith(MockKExtension::class)
@@ -27,28 +29,37 @@ internal class TaskServiceTest {
     @RelaxedMockK
     private lateinit var mockRepository: TaskRepository
 
-    private val mapper = TaskMapperImpl()
-
-    private lateinit var objectUnderTest: TaskService
+    @RelaxedMockK
+    private lateinit var taskTimestamp: TaskTimestamp
 
     private val taskId: Long = 234
-    private val task = Task()
+    private val date = LocalDate.of(2020, 12, 31);
+
+    private var mapper = TaskMapperImpl()
+
+    private lateinit var clock: Clock
+
+    private lateinit var task: Task
     private lateinit var createRequest: TaskCreateRequest
+    private lateinit var objectUnderTest: TaskService
+
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
         createRequest = TaskCreateRequest(
-                "test task",
-                isReminderSet = false,
-                isTaskOpen = false,
-                startedOn = null,
-                finishedOn = null,
-                timeInterval = "0d",
-                timeTaken = 0,
-                priority = Priority.LOW
+            "test task",
+            isReminderSet = false,
+            isTaskOpen = false,
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "0d",
+            timeTaken = 0,
+            priority = Priority.LOW
         )
-        objectUnderTest = TaskServiceImpl(mockRepository, mapper)
+        clock = Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+        task = Task()
+        objectUnderTest = TaskServiceImpl(mockRepository, mapper, taskTimestamp)
     }
 
     @Test
@@ -90,12 +101,24 @@ internal class TaskServiceTest {
         task.isTaskOpen = createRequest.isTaskOpen
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
+        task.timeInterval = createRequest.timeInterval
         task.timeTaken = createRequest.timeTaken
+        task.priority = createRequest.priority
 
+        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         every { mockRepository.save(any()) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
 
+        assertThat(actualTaskDto.id).isEqualTo(task.id)
         assertThat(actualTaskDto.description).isEqualTo(createRequest.description)
+        assertThat(actualTaskDto.isReminderSet).isEqualTo(task.isReminderSet)
+        assertThat(actualTaskDto.isTaskOpen).isEqualTo(task.isTaskOpen)
+        assertThat(actualTaskDto.startedOn).isEqualTo(task.startedOn)
+        assertThat(actualTaskDto.finishedOn).isEqualTo(task.finishedOn)
+        assertThat(actualTaskDto.timeInterval).isEqualTo(task.timeInterval)
+        assertThat(actualTaskDto.timeTaken).isEqualTo(task.timeTaken)
+        assertThat(actualTaskDto.priority).isEqualTo(task.priority)
+        assertThat(actualTaskDto.createdOn).isEqualTo(task.createdOn)
     }
 
     @Test
@@ -110,14 +133,14 @@ internal class TaskServiceTest {
     @Test
     fun `when client wants to create a task with description more than 255 characters then check for bad request exception`() {
         val taskRequest = TaskCreateRequest(
-                description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to,  took a galley of type and scrambled",
-                isReminderSet = false,
-                isTaskOpen = false,
-                startedOn = null,
-                finishedOn = null,
-                timeInterval = "0d",
-                timeTaken = 0,
-                priority = Priority.LOW
+            description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to,  took a galley of type and scrambled",
+            isReminderSet = false,
+            isTaskOpen = false,
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "0d",
+            timeTaken = 0,
+            priority = Priority.LOW
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
@@ -128,14 +151,14 @@ internal class TaskServiceTest {
     @Test
     fun `when client wants to create a task with description less than 3 characters then check for bad request exception`() {
         val taskRequest = TaskCreateRequest(
-                description = "ab",
-                isReminderSet = false,
-                isTaskOpen = false,
-                startedOn = null,
-                finishedOn = null,
-                timeInterval = "0d",
-                timeTaken = 0,
-                priority = Priority.LOW
+            description = "ab",
+            isReminderSet = false,
+            isTaskOpen = false,
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "0d",
+            timeTaken = 0,
+            priority = Priority.LOW
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
@@ -149,17 +172,28 @@ internal class TaskServiceTest {
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
+        task.createdOn = LocalDateTime.now(Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()))
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
+        task.timeInterval = createRequest.timeInterval
         task.timeTaken = createRequest.timeTaken
+        task.priority = createRequest.priority
 
+        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         every { mockRepository.save(capture(taskSlot)) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
 
         verify { mockRepository.save(capture(taskSlot)) }
-        assertThat(taskSlot.captured.id).isEqualTo(actualTaskDto.id)
-        assertThat(taskSlot.captured.description).isEqualTo(actualTaskDto.description)
-        assertThat(taskSlot.captured.priority).isEqualTo(actualTaskDto.priority)
+        assertThat(actualTaskDto.id).isEqualTo(taskSlot.captured.id)
+        assertThat(actualTaskDto.description).isEqualTo(taskSlot.captured.description)
+        assertThat(actualTaskDto.isReminderSet).isEqualTo(taskSlot.captured.isReminderSet)
+        assertThat(actualTaskDto.isTaskOpen).isEqualTo(taskSlot.captured.isTaskOpen)
+        assertThat(actualTaskDto.createdOn).isEqualTo(taskSlot.captured.createdOn)
+        assertThat(actualTaskDto.startedOn).isEqualTo(taskSlot.captured.startedOn)
+        assertThat(actualTaskDto.finishedOn).isEqualTo(taskSlot.captured.finishedOn)
+        assertThat(actualTaskDto.timeInterval).isEqualTo(taskSlot.captured.timeInterval)
+        assertThat(actualTaskDto.timeTaken).isEqualTo(taskSlot.captured.timeTaken)
+        assertThat(actualTaskDto.priority).isEqualTo(taskSlot.captured.priority)
     }
 
     @Test
@@ -183,14 +217,15 @@ internal class TaskServiceTest {
 
     @Test
     fun `when find task by id is called then check if argument could be captured`() {
+        val id: Long = 2345
         val taskIdSlot = slot<Long>()
 
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskById(capture(taskIdSlot)) } returns task
-        objectUnderTest.getTaskById(2345)
+        objectUnderTest.getTaskById(id)
 
         verify { mockRepository.findTaskById(capture(taskIdSlot)) }
-        assertThat(taskIdSlot.captured).isEqualTo(2345)
+        assertThat(taskIdSlot.captured).isEqualTo(id)
     }
 
     @Test
@@ -218,16 +253,16 @@ internal class TaskServiceTest {
     fun `when update task is called with task request argument then expect specific description fpr actual task`() {
         task.description = "test task"
         val updateRequest =
-                TaskUpdateRequest(
-                        task.description,
-                        isReminderSet = false,
-                        isTaskOpen = false,
-                        startedOn = null,
-                        finishedOn = null,
-                        timeInterval = "0d",
-                        timeTaken = 0,
-                        priority = Priority.LOW
-                )
+            TaskUpdateRequest(
+                task.description,
+                isReminderSet = false,
+                isTaskOpen = false,
+                startedOn = null,
+                finishedOn = null,
+                timeInterval = "0d",
+                timeTaken = 0,
+                priority = Priority.LOW
+            )
 
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskById(any()) } returns task
