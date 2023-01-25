@@ -56,6 +56,15 @@ internal class TaskRepositoryTestEmbedded {
 
     @Test
     @Sql("classpath:test-data.sql")
+    fun `when all tasks are queried then check if the order is ascending by id`() {
+        val tasks: List<Task> = objectUnderTest.queryAllTasks()
+        assertThat(tasks[0].id).isEqualTo(111)
+        assertThat(tasks[1].id).isEqualTo(222)
+        assertThat(tasks[2].id).isEqualTo(333)
+    }
+
+    @Test
+    @Sql("classpath:test-data.sql")
     fun `when task created check then check if descriptions already exists`() {
         val isDescriptionAlreadyGiven = objectUnderTest.doesDescriptionExist("test todo")
 

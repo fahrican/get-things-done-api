@@ -3,10 +3,12 @@ package com.onecosys.get_things_done.service
 import com.onecosys.get_things_done.data.entity.Priority
 import com.onecosys.get_things_done.data.entity.Task
 import com.onecosys.get_things_done.data.model.dto.TaskDto
+import com.onecosys.get_things_done.data.model.request.MAX_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.data.model.request.MIN_DESCRIPTION_LENGTH
 import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
-import com.onecosys.get_things_done.exception.BadRequestException
-import com.onecosys.get_things_done.exception.TaskNotFoundException
+import com.onecosys.get_things_done.error_handling.BadRequestException
+import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapperImpl
 import io.mockk.*
@@ -17,7 +19,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import java.time.LocalDateTime
 
 
 @ExtendWith(MockKExtension::class)
@@ -38,11 +39,9 @@ internal class TaskServiceTest {
     fun setUp() {
         MockKAnnotations.init(this)
         createRequest = TaskCreateRequest(
-                0,
                 "test task",
                 isReminderSet = false,
                 isTaskOpen = false,
-                createdOn = LocalDateTime.now(),
                 startedOn = null,
                 finishedOn = null,
                 timeInterval = "0d",
@@ -56,7 +55,7 @@ internal class TaskServiceTest {
     fun `when all tasks get fetched then check if the given size is correct`() {
         val expectedTasks = listOf(Task(), Task())
 
-        every { mockRepository.findAll() } returns expectedTasks.toMutableList()
+        every { mockRepository.queryAllTasks() } returns expectedTasks.toMutableList()
         val actualList: List<TaskDto> = objectUnderTest.getAllTasks()
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
@@ -89,7 +88,6 @@ internal class TaskServiceTest {
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
-        task.createdOn = createRequest.createdOn
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
         task.timeTaken = createRequest.timeTaken
@@ -110,12 +108,47 @@ internal class TaskServiceTest {
     }
 
     @Test
+    fun `when client wants to create a task with description more than 255 characters then check for bad request exception`() {
+        val taskRequest = TaskCreateRequest(
+                description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to,  took a galley of type and scrambled",
+                isReminderSet = false,
+                isTaskOpen = false,
+                startedOn = null,
+                finishedOn = null,
+                timeInterval = "0d",
+                timeTaken = 0,
+                priority = Priority.LOW
+        )
+
+        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
+        assertThat(exception.message).isEqualTo("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        verify { mockRepository.save(any()) wasNot called }
+    }
+
+    @Test
+    fun `when client wants to create a task with description less than 3 characters then check for bad request exception`() {
+        val taskRequest = TaskCreateRequest(
+                description = "ab",
+                isReminderSet = false,
+                isTaskOpen = false,
+                startedOn = null,
+                finishedOn = null,
+                timeInterval = "0d",
+                timeTaken = 0,
+                priority = Priority.LOW
+        )
+
+        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
+        assertThat(exception.message).isEqualTo("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        verify { mockRepository.save(any()) wasNot called }
+    }
+
+    @Test
     fun `when save task is called then check if argument could be captured`() {
         val taskSlot = slot<Task>()
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
-        task.createdOn = createRequest.createdOn
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
         task.timeTaken = createRequest.timeTaken
