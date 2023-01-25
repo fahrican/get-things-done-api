@@ -1,4 +1,4 @@
-package com.onecosys.get_things_done.data.model.dto
+package com.onecosys.get_things_done.data.dto
 
 import com.onecosys.get_things_done.data.entity.Priority
 import java.time.LocalDateTime

@@ -1,7 +1,7 @@
 package com.onecosys.get_things_done.data.entity
 
-import com.onecosys.get_things_done.data.model.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.data.model.request.MIN_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.data.request.MAX_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.data.request.MIN_DESCRIPTION_LENGTH
 import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotNull
@@ -24,7 +24,7 @@ class Task {
     val id: Long = 0
 
     @Column(name = "description", nullable = false, unique = true)
-    @Size(min = MIN_DESCRIPTION_LENGTH, max = MAX_DESCRIPTION_LENGTH, message = "Too long or to short")
+    @Size(min = MIN_DESCRIPTION_LENGTH, max = MAX_DESCRIPTION_LENGTH)
     var description: String = ""
 
     @Column(name = "is_reminder_set", nullable = false)
