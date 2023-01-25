@@ -12,7 +12,7 @@ import javax.validation.Valid
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/tasks")
-class TaskController(private val service: TaskService) {
+class TaskResource(private val service: TaskService) {
 
     @GetMapping("all")
     fun getAllTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getAllTasks())
