@@ -33,7 +33,7 @@ internal class TaskServiceTest {
     private lateinit var taskTimestamp: TaskTimestamp
 
     private val taskId: Long = 234
-    private val date = LocalDate.of(2020, 12, 31);
+    private val date = LocalDate.of(2020, 12, 31)
 
     private var mapper = TaskMapperImpl()
 
