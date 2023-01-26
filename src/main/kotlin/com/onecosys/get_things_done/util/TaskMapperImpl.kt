@@ -1,8 +1,8 @@
 package com.onecosys.get_things_done.util
 
-import com.onecosys.get_things_done.data.entity.Task
-import com.onecosys.get_things_done.data.model.dto.TaskDto
-import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.model.entity.Task
+import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.request.TaskCreateRequest
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime

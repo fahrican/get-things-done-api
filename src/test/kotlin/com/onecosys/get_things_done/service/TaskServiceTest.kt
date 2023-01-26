@@ -1,12 +1,12 @@
 package com.onecosys.get_things_done.service
 
-import com.onecosys.get_things_done.data.entity.Priority
-import com.onecosys.get_things_done.data.entity.Task
-import com.onecosys.get_things_done.data.model.dto.TaskDto
-import com.onecosys.get_things_done.data.model.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.data.model.request.MIN_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.data.model.request.TaskCreateRequest
-import com.onecosys.get_things_done.data.model.request.TaskUpdateRequest
+import com.onecosys.get_things_done.model.entity.Priority
+import com.onecosys.get_things_done.model.entity.Task
+import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
@@ -33,7 +33,7 @@ internal class TaskServiceTest {
     private lateinit var taskTimestamp: TaskTimestamp
 
     private val taskId: Long = 234
-    private val date = LocalDate.of(2020, 12, 31);
+    private val date = LocalDate.of(2020, 12, 31)
 
     private var mapper = TaskMapperImpl()
 
