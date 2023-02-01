@@ -30,8 +30,8 @@ import java.time.LocalDateTime
 
 
 @ExtendWith(SpringExtension::class)
-@WebMvcTest(controllers = [TaskResource::class])
-internal class TaskResourceIntegrationTest(@Autowired private val mockMvc: MockMvc) {
+@WebMvcTest(controllers = [TaskController::class])
+internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var mockService: TaskService
@@ -99,7 +99,7 @@ internal class TaskResourceIntegrationTest(@Autowired private val mockMvc: MockM
                 priority = Priority.LOW
         )
 
-        `when`(mockService.getAllOpenTasks()).thenReturn(listOf(taskDto2))
+        `when`(mockService.getOpenTasks()).thenReturn(listOf(taskDto2))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
@@ -112,7 +112,7 @@ internal class TaskResourceIntegrationTest(@Autowired private val mockMvc: MockM
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
-        `when`(mockService.getAllClosedTasks()).thenReturn(listOf(dummyDto1))
+        `when`(mockService.getClosedTasks()).thenReturn(listOf(dummyDto1))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/closed"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
@@ -258,9 +258,8 @@ internal class TaskResourceIntegrationTest(@Autowired private val mockMvc: MockM
     }
 
     @Test
-    fun `given id for delete request when delete task is performed then check for the message1`() {
+    fun `given parameter for delete request when delete task is performed then check for the message`() {
         val expectedMessage = "Task with id: $taskId has been deleted."
-
         `when`(mockService.deleteTask(taskId)).thenReturn(expectedMessage)
         val resultActions: ResultActions = mockMvc.perform(
                 MockMvcRequestBuilders.delete("/api/v1/tasks")
@@ -268,7 +267,6 @@ internal class TaskResourceIntegrationTest(@Autowired private val mockMvc: MockM
                         .param("id", "33")
         )
 
-        resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
-        resultActions.andExpect(content().string(expectedMessage))
+        resultActions.andExpect(MockMvcResultMatchers.status().`is`(204))
     }
 }

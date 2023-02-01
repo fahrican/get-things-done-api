@@ -10,9 +10,13 @@ import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.util.TaskMapperImpl
+import com.onecosys.get_things_done.util.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.verify
+import io.mockk.called
+import io.mockk.slot
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
@@ -20,7 +24,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import java.time.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.Clock
+import java.time.ZoneId
 
 
 @ExtendWith(MockKExtension::class)
@@ -35,7 +42,7 @@ internal class TaskServiceTest {
     private val taskId: Long = 234
     private val date = LocalDate.of(2020, 12, 31)
 
-    private var mapper = TaskMapperImpl()
+    private var mapper = TaskMapper()
 
     private lateinit var clock: Clock
 
@@ -78,7 +85,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.queryAllOpenTasks() } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getAllOpenTasks()
+        val actualList: List<TaskDto> = objectUnderTest.getOpenTasks()
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -89,7 +96,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.queryAllClosedTasks() } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getAllClosedTasks()
+        val actualList: List<TaskDto> = objectUnderTest.getClosedTasks()
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -126,7 +133,7 @@ internal class TaskServiceTest {
         every { mockRepository.doesDescriptionExist(any()) } returns true
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(createRequest) }
 
-        assertThat(exception.message).isEqualTo("There is already a task with description: test task")
+        assertThat(exception.message).isEqualTo("A task with the description '${createRequest.description}' already exists")
         verify { mockRepository.save(any()) wasNot called }
     }
 
@@ -144,7 +151,7 @@ internal class TaskServiceTest {
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
-        assertThat(exception.message).isEqualTo("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        assertThat(exception.message).isEqualTo("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         verify { mockRepository.save(any()) wasNot called }
     }
 
@@ -162,7 +169,7 @@ internal class TaskServiceTest {
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
-        assertThat(exception.message).isEqualTo("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        assertThat(exception.message).isEqualTo("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         verify { mockRepository.save(any()) wasNot called }
     }
 

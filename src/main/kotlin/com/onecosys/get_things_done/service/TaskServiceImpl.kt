@@ -14,6 +14,7 @@ import com.onecosys.get_things_done.util.TaskTimestamp
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.stereotype.Service
+import java.beans.PropertyDescriptor
 import java.util.stream.Collectors
 
 @Service
@@ -24,13 +25,13 @@ class TaskServiceImpl(
 ) : TaskService {
 
     override fun getAllTasks(): List<TaskDto> =
-        repository.queryAllTasks().stream().map { entity -> mapper.toDto(entity) }.collect(Collectors.toList())
+        repository.queryAllTasks().stream().map(mapper::toDto).collect(Collectors.toList())
 
-    override fun getAllOpenTasks(): List<TaskDto> =
-        repository.queryAllOpenTasks().stream().map { entity -> mapper.toDto(entity) }.collect(Collectors.toList())
+    override fun getOpenTasks(): List<TaskDto> =
+        repository.queryAllOpenTasks().stream().map(mapper::toDto).collect(Collectors.toList())
 
-    override fun getAllClosedTasks(): List<TaskDto> =
-        repository.queryAllClosedTasks().stream().map { entity -> mapper.toDto(entity) }.collect(Collectors.toList())
+    override fun getClosedTasks(): List<TaskDto> =
+        repository.queryAllClosedTasks().stream().map(mapper::toDto).collect(Collectors.toList())
 
     override fun getTaskById(id: Long): TaskDto {
         checkForTaskId(id)
@@ -39,15 +40,16 @@ class TaskServiceImpl(
     }
 
     override fun createTask(createRequest: TaskCreateRequest): TaskDto {
-        if (createRequest.description.length < MIN_DESCRIPTION_LENGTH || createRequest.description.length > MAX_DESCRIPTION_LENGTH) {
-            throw BadRequestException(message = "Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        val descriptionLength: Int = createRequest.description.length
+        if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
+            throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
+
         }
         if (repository.doesDescriptionExist(createRequest.description)) {
-            throw BadRequestException(message = "There is already a task with description: ${createRequest.description}")
+            throw BadRequestException("A task with the description '${createRequest.description}' already exists")
         }
-        val task = Task()
-        mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), task)
-        val savedTask = repository.save(task)
+        val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone())
+        val savedTask: Task = repository.save(task)
         return mapper.toDto(savedTask)
     }
 
@@ -55,7 +57,7 @@ class TaskServiceImpl(
         checkForTaskId(id)
         val existingTask: Task = repository.findTaskById(id)
 
-        BeanUtils.copyProperties(updateRequest, existingTask, *getNullPropertyNames(updateRequest))
+        BeanUtils.copyProperties(updateRequest, existingTask, *getNullProperties(updateRequest))
         val savedTask: Task = repository.save(existingTask)
         return mapper.toDto(savedTask)
     }
@@ -72,10 +74,11 @@ class TaskServiceImpl(
         }
     }
 
-    private fun getNullPropertyNames(source: Any): Array<String> {
-        val src = BeanWrapperImpl(source)
-        val propertyDescriptors = src.propertyDescriptors
-        return propertyDescriptors.filter { propertyDescriptor -> src.getPropertyValue(propertyDescriptor.name) == null }
-            .map { propertyDescriptor -> propertyDescriptor.name }.toTypedArray()
+    private fun getNullProperties(sourceObject: Any): Array<String> {
+        val sourceWrapper = BeanWrapperImpl(sourceObject)
+        val propertyDescriptors: Array<PropertyDescriptor> = sourceWrapper.propertyDescriptors
+        return propertyDescriptors.filter {
+                property -> sourceWrapper.getPropertyValue(property.name) == null
+        }.map { property -> property.name }.toTypedArray()
     }
 }
