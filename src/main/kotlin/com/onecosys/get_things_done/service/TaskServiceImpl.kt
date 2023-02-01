@@ -57,7 +57,7 @@ class TaskServiceImpl(
         checkForTaskId(id)
         val existingTask: Task = repository.findTaskById(id)
 
-        BeanUtils.copyProperties(updateRequest, existingTask, *getNullPropertyNames(updateRequest))
+        BeanUtils.copyProperties(updateRequest, existingTask, *getNullProperties(updateRequest))
         val savedTask: Task = repository.save(existingTask)
         return mapper.toDto(savedTask)
     }
@@ -74,10 +74,11 @@ class TaskServiceImpl(
         }
     }
 
-    private fun getNullPropertyNames(source: Any): Array<String> {
-        val src = BeanWrapperImpl(source)
-        val propertyDescriptors: Array<PropertyDescriptor> = src.propertyDescriptors
-        return propertyDescriptors.filter { propertyDescriptor -> src.getPropertyValue(propertyDescriptor.name) == null }
-            .map { propertyDescriptor -> propertyDescriptor.name }.toTypedArray()
+    private fun getNullProperties(sourceObject: Any): Array<String> {
+        val sourceWrapper = BeanWrapperImpl(sourceObject)
+        val propertyDescriptors: Array<PropertyDescriptor> = sourceWrapper.propertyDescriptors
+        return propertyDescriptors.filter {
+                property -> sourceWrapper.getPropertyValue(property.name) == null
+        }.map { property -> property.name }.toTypedArray()
     }
 }
