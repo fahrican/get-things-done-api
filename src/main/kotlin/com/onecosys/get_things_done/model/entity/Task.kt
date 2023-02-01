@@ -3,7 +3,16 @@ package com.onecosys.get_things_done.model.entity
 import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
 import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
 import java.time.LocalDateTime
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
+import javax.persistence.Column
+import javax.persistence.Enumerated
+import javax.persistence.EnumType
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
@@ -15,16 +24,12 @@ import javax.validation.constraints.Size
 class Task {
 
     @Id
-    @SequenceGenerator(
-        name = "task_sequence", sequenceName = "task_sequence", initialValue = 1, allocationSize = 1
-    )
-    @GeneratedValue(
-        generator = "task_sequence", strategy = GenerationType.SEQUENCE
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "task_sequence")
+    @SequenceGenerator(name = "task_sequence", sequenceName = "task_sequence", allocationSize = 1)
     val id: Long = 0
 
-    @Column(name = "description", nullable = false, unique = true)
     @Size(min = MIN_DESCRIPTION_LENGTH, max = MAX_DESCRIPTION_LENGTH)
+    @Column(name = "description", nullable = false, unique = true)
     var description: String = ""
 
     @Column(name = "is_reminder_set", nullable = false)
