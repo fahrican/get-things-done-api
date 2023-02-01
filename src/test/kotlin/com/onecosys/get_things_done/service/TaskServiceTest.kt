@@ -10,7 +10,7 @@ import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.util.TaskMapperImpl
+import com.onecosys.get_things_done.util.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -35,7 +35,7 @@ internal class TaskServiceTest {
     private val taskId: Long = 234
     private val date = LocalDate.of(2020, 12, 31)
 
-    private var mapper = TaskMapperImpl()
+    private var mapper = TaskMapper()
 
     private lateinit var clock: Clock
 
@@ -126,7 +126,7 @@ internal class TaskServiceTest {
         every { mockRepository.doesDescriptionExist(any()) } returns true
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(createRequest) }
 
-        assertThat(exception.message).isEqualTo("There is already a task with description: test task")
+        assertThat(exception.message).isEqualTo("A task with the description '${createRequest.description}' already exists")
         verify { mockRepository.save(any()) wasNot called }
     }
 
@@ -144,7 +144,7 @@ internal class TaskServiceTest {
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
-        assertThat(exception.message).isEqualTo("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        assertThat(exception.message).isEqualTo("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         verify { mockRepository.save(any()) wasNot called }
     }
 
@@ -162,7 +162,7 @@ internal class TaskServiceTest {
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
-        assertThat(exception.message).isEqualTo("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        assertThat(exception.message).isEqualTo("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         verify { mockRepository.save(any()) wasNot called }
     }
 
