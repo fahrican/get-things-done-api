@@ -30,8 +30,8 @@ import java.time.LocalDateTime
 
 
 @ExtendWith(SpringExtension::class)
-@WebMvcTest(controllers = [TaskResource::class])
-internal class TaskResourceIntegrationTest(@Autowired private val mockMvc: MockMvc) {
+@WebMvcTest(controllers = [TaskController::class])
+internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var mockService: TaskService
