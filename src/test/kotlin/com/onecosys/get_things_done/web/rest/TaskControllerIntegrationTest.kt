@@ -99,7 +99,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 priority = Priority.LOW
         )
 
-        `when`(mockService.getAllOpenTasks()).thenReturn(listOf(taskDto2))
+        `when`(mockService.getOpenTasks()).thenReturn(listOf(taskDto2))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
@@ -112,7 +112,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
-        `when`(mockService.getAllClosedTasks()).thenReturn(listOf(dummyDto1))
+        `when`(mockService.getClosedTasks()).thenReturn(listOf(dummyDto1))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/closed"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))

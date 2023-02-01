@@ -27,10 +27,10 @@ class TaskServiceImpl(
     override fun getAllTasks(): List<TaskDto> =
         repository.queryAllTasks().stream().map(mapper::toDto).collect(Collectors.toList())
 
-    override fun getAllOpenTasks(): List<TaskDto> =
+    override fun getOpenTasks(): List<TaskDto> =
         repository.queryAllOpenTasks().stream().map(mapper::toDto).collect(Collectors.toList())
 
-    override fun getAllClosedTasks(): List<TaskDto> =
+    override fun getClosedTasks(): List<TaskDto> =
         repository.queryAllClosedTasks().stream().map(mapper::toDto).collect(Collectors.toList())
 
     override fun getTaskById(id: Long): TaskDto {

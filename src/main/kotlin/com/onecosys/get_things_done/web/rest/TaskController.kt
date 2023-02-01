@@ -27,18 +27,19 @@ class TaskController(private val service: TaskService) {
     fun getAllTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getAllTasks())
 
     @GetMapping("open")
-    fun getAllOpenTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getAllOpenTasks())
+    fun getOpenTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getOpenTasks())
 
     @GetMapping("closed")
-    fun getAllFinishedTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getAllClosedTasks())
+    fun getClosedTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getClosedTasks())
 
     @GetMapping("{id}")
     fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> = ResponseEntity.ok(service.getTaskById(id))
 
     @PostMapping
-    fun createTask(
-        @Valid @RequestBody createRequest: TaskCreateRequest
-    ): ResponseEntity<TaskDto> = ResponseEntity(service.createTask(createRequest), HttpStatus.CREATED)
+    fun createTask(@Valid @RequestBody createRequest: TaskCreateRequest): ResponseEntity<TaskDto> {
+        val task = service.createTask(createRequest)
+        return ResponseEntity(task, HttpStatus.CREATED)
+    }
 
     @PatchMapping("{id}")
     fun updateTask(
@@ -47,8 +48,11 @@ class TaskController(private val service: TaskService) {
     ): ResponseEntity<TaskDto> = ResponseEntity.ok(service.updateTask(id, updateRequest))
 
     @DeleteMapping("{id}")
-    fun deleteTaskWithUri(@PathVariable id: Long): ResponseEntity<String> = ResponseEntity.ok(service.deleteTask(id))
+    fun deleteTaskWithId(@PathVariable id: Long): ResponseEntity<String> = ResponseEntity.ok(service.deleteTask(id))
 
     @DeleteMapping
-    fun deleteTaskWithParam(@RequestParam id: Long): ResponseEntity<String> = ResponseEntity.ok(service.deleteTask(id))
+    fun deleteTaskWithParam(@RequestParam id: Long): ResponseEntity<Void> {
+        service.deleteTask(id)
+        return ResponseEntity.noContent().build()
+    }
 }
