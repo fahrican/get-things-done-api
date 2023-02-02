@@ -25,6 +25,10 @@ spring:
             non_contextual_creation: true
     show-sql: true
 springdoc:
+  api-docs:
+    path: '/api/v3/api-docs'
   swagger-ui:
-    path: /api/endpoints
+    path: '/api/swagger-ui.html'
+    configUrl: '/api/v3/api-docs/swagger-config'
     disable-swagger-default-url: true
+    url: '/api/v3/api-docs'
