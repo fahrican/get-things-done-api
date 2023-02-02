@@ -27,3 +27,4 @@ spring:
 springdoc:
   swagger-ui:
     path: /api/endpoints
+    disable-swagger-default-url: true
