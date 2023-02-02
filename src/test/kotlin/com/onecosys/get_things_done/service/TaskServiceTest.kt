@@ -73,7 +73,7 @@ internal class TaskServiceTest {
     fun `when all tasks get fetched then check if the given size is correct`() {
         val expectedTasks = listOf(Task(), Task())
 
-        every { mockRepository.queryAllTasks() } returns expectedTasks.toMutableList()
+        every { mockRepository.findAllByOrderByIdAsc() } returns expectedTasks.toMutableList()
         val actualList: List<TaskDto> = objectUnderTest.getAllTasks()
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
@@ -84,7 +84,7 @@ internal class TaskServiceTest {
         task.isTaskOpen = true
         val expectedTasks = listOf(task)
 
-        every { mockRepository.queryAllOpenTasks() } returns expectedTasks.toMutableList()
+        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(true) } returns expectedTasks.toMutableList()
         val actualList: List<TaskDto> = objectUnderTest.getOpenTasks()
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
@@ -95,7 +95,7 @@ internal class TaskServiceTest {
         task.isTaskOpen = false
         val expectedTasks = listOf(task)
 
-        every { mockRepository.queryAllClosedTasks() } returns expectedTasks.toMutableList()
+        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false)  } returns expectedTasks.toMutableList()
         val actualList: List<TaskDto> = objectUnderTest.getClosedTasks()
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
@@ -130,7 +130,7 @@ internal class TaskServiceTest {
 
     @Test
     fun `when task gets created with non unique description then check for bad request exception`() {
-        every { mockRepository.doesDescriptionExist(any()) } returns true
+        every { mockRepository.existsByDescription(any()) } returns true
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(createRequest) }
 
         assertThat(exception.message).isEqualTo("A task with the description '${createRequest.description}' already exists")
