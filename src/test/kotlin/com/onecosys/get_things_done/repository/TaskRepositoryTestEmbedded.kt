@@ -43,21 +43,21 @@ internal class TaskRepositoryTestEmbedded {
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check for the number of open tasks`() {
-        val tasks: List<Task> = objectUnderTest.queryAllOpenTasks()
+        val tasks: List<Task> = objectUnderTest.findAllByIsTaskOpenOrderByIdAsc(true)
         assertThat(tasks.size).isEqualTo(numberOfOpenTasksInTestDataSql)
     }
 
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check for the number of closed tasks`() {
-        val tasks: List<Task> = objectUnderTest.queryAllClosedTasks()
+        val tasks: List<Task> = objectUnderTest.findAllByIsTaskOpenOrderByIdAsc(false)
         assertThat(tasks.size).isEqualTo(numberOfClosedTasksInTestDataSql)
     }
 
     @Test
     @Sql("classpath:test-data.sql")
     fun `when all tasks are queried then check if the order is ascending by id`() {
-        val tasks: List<Task> = objectUnderTest.queryAllTasks()
+        val tasks: List<Task> = objectUnderTest.findAllByOrderByIdAsc()
         assertThat(tasks[0].id).isEqualTo(111)
         assertThat(tasks[1].id).isEqualTo(222)
         assertThat(tasks[2].id).isEqualTo(333)
@@ -66,7 +66,7 @@ internal class TaskRepositoryTestEmbedded {
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task created check then check if descriptions already exists`() {
-        val isDescriptionAlreadyGiven = objectUnderTest.doesDescriptionExist("test todo")
+        val isDescriptionAlreadyGiven = objectUnderTest.existsByDescription("test todo")
 
         assertThat(isDescriptionAlreadyGiven).isTrue
     }
@@ -74,7 +74,7 @@ internal class TaskRepositoryTestEmbedded {
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task created check then check if descriptions does not exists`() {
-        val isDescriptionAvailable = objectUnderTest.doesDescriptionExist("feed the cat")
+        val isDescriptionAvailable = objectUnderTest.existsByDescription("feed the cat")
 
         assertThat(!isDescriptionAvailable).isTrue
     }

@@ -25,13 +25,13 @@ class TaskServiceImpl(
 ) : TaskService {
 
     override fun getAllTasks(): List<TaskDto> =
-        repository.queryAllTasks().stream().map(mapper::toDto).collect(Collectors.toList())
+        repository.findAllByOrderByIdAsc().stream().map(mapper::toDto).collect(Collectors.toList())
 
     override fun getOpenTasks(): List<TaskDto> =
-        repository.queryAllOpenTasks().stream().map(mapper::toDto).collect(Collectors.toList())
+        repository.findAllByIsTaskOpenOrderByIdAsc(true).stream().map(mapper::toDto).collect(Collectors.toList())
 
     override fun getClosedTasks(): List<TaskDto> =
-        repository.queryAllClosedTasks().stream().map(mapper::toDto).collect(Collectors.toList())
+        repository.findAllByIsTaskOpenOrderByIdAsc(false).stream().map(mapper::toDto).collect(Collectors.toList())
 
     override fun getTaskById(id: Long): TaskDto {
         checkForTaskId(id)
@@ -45,7 +45,7 @@ class TaskServiceImpl(
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
 
         }
-        if (repository.doesDescriptionExist(createRequest.description)) {
+        if (repository.existsByDescription(createRequest.description)) {
             throw BadRequestException("A task with the description '${createRequest.description}' already exists")
         }
         val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone())
