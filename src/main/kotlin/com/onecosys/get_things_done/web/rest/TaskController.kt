@@ -26,11 +26,10 @@ class TaskController(private val service: TaskService) {
     @GetMapping("all")
     fun getAllTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getAllTasks())
 
-    @GetMapping("open")
-    fun getOpenTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getOpenTasks())
-
-    @GetMapping("closed")
-    fun getClosedTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getClosedTasks())
+    @GetMapping
+    fun getTasksByStatus(
+        @RequestParam("status") status: String
+    ): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getTasksByStatus(status))
 
     @GetMapping("{id}")
     fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> = ResponseEntity.ok(service.getTaskById(id))

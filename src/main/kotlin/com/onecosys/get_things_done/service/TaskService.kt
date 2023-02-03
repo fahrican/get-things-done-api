@@ -8,9 +8,7 @@ interface TaskService {
 
     fun getAllTasks(): List<TaskDto>
 
-    fun getOpenTasks(): List<TaskDto>
-
-    fun getClosedTasks(): List<TaskDto>
+    fun getTasksByStatus(status: String): List<TaskDto>
 
     fun getTaskById(id: Long): TaskDto
 

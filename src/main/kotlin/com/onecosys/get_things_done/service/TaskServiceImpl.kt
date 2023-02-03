@@ -27,11 +27,17 @@ class TaskServiceImpl(
     override fun getAllTasks(): List<TaskDto> =
         repository.findAllByOrderByIdAsc().stream().map(mapper::toDto).collect(Collectors.toList())
 
-    override fun getOpenTasks(): List<TaskDto> =
-        repository.findAllByIsTaskOpenOrderByIdAsc(true).stream().map(mapper::toDto).collect(Collectors.toList())
+    override fun getTasksByStatus(status: String): List<TaskDto> {
+        return when (status) {
+            "open" -> repository.findAllByIsTaskOpenOrderByIdAsc(true).stream().map(mapper::toDto)
+                .collect(Collectors.toList())
 
-    override fun getClosedTasks(): List<TaskDto> =
-        repository.findAllByIsTaskOpenOrderByIdAsc(false).stream().map(mapper::toDto).collect(Collectors.toList())
+            "closed" -> repository.findAllByIsTaskOpenOrderByIdAsc(false).stream().map(mapper::toDto)
+                .collect(Collectors.toList())
+
+            else -> repository.findAllByOrderByIdAsc().stream().map(mapper::toDto).collect(Collectors.toList())
+        }
+    }
 
     override fun getTaskById(id: Long): TaskDto {
         checkForTaskId(id)
@@ -77,8 +83,8 @@ class TaskServiceImpl(
     private fun getNullProperties(sourceObject: Any): Array<String> {
         val sourceWrapper = BeanWrapperImpl(sourceObject)
         val propertyDescriptors: Array<PropertyDescriptor> = sourceWrapper.propertyDescriptors
-        return propertyDescriptors.filter {
-                property -> sourceWrapper.getPropertyValue(property.name) == null
+        return propertyDescriptors.filter { property ->
+            sourceWrapper.getPropertyValue(property.name) == null
         }.map { property -> property.name }.toTypedArray()
     }
 }
