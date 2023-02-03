@@ -74,7 +74,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(Task(), Task())
 
         every { mockRepository.findAllByOrderByIdAsc() } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getAllTasks()
+        val actualList: List<TaskDto> = objectUnderTest.getTasks(null)
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
     }
@@ -85,7 +85,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(true) } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getOpenTasks()
+        val actualList: List<TaskDto> = objectUnderTest.getTasks("open")
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -95,10 +95,24 @@ internal class TaskServiceTest {
         task.isTaskOpen = false
         val expectedTasks = listOf(task)
 
-        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false)  } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getClosedTasks()
+        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false) } returns expectedTasks.toMutableList()
+        val actualList: List<TaskDto> = objectUnderTest.getTasks("closed")
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
+    }
+
+    @Test
+    fun `when tasks get queried with invalid query parameter then check for bad request exception`() {
+        val queryParameter = "midway"
+        val exception = assertThrows<BadRequestException> { objectUnderTest.getTasks(queryParameter) }
+        assertThat(exception.message).isEqualTo("Query parameter 'status' can only be 'status=open' or 'status=closed'")
+    }
+
+    @Test
+    fun `when tasks get queried with blank query parameter then check for bad request exception`() {
+        val queryParameter = ""
+        val exception = assertThrows<BadRequestException> { objectUnderTest.getTasks(queryParameter) }
+        assertThat(exception.message).isEqualTo("Query parameter 'status' can only be 'status=open' or 'status=closed'")
     }
 
     @Test
@@ -112,7 +126,9 @@ internal class TaskServiceTest {
         task.timeTaken = createRequest.timeTaken
         task.priority = createRequest.priority
 
-        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
+            date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()
+        )
         every { mockRepository.save(any()) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
 
@@ -179,14 +195,18 @@ internal class TaskServiceTest {
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
-        task.createdOn = LocalDateTime.now(Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()))
+        task.createdOn = LocalDateTime.now(
+            Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+        )
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
         task.timeInterval = createRequest.timeInterval
         task.timeTaken = createRequest.timeTaken
         task.priority = createRequest.priority
 
-        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
+            date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()
+        )
         every { mockRepository.save(capture(taskSlot)) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
 

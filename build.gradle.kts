@@ -30,8 +30,6 @@ dependencies {
     implementation("org.hibernate:hibernate-entitymanager:5.6.14.Final")
 
     // Swagger / Open API
-    implementation("io.springfox:springfox-swagger2:3.0.0")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.14")
 
     // Unit Testing stuff

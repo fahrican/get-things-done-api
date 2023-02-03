@@ -1,13 +1,14 @@
 package com.onecosys.get_things_done.service
 
-import com.onecosys.get_things_done.model.entity.Task
-import com.onecosys.get_things_done.model.dto.TaskDto
-import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.TaskCreateRequest
-import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
+import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.entity.Task
+import com.onecosys.get_things_done.model.request.TaskStatus
+import com.onecosys.get_things_done.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.model.request.TaskUpdateRequest
+import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
@@ -15,7 +16,7 @@ import org.springframework.beans.BeanUtils
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.stereotype.Service
 import java.beans.PropertyDescriptor
-import java.util.stream.Collectors
+import java.util.*
 
 @Service
 class TaskServiceImpl(
@@ -24,17 +25,25 @@ class TaskServiceImpl(
     private val taskTimestamp: TaskTimestamp
 ) : TaskService {
 
-    override fun getAllTasks(): List<TaskDto> =
-        repository.findAllByOrderByIdAsc().stream().map(mapper::toDto).collect(Collectors.toList())
+    companion object {
+        private const val TASK_STATUS_OPEN = "open"
+        private const val TASK_STATUS_CLOSED = "closed"
+    }
 
-    override fun getOpenTasks(): List<TaskDto> =
-        repository.findAllByIsTaskOpenOrderByIdAsc(true).stream().map(mapper::toDto).collect(Collectors.toList())
+    override fun getTasks(status: String?): List<TaskDto> {
+        validateTaskStatus(status)
+        return when (status) {
+            TASK_STATUS_OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto)
 
-    override fun getClosedTasks(): List<TaskDto> =
-        repository.findAllByIsTaskOpenOrderByIdAsc(false).stream().map(mapper::toDto).collect(Collectors.toList())
+            TASK_STATUS_CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false).map(mapper::toDto)
+
+            else -> repository.findAllByOrderByIdAsc().map(mapper::toDto)
+        }
+    }
+
 
     override fun getTaskById(id: Long): TaskDto {
-        checkForTaskId(id)
+        validateTaskIdExistence(id)
         val task: Task = repository.findTaskById(id)
         return mapper.toDto(task)
     }
@@ -54,7 +63,7 @@ class TaskServiceImpl(
     }
 
     override fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskDto {
-        checkForTaskId(id)
+        validateTaskIdExistence(id)
         val existingTask: Task = repository.findTaskById(id)
 
         BeanUtils.copyProperties(updateRequest, existingTask, *getNullProperties(updateRequest))
@@ -63,22 +72,32 @@ class TaskServiceImpl(
     }
 
     override fun deleteTask(id: Long): String {
-        checkForTaskId(id)
+        validateTaskIdExistence(id)
         repository.deleteById(id)
         return "Task with id: $id has been deleted."
     }
 
-    private fun checkForTaskId(id: Long) {
+    private fun validateTaskIdExistence(id: Long) {
         if (!repository.existsById(id)) {
             throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
+        }
+    }
+
+    private fun validateTaskStatus(status: String?) {
+        status?.let {
+            try {
+                TaskStatus.valueOf(status.uppercase(Locale.getDefault()))
+            } catch (e: IllegalArgumentException) {
+                throw BadRequestException("Query parameter 'status' can only be 'status=open' or 'status=closed'")
+            }
         }
     }
 
     private fun getNullProperties(sourceObject: Any): Array<String> {
         val sourceWrapper = BeanWrapperImpl(sourceObject)
         val propertyDescriptors: Array<PropertyDescriptor> = sourceWrapper.propertyDescriptors
-        return propertyDescriptors.filter {
-                property -> sourceWrapper.getPropertyValue(property.name) == null
+        return propertyDescriptors.filter { property ->
+            sourceWrapper.getPropertyValue(property.name) == null
         }.map { property -> property.name }.toTypedArray()
     }
 }

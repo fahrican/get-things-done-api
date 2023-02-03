@@ -6,11 +6,7 @@ import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 
 interface TaskService {
 
-    fun getAllTasks(): List<TaskDto>
-
-    fun getOpenTasks(): List<TaskDto>
-
-    fun getClosedTasks(): List<TaskDto>
+    fun getTasks(status: String?): List<TaskDto>
 
     fun getTaskById(id: Long): TaskDto
 

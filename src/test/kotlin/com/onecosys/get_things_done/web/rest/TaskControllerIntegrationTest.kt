@@ -75,8 +75,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         val taskDtos = listOf(dummyDto1, taskDto2)
 
         // WHEN
-        `when`(mockService.getAllTasks()).thenReturn(taskDtos)
-        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/all"))
+        `when`(mockService.getTasks(null)).thenReturn(taskDtos)
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks"))
 
         // THEN
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
@@ -99,8 +99,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 priority = Priority.LOW
         )
 
-        `when`(mockService.getOpenTasks()).thenReturn(listOf(taskDto2))
-        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/open"))
+        `when`(mockService.getTasks("open")).thenReturn(listOf(taskDto2))
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -112,8 +112,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
-        `when`(mockService.getClosedTasks()).thenReturn(listOf(dummyDto1))
-        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/closed"))
+        `when`(mockService.getTasks("closed")).thenReturn(listOf(dummyDto1))
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=closed"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
