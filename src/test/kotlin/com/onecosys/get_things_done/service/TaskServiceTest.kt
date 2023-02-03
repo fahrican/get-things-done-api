@@ -102,6 +102,20 @@ internal class TaskServiceTest {
     }
 
     @Test
+    fun `when tasks get queried with invalid query parameter then check for bad request exception`() {
+        val queryParameter = "midway"
+        val exception = assertThrows<BadRequestException> { objectUnderTest.getTasks(queryParameter) }
+        assertThat(exception.message).isEqualTo("Query parameter 'status' can only be 'status=open' or 'status=closed'")
+    }
+
+    @Test
+    fun `when tasks get queried with blank query parameter then check for bad request exception`() {
+        val queryParameter = ""
+        val exception = assertThrows<BadRequestException> { objectUnderTest.getTasks(queryParameter) }
+        assertThat(exception.message).isEqualTo("Query parameter 'status' can only be 'status=open' or 'status=closed'")
+    }
+
+    @Test
     fun `when task gets created then check if it gets properly created`() {
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
