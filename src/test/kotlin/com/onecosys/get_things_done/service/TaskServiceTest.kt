@@ -95,7 +95,7 @@ internal class TaskServiceTest {
         task.isTaskOpen = false
         val expectedTasks = listOf(task)
 
-        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false)  } returns expectedTasks.toMutableList()
+        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false) } returns expectedTasks.toMutableList()
         val actualList: List<TaskDto> = objectUnderTest.getTasks("closed")
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
@@ -126,7 +126,9 @@ internal class TaskServiceTest {
         task.timeTaken = createRequest.timeTaken
         task.priority = createRequest.priority
 
-        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
+            date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()
+        )
         every { mockRepository.save(any()) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
 
@@ -193,14 +195,18 @@ internal class TaskServiceTest {
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
-        task.createdOn = LocalDateTime.now(Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()))
+        task.createdOn = LocalDateTime.now(
+            Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+        )
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
         task.timeInterval = createRequest.timeInterval
         task.timeTaken = createRequest.timeTaken
         task.priority = createRequest.priority
 
-        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
+            date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()
+        )
         every { mockRepository.save(capture(taskSlot)) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
 
