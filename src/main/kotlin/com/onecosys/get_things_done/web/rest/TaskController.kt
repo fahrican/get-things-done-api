@@ -23,13 +23,10 @@ import javax.validation.Valid
 @RequestMapping("api/v1/tasks")
 class TaskController(private val service: TaskService) {
 
-    @GetMapping("all")
-    fun getAllTasks(): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getAllTasks())
-
     @GetMapping
-    fun getTasksByStatus(
-        @RequestParam("status") status: String
-    ): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getTasksByStatus(status))
+    fun getTasks(
+        @RequestParam("status") status: String?
+    ): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getTasks(status))
 
     @GetMapping("{id}")
     fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> = ResponseEntity.ok(service.getTaskById(id))

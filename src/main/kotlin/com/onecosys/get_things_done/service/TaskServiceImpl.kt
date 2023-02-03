@@ -24,15 +24,21 @@ class TaskServiceImpl(
     private val taskTimestamp: TaskTimestamp
 ) : TaskService {
 
-    override fun getAllTasks(): List<TaskDto> =
-        repository.findAllByOrderByIdAsc().stream().map(mapper::toDto).collect(Collectors.toList())
+    companion object {
+        private const val TASK_STATUS_OPEN = "open"
+        private const val TASK_STATUS_CLOSED = "closed"
+    }
 
-    override fun getTasksByStatus(status: String): List<TaskDto> {
+    override fun getTasks(status: String?): List<TaskDto> {
         return when (status) {
-            "open" -> repository.findAllByIsTaskOpenOrderByIdAsc(true).stream().map(mapper::toDto)
+            TASK_STATUS_OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true)
+                .stream()
+                .map(mapper::toDto)
                 .collect(Collectors.toList())
 
-            "closed" -> repository.findAllByIsTaskOpenOrderByIdAsc(false).stream().map(mapper::toDto)
+            TASK_STATUS_CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false)
+                .stream()
+                .map(mapper::toDto)
                 .collect(Collectors.toList())
 
             else -> repository.findAllByOrderByIdAsc().stream().map(mapper::toDto).collect(Collectors.toList())

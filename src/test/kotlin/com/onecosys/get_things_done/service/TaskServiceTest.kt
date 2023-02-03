@@ -74,7 +74,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(Task(), Task())
 
         every { mockRepository.findAllByOrderByIdAsc() } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getAllTasks()
+        val actualList: List<TaskDto> = objectUnderTest.getTasks(null)
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
     }
@@ -85,7 +85,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(true) } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getTasksByStatus("open")
+        val actualList: List<TaskDto> = objectUnderTest.getTasks("open")
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -96,7 +96,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false)  } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getTasksByStatus("closed")
+        val actualList: List<TaskDto> = objectUnderTest.getTasks("closed")
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
     }
