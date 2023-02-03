@@ -4,10 +4,7 @@ import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.entity.Task
-import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.TaskCreateRequest
-import com.onecosys.get_things_done.model.request.TaskUpdateRequest
+import com.onecosys.get_things_done.model.request.*
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
@@ -15,6 +12,7 @@ import org.springframework.beans.BeanUtils
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.stereotype.Service
 import java.beans.PropertyDescriptor
+import java.util.*
 
 @Service
 class TaskServiceImpl(
@@ -38,6 +36,7 @@ class TaskServiceImpl(
             else -> repository.findAllByOrderByIdAsc().map(mapper::toDto)
         }
     }
+
 
     override fun getTaskById(id: Long): TaskDto {
         validateTaskIdExistence(id)
@@ -82,7 +81,9 @@ class TaskServiceImpl(
 
     private fun validateTaskStatus(status: String?) {
         status?.let {
-            if (status.isEmpty() || status != TASK_STATUS_OPEN && status != TASK_STATUS_CLOSED) {
+            try {
+                TaskStatus.valueOf(status.uppercase(Locale.getDefault()))
+            } catch (e: IllegalArgumentException) {
                 throw BadRequestException("Query parameter 'status' can only be 'status=open' or 'status=closed'")
             }
         }
