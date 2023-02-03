@@ -1,13 +1,13 @@
 package com.onecosys.get_things_done.service
 
-import com.onecosys.get_things_done.model.entity.Task
+import com.onecosys.get_things_done.error_handling.BadRequestException
+import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.entity.Task
 import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
 import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
 import com.onecosys.get_things_done.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.model.request.TaskUpdateRequest
-import com.onecosys.get_things_done.error_handling.BadRequestException
-import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
@@ -15,7 +15,6 @@ import org.springframework.beans.BeanUtils
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.stereotype.Service
 import java.beans.PropertyDescriptor
-import java.util.stream.Collectors
 
 @Service
 class TaskServiceImpl(
@@ -31,17 +30,11 @@ class TaskServiceImpl(
 
     override fun getTasks(status: String?): List<TaskDto> {
         return when (status) {
-            TASK_STATUS_OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true)
-                .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList())
+            TASK_STATUS_OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto)
 
-            TASK_STATUS_CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false)
-                .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList())
+            TASK_STATUS_CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false).map(mapper::toDto)
 
-            else -> repository.findAllByOrderByIdAsc().stream().map(mapper::toDto).collect(Collectors.toList())
+            else -> repository.findAllByOrderByIdAsc().map(mapper::toDto)
         }
     }
 
