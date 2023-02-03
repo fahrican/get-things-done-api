@@ -29,6 +29,7 @@ class TaskServiceImpl(
     }
 
     override fun getTasks(status: String?): List<TaskDto> {
+        validateTaskStatus(status)
         return when (status) {
             TASK_STATUS_OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto)
 
@@ -76,6 +77,14 @@ class TaskServiceImpl(
     private fun checkForTaskId(id: Long) {
         if (!repository.existsById(id)) {
             throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
+        }
+    }
+
+    private fun validateTaskStatus(status: String?) {
+        status?.let {
+            if (status.isEmpty() || status != TASK_STATUS_OPEN && status != TASK_STATUS_CLOSED) {
+                throw BadRequestException("status can only be status=open or status=closed")
+            }
         }
     }
 
