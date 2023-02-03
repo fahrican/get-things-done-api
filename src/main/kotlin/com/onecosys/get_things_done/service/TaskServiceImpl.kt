@@ -40,7 +40,7 @@ class TaskServiceImpl(
     }
 
     override fun getTaskById(id: Long): TaskDto {
-        checkForTaskId(id)
+        validateTaskIdExistence(id)
         val task: Task = repository.findTaskById(id)
         return mapper.toDto(task)
     }
@@ -60,7 +60,7 @@ class TaskServiceImpl(
     }
 
     override fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskDto {
-        checkForTaskId(id)
+        validateTaskIdExistence(id)
         val existingTask: Task = repository.findTaskById(id)
 
         BeanUtils.copyProperties(updateRequest, existingTask, *getNullProperties(updateRequest))
@@ -69,12 +69,12 @@ class TaskServiceImpl(
     }
 
     override fun deleteTask(id: Long): String {
-        checkForTaskId(id)
+        validateTaskIdExistence(id)
         repository.deleteById(id)
         return "Task with id: $id has been deleted."
     }
 
-    private fun checkForTaskId(id: Long) {
+    private fun validateTaskIdExistence(id: Long) {
         if (!repository.existsById(id)) {
             throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
         }
