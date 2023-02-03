@@ -83,7 +83,7 @@ class TaskServiceImpl(
     private fun validateTaskStatus(status: String?) {
         status?.let {
             if (status.isEmpty() || status != TASK_STATUS_OPEN && status != TASK_STATUS_CLOSED) {
-                throw BadRequestException("status can only be status=open or status=closed")
+                throw BadRequestException("Query parameter 'status' can only be 'status=open' or 'status=closed'")
             }
         }
     }
