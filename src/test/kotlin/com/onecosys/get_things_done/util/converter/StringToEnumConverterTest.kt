@@ -1,10 +1,10 @@
 package com.onecosys.get_things_done.util.converter
 
+import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.model.request.TaskStatus
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import org.springframework.core.convert.ConversionFailedException
 
 class StringToEnumConverterTest {
 
@@ -18,15 +18,10 @@ class StringToEnumConverterTest {
 
     @Test
     fun `convert should throw ConversionFailedException for an invalid string`() {
-        val expectedMessage =
-            "Failed to convert from type [java.lang.String] to type [com.onecosys.get_things_done.model.request.TaskStatus] for value 'INVALID'; nested exception is java.lang.IllegalArgumentException: No enum constant com.onecosys.get_things_done.model.request.TaskStatus.INVALID"
+        val expectedMessage = "Query parameter 'status' can only be 'status=open' or 'status=closed'"
 
-        val exception = assertThrows(ConversionFailedException::class.java) {
-            converter.convert("INVALID")
-        }
-        assertEquals(
-            expectedMessage,
-            exception.message
-        )
+        val exception = assertThrows(BadRequestException::class.java) { converter.convert("invalid") }
+
+        assertEquals(expectedMessage, exception.message)
     }
 }
