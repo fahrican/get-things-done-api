@@ -2,11 +2,12 @@ package com.onecosys.get_things_done.service
 
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.request.TaskCreateRequest
+import com.onecosys.get_things_done.model.request.TaskStatus
 import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 
 interface TaskService {
 
-    fun getTasks(status: String?): List<TaskDto>
+    fun getTasks(status: TaskStatus?): List<TaskDto>
 
     fun getTaskById(id: Long): TaskDto
 
