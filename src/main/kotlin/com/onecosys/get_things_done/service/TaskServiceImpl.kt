@@ -4,11 +4,7 @@ import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.entity.Task
-import com.onecosys.get_things_done.model.request.TaskStatus
-import com.onecosys.get_things_done.model.request.TaskCreateRequest
-import com.onecosys.get_things_done.model.request.TaskUpdateRequest
-import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
+import com.onecosys.get_things_done.model.request.*
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
@@ -16,7 +12,6 @@ import org.springframework.beans.BeanUtils
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.stereotype.Service
 import java.beans.PropertyDescriptor
-import java.util.*
 
 @Service
 class TaskServiceImpl(
@@ -25,18 +20,10 @@ class TaskServiceImpl(
     private val taskTimestamp: TaskTimestamp
 ) : TaskService {
 
-    companion object {
-        private const val TASK_STATUS_OPEN = "open"
-        private const val TASK_STATUS_CLOSED = "closed"
-    }
-
-    override fun getTasks(status: String?): List<TaskDto> {
-        validateTaskStatus(status)
+    override fun getTasks(status: TaskStatus?): List<TaskDto> {
         return when (status) {
-            TASK_STATUS_OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto)
-
-            TASK_STATUS_CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false).map(mapper::toDto)
-
+            TaskStatus.OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto)
+            TaskStatus.CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false).map(mapper::toDto)
             else -> repository.findAllByOrderByIdAsc().map(mapper::toDto)
         }
     }
@@ -80,16 +67,6 @@ class TaskServiceImpl(
     private fun validateTaskIdExistence(id: Long) {
         if (!repository.existsById(id)) {
             throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
-        }
-    }
-
-    private fun validateTaskStatus(status: String?) {
-        status?.let {
-            try {
-                TaskStatus.valueOf(status.uppercase(Locale.getDefault()))
-            } catch (e: IllegalArgumentException) {
-                throw BadRequestException("Query parameter 'status' can only be 'status=open' or 'status=closed'")
-            }
         }
     }
 
