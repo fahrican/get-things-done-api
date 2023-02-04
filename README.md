@@ -8,7 +8,7 @@ This application is designed to expose a set of RESTful endpoints to manage task
 
 ### Endpoints
 
-The endpoint for all tasks can be found at: https://justluxurylifestyle.com/api/v1/tasks/all
+The endpoint for all tasks can be found at: https://justluxurylifestyle.com/api/v1/tasks
 
 ### Swagger UI
 
