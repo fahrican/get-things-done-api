@@ -3,12 +3,9 @@ package com.onecosys.get_things_done.service
 import com.onecosys.get_things_done.model.entity.Priority
 import com.onecosys.get_things_done.model.entity.Task
 import com.onecosys.get_things_done.model.dto.TaskDto
-import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.TaskCreateRequest
-import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
+import com.onecosys.get_things_done.model.request.*
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
@@ -85,7 +82,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(true) } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getTasks("open")
+        val actualList: List<TaskDto> = objectUnderTest.getTasks(TaskStatus.OPEN)
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -96,12 +93,12 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false) } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getTasks("closed")
+        val actualList: List<TaskDto> = objectUnderTest.getTasks(TaskStatus.CLOSED)
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
     }
 
-    @Test
+/*    @Test
     fun `when tasks get queried with invalid query parameter then check for bad request exception`() {
         val queryParameter = "midway"
         val exception = assertThrows<BadRequestException> { objectUnderTest.getTasks(queryParameter) }
@@ -113,7 +110,7 @@ internal class TaskServiceTest {
         val queryParameter = ""
         val exception = assertThrows<BadRequestException> { objectUnderTest.getTasks(queryParameter) }
         assertThat(exception.message).isEqualTo("Query parameter 'status' can only be 'status=open' or 'status=closed'")
-    }
+    }*/
 
     @Test
     fun `when task gets created then check if it gets properly created`() {

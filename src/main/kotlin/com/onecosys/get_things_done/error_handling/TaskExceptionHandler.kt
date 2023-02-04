@@ -15,8 +15,11 @@ class TaskExceptionAdvice {
         return ResponseEntity(error, error.status)
     }
 
-    @ExceptionHandler(ConversionFailedException::class)
-    fun handleConversionFailedException(conversionFailedException: ConversionFailedException): ResponseEntity<ApiError> {
+    @ExceptionHandler(value = [IllegalArgumentException::class, ConversionFailedException::class])
+    fun handleConversionFailedException(
+        illegalArgumentException: IllegalArgumentException,
+        conversionFailedException: ConversionFailedException
+    ): ResponseEntity<ApiError> {
         val error = ApiError(
             message = "Query parameter 'status' can only be 'status=open' or 'status=closed'",
             status = HttpStatus.BAD_REQUEST

@@ -4,12 +4,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.get_things_done.model.entity.Priority
 import com.onecosys.get_things_done.model.dto.TaskDto
-import com.onecosys.get_things_done.model.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.MIN_DESCRIPTION_LENGTH
-import com.onecosys.get_things_done.model.request.TaskCreateRequest
-import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
+import com.onecosys.get_things_done.model.request.*
 import com.onecosys.get_things_done.service.TaskService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -99,7 +96,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 priority = Priority.LOW
         )
 
-        `when`(mockService.getTasks("open")).thenReturn(listOf(taskDto2))
+        `when`(mockService.getTasks(TaskStatus.OPEN)).thenReturn(listOf(taskDto2))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
@@ -112,7 +109,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
-        `when`(mockService.getTasks("closed")).thenReturn(listOf(dummyDto1))
+        `when`(mockService.getTasks(TaskStatus.CLOSED)).thenReturn(listOf(dummyDto1))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=closed"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
