@@ -1,6 +1,6 @@
 package com.onecosys.get_things_done.web.config
 
-import com.onecosys.get_things_done.util.converter.StringToEnumConverter
+import com.onecosys.get_things_done.util.converter.StringToTaskStatusConverter
 import org.springframework.context.annotation.Configuration
 import org.springframework.format.FormatterRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -9,6 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebConfig : WebMvcConfigurer {
 
     override fun addFormatters(registry: FormatterRegistry) {
-        registry.addConverter(StringToEnumConverter())
+        registry.addConverter(StringToTaskStatusConverter())
     }
 }

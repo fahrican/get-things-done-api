@@ -1,6 +1,5 @@
 package com.onecosys.get_things_done.error_handling
 
-import org.springframework.core.convert.ConversionFailedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -12,18 +11,6 @@ class TaskExceptionAdvice {
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequestException(badRequestException: BadRequestException): ResponseEntity<ApiError> {
         val error = ApiError(message = badRequestException.message, status = HttpStatus.BAD_REQUEST)
-        return ResponseEntity(error, error.status)
-    }
-
-    @ExceptionHandler(value = [IllegalArgumentException::class, ConversionFailedException::class])
-    fun handleConversionFailedException(
-        illegalArgumentException: IllegalArgumentException,
-        conversionFailedException: ConversionFailedException
-    ): ResponseEntity<ApiError> {
-        val error = ApiError(
-            message = "Query parameter 'status' can only be 'status=open' or 'status=closed'",
-            status = HttpStatus.BAD_REQUEST
-        )
         return ResponseEntity(error, error.status)
     }
 

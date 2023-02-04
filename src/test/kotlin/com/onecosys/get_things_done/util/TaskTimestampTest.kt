@@ -1,12 +1,11 @@
 package com.onecosys.get_things_done.util
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertEquals
 
 class TaskTimestampTest {
 
@@ -16,8 +15,9 @@ class TaskTimestampTest {
     @Test
     fun `when clock with zone is created then expect specific zone id`() {
         val clock = taskTimestamp.createClockWithZone()
-        assertNotNull(clock)
-        assertEquals(zoneId, clock.zone)
+
+        assertThat(clock).isNotNull
+        assertThat(clock.zone).isEqualTo(zoneId)
     }
 
     @Test
@@ -25,7 +25,8 @@ class TaskTimestampTest {
         val instant = Instant.now()
         val clock = Clock.fixed(instant, zoneId)
         val zonedDateTime = ZonedDateTime.now(clock)
-        assertEquals(zoneId, zonedDateTime.zone)
-        assertEquals(instant, clock.instant())
+
+        assertThat(zonedDateTime.zone).isEqualTo(zoneId)
+        assertThat(clock.instant()).isEqualTo(instant)
     }
 }

@@ -7,7 +7,7 @@ import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.model.request.*
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.util.TaskMapper
+import com.onecosys.get_things_done.util.converter.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -97,20 +97,6 @@ internal class TaskServiceTest {
 
         assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
     }
-
-/*    @Test
-    fun `when tasks get queried with invalid query parameter then check for bad request exception`() {
-        val queryParameter = "midway"
-        val exception = assertThrows<BadRequestException> { objectUnderTest.getTasks(queryParameter) }
-        assertThat(exception.message).isEqualTo("Query parameter 'status' can only be 'status=open' or 'status=closed'")
-    }
-
-    @Test
-    fun `when tasks get queried with blank query parameter then check for bad request exception`() {
-        val queryParameter = ""
-        val exception = assertThrows<BadRequestException> { objectUnderTest.getTasks(queryParameter) }
-        assertThat(exception.message).isEqualTo("Query parameter 'status' can only be 'status=open' or 'status=closed'")
-    }*/
 
     @Test
     fun `when task gets created then check if it gets properly created`() {

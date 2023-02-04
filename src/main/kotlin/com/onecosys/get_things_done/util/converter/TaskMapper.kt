@@ -1,4 +1,4 @@
-package com.onecosys.get_things_done.util
+package com.onecosys.get_things_done.util.converter
 
 import com.onecosys.get_things_done.model.entity.Task
 import com.onecosys.get_things_done.model.dto.TaskDto
