@@ -7,7 +7,7 @@ import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.model.request.*
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.util.TaskMapper
+import com.onecosys.get_things_done.util.converter.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
 import io.mockk.MockKAnnotations
 import io.mockk.every

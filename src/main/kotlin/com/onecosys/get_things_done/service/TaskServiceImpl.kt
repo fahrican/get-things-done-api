@@ -6,7 +6,7 @@ import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.entity.Task
 import com.onecosys.get_things_done.model.request.*
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.util.TaskMapper
+import com.onecosys.get_things_done.util.converter.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.BeanWrapperImpl
