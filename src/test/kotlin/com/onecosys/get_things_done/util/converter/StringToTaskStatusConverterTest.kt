@@ -6,9 +6,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
-class StringToEnumConverterTest {
+class StringToTaskStatusConverterTest {
 
-    private val converter = StringToEnumConverter()
+    private val converter = StringToTaskStatusConverter()
 
     @Test
     fun `convert should return the corresponding TaskStatus value for a valid string`() {
