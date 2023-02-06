@@ -21,8 +21,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import java.time.LocalDateTime
 
 
@@ -77,8 +75,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
         // THEN
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
-        resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.size()").value(taskDtos.size))
+        resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(taskDtos.size))
     }
 
     @Test
@@ -100,9 +98,9 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
-        resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.size()").value(1))
-        resultActions.andExpect(jsonPath("$[0].isTaskOpen").value(taskDto2.isTaskOpen))
+        resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(taskDto2.isTaskOpen))
     }
 
     @Test
@@ -113,9 +111,9 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=closed"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
-        resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.size()").value(1))
-        resultActions.andExpect(jsonPath("$[0].isTaskOpen").value(dummyDto1.isTaskOpen))
+        resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(dummyDto1.isTaskOpen))
     }
 
     @Test
@@ -124,8 +122,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/${dummyDto1.id}"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
-        resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.description").value(dummyDto1.description))
+        resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.description").value(dummyDto1.description))
     }
 
     @Test
@@ -202,8 +200,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         )
 
         resultActions.andExpect(MockMvcResultMatchers.status().isCreated)
-        resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.timeTaken").value(taskDto.timeTaken))
+        resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.timeTaken").value(taskDto.timeTaken))
     }
 
     @Test
@@ -239,18 +237,18 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         )
 
         resultActions.andExpect(MockMvcResultMatchers.status().isOk)
-        resultActions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(jsonPath("$.description").value(dummyDto.description))
+        resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.description").value(dummyDto.description))
     }
 
     @Test
     fun `given id for delete request when delete task is performed then check for the message`() {
-        val expectedMessage = "Task with id: $taskId has been deleted."
+        val expectedHeaderValue = "Task with id: $taskId has been deleted."
 
-        `when`(mockService.deleteTask(taskId)).thenReturn(expectedMessage)
+        `when`(mockService.deleteTask(taskId)).thenReturn(expectedHeaderValue)
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/${taskId}"))
 
-        resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
-        resultActions.andExpect(content().string(expectedMessage))
+        resultActions.andExpect(MockMvcResultMatchers.status().isNoContent)
+        resultActions.andExpect(MockMvcResultMatchers.header().string("delete-task-header", expectedHeaderValue))
     }
 }

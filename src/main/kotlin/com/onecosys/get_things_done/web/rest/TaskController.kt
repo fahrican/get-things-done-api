@@ -5,6 +5,7 @@ import com.onecosys.get_things_done.model.request.TaskCreateRequest
 import com.onecosys.get_things_done.model.request.TaskStatus
 import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 import com.onecosys.get_things_done.service.TaskService
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -45,5 +46,10 @@ class TaskController(private val service: TaskService) {
     ): ResponseEntity<TaskDto> = ResponseEntity.ok(service.updateTask(id, updateRequest))
 
     @DeleteMapping("{id}")
-    fun deleteTaskWithId(@PathVariable id: Long): ResponseEntity<String> = ResponseEntity.ok(service.deleteTask(id))
+    fun deleteTask(@PathVariable id: Long): ResponseEntity<Unit> {
+        val headerValue: String = service.deleteTask(id)
+        val httpHeader = HttpHeaders()
+        httpHeader.add("delete-task-header", headerValue)
+        return ResponseEntity(null, httpHeader, HttpStatus.NO_CONTENT)
+    }
 }
