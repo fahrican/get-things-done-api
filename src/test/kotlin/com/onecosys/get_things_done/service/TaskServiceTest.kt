@@ -267,8 +267,12 @@ internal class TaskServiceTest {
                 task.description,
                 isReminderSet = false,
                 isTaskOpen = false,
-                startedOn = null,
-                finishedOn = null,
+                startedOn = LocalDateTime.now(
+                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+                ),
+                finishedOn = LocalDateTime.now(
+                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+                ),
                 timeInterval = "0d",
                 timeTaken = 0,
                 priority = Priority.LOW
@@ -282,6 +286,8 @@ internal class TaskServiceTest {
         assertThat(actualTask.description).isEqualTo(task.description)
         assertThat(actualTask.isReminderSet).isEqualTo(task.isReminderSet)
         assertThat(actualTask.isTaskOpen).isEqualTo(task.isTaskOpen)
+        assertThat(actualTask.createdOn).isEqualTo(task.createdOn)
+        assertThat(actualTask.startedOn).isEqualTo(task.startedOn)
         assertThat(actualTask.finishedOn).isEqualTo(task.finishedOn)
         assertThat(actualTask.timeInterval).isEqualTo(task.timeInterval)
         assertThat(actualTask.timeTaken).isEqualTo(task.timeTaken)
