@@ -280,5 +280,11 @@ internal class TaskServiceTest {
         val actualTask = objectUnderTest.updateTask(task.id, updateRequest)
 
         assertThat(actualTask.description).isEqualTo(task.description)
+        assertThat(actualTask.isReminderSet).isEqualTo(task.isReminderSet)
+        assertThat(actualTask.isTaskOpen).isEqualTo(task.isTaskOpen)
+        assertThat(actualTask.finishedOn).isEqualTo(task.finishedOn)
+        assertThat(actualTask.timeInterval).isEqualTo(task.timeInterval)
+        assertThat(actualTask.timeTaken).isEqualTo(task.timeTaken)
+        assertThat(actualTask.priority).isEqualTo(task.priority)
     }
 }

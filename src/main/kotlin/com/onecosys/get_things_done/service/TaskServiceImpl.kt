@@ -6,12 +6,12 @@ import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.entity.Task
 import com.onecosys.get_things_done.model.request.*
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.util.converter.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
-import org.springframework.beans.BeanUtils
-import org.springframework.beans.BeanWrapperImpl
+import com.onecosys.get_things_done.util.converter.TaskMapper
 import org.springframework.stereotype.Service
-import java.beans.PropertyDescriptor
+import org.springframework.util.ReflectionUtils
+import java.lang.reflect.Field
+import kotlin.reflect.full.memberProperties
 
 @Service
 class TaskServiceImpl(
@@ -53,7 +53,16 @@ class TaskServiceImpl(
         validateTaskIdExistence(id)
         val existingTask: Task = repository.findTaskById(id)
 
-        BeanUtils.copyProperties(updateRequest, existingTask, *getNullProperties(updateRequest))
+        for (prop in TaskUpdateRequest::class.memberProperties) {
+            if (prop.get(updateRequest) != null) {
+                val field: Field? = ReflectionUtils.findField(Task::class.java, prop.name)
+                field?.let {
+                    it.isAccessible = true
+                    ReflectionUtils.setField(it, existingTask, prop.get(updateRequest))
+                }
+            }
+        }
+
         val savedTask: Task = repository.save(existingTask)
         return mapper.toDto(savedTask)
     }
@@ -68,13 +77,5 @@ class TaskServiceImpl(
         if (!repository.existsById(id)) {
             throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
         }
-    }
-
-    private fun getNullProperties(sourceObject: Any): Array<String> {
-        val sourceWrapper = BeanWrapperImpl(sourceObject)
-        val propertyDescriptors: Array<PropertyDescriptor> = sourceWrapper.propertyDescriptors
-        return propertyDescriptors.filter { property ->
-            sourceWrapper.getPropertyValue(property.name) == null
-        }.map { property -> property.name }.toTypedArray()
     }
 }
