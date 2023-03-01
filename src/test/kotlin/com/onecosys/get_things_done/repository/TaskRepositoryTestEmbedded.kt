@@ -43,24 +43,24 @@ internal class TaskRepositoryTestEmbedded {
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check for the number of open tasks`() {
-        val tasks: List<Task> = objectUnderTest.findAllByIsTaskOpenOrderByIdAsc(true)
+        val tasks: Set<Task> = objectUnderTest.findAllByIsTaskOpenOrderByIdAsc(true)
         assertThat(tasks.size).isEqualTo(numberOfOpenTasksInTestDataSql)
     }
 
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check for the number of closed tasks`() {
-        val tasks: List<Task> = objectUnderTest.findAllByIsTaskOpenOrderByIdAsc(false)
+        val tasks: Set<Task> = objectUnderTest.findAllByIsTaskOpenOrderByIdAsc(false)
         assertThat(tasks.size).isEqualTo(numberOfClosedTasksInTestDataSql)
     }
 
     @Test
     @Sql("classpath:test-data.sql")
     fun `when all tasks are queried then check if the order is ascending by id`() {
-        val tasks: List<Task> = objectUnderTest.findAllByOrderByIdAsc()
-        assertThat(tasks[0].id).isEqualTo(111)
-        assertThat(tasks[1].id).isEqualTo(222)
-        assertThat(tasks[2].id).isEqualTo(333)
+        val tasks: Set<Task> = objectUnderTest.findAllByOrderByIdAsc()
+        assertThat(tasks.elementAt(0).id).isEqualTo(111)
+        assertThat(tasks.elementAt(1).id).isEqualTo(222)
+        assertThat(tasks.elementAt(2).id).isEqualTo(333)
     }
 
     @Test

@@ -10,6 +10,7 @@ on:
 env:
   USER_PW: ${{ secrets.USER_PW }}
   USER_PLUS_DROPLET: ${{ secrets.USER_PLUS_DROPLET }}
+  DROPLET_PORT: ${{ secrets.DROPLET_PORT }}
   SERVER_PORT: ${{ secrets.SERVER_PORT }}
   JPA_DATABASE: ${{ secrets.JPA_DATABASE }}
   DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}

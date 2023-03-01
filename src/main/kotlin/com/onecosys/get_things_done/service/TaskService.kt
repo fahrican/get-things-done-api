@@ -7,7 +7,7 @@ import com.onecosys.get_things_done.model.request.TaskUpdateRequest
 
 interface TaskService {
 
-    fun getTasks(status: TaskStatus?): List<TaskDto>
+    fun getTasks(status: TaskStatus?): Set<TaskDto>
 
     fun getTaskById(id: Long): TaskDto
 

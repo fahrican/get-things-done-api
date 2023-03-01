@@ -70,8 +70,8 @@ internal class TaskServiceTest {
     fun `when all tasks get fetched then check if the given size is correct`() {
         val expectedTasks = listOf(Task(), Task())
 
-        every { mockRepository.findAllByOrderByIdAsc() } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getTasks(null)
+        every { mockRepository.findAllByOrderByIdAsc() } returns expectedTasks.toMutableSet()
+        val actualList: Set<TaskDto> = objectUnderTest.getTasks(null)
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
     }
@@ -81,10 +81,10 @@ internal class TaskServiceTest {
         task.isTaskOpen = true
         val expectedTasks = listOf(task)
 
-        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(true) } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getTasks(TaskStatus.OPEN)
+        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(true) } returns expectedTasks.toMutableSet()
+        val actualList: Set<TaskDto> = objectUnderTest.getTasks(TaskStatus.OPEN)
 
-        assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
+        assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
     }
 
     @Test
@@ -92,10 +92,10 @@ internal class TaskServiceTest {
         task.isTaskOpen = false
         val expectedTasks = listOf(task)
 
-        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false) } returns expectedTasks.toMutableList()
-        val actualList: List<TaskDto> = objectUnderTest.getTasks(TaskStatus.CLOSED)
+        every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false) } returns expectedTasks.toMutableSet()
+        val actualList: Set<TaskDto> = objectUnderTest.getTasks(TaskStatus.CLOSED)
 
-        assertThat(actualList[0].isTaskOpen).isEqualTo(task.isTaskOpen)
+        assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
     }
 
     @Test
@@ -267,8 +267,12 @@ internal class TaskServiceTest {
                 task.description,
                 isReminderSet = false,
                 isTaskOpen = false,
-                startedOn = null,
-                finishedOn = null,
+                startedOn = LocalDateTime.now(
+                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+                ),
+                finishedOn = LocalDateTime.now(
+                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+                ),
                 timeInterval = "0d",
                 timeTaken = 0,
                 priority = Priority.LOW
@@ -280,5 +284,13 @@ internal class TaskServiceTest {
         val actualTask = objectUnderTest.updateTask(task.id, updateRequest)
 
         assertThat(actualTask.description).isEqualTo(task.description)
+        assertThat(actualTask.isReminderSet).isEqualTo(task.isReminderSet)
+        assertThat(actualTask.isTaskOpen).isEqualTo(task.isTaskOpen)
+        assertThat(actualTask.createdOn).isEqualTo(task.createdOn)
+        assertThat(actualTask.startedOn).isEqualTo(task.startedOn)
+        assertThat(actualTask.finishedOn).isEqualTo(task.finishedOn)
+        assertThat(actualTask.timeInterval).isEqualTo(task.timeInterval)
+        assertThat(actualTask.timeTaken).isEqualTo(task.timeTaken)
+        assertThat(actualTask.priority).isEqualTo(task.priority)
     }
 }
