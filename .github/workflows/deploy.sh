@@ -5,7 +5,7 @@ set -ex -o pipefail
 
 echo "Deploying via remote SSH"
 
-sshpass -p "$USER_PW" ssh -o StrictHostKeyChecking=no "$USER_PLUS_DROPLET" \
+sshpass -p "$DROPLET_PORT" "$USER_PW" ssh -o StrictHostKeyChecking=no "$USER_PLUS_DROPLET" \
   "docker pull fahrican/get-things-done:latest \
   && docker stop get-things-done-be \
   && docker rm get-things-done-be \
