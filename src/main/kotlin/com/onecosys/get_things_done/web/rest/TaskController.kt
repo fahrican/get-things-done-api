@@ -28,7 +28,7 @@ class TaskController(private val service: TaskService) {
     @GetMapping
     fun getTasks(
         @RequestParam("status", required = false) status: TaskStatus?
-    ): ResponseEntity<List<TaskDto>> = ResponseEntity.ok(service.getTasks(status))
+    ): ResponseEntity<Set<TaskDto>> = ResponseEntity.ok(service.getTasks(status))
 
     @GetMapping("{id}")
     fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> = ResponseEntity.ok(service.getTaskById(id))

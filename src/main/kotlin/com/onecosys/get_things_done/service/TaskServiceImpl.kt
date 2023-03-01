@@ -20,11 +20,11 @@ class TaskServiceImpl(
     private val taskTimestamp: TaskTimestamp
 ) : TaskService {
 
-    override fun getTasks(status: TaskStatus?): List<TaskDto> {
+    override fun getTasks(status: TaskStatus?): Set<TaskDto> {
         return when (status) {
-            TaskStatus.OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto)
-            TaskStatus.CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false).map(mapper::toDto)
-            else -> repository.findAllByOrderByIdAsc().map(mapper::toDto)
+            TaskStatus.OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto).toSet()
+            TaskStatus.CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false).map(mapper::toDto).toSet()
+            else -> repository.findAllByOrderByIdAsc().map(mapper::toDto).toSet()
         }
     }
 
