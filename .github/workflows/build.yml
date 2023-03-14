@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     branches:
@@ -64,5 +65,16 @@ jobs:
           text: 'Digital Ocean deployment started... :grimacing: :crossed_fingers: ان شاء الله خير'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      - uses: actions/checkout@v3
-      - run: ./.github/workflows/deploy.sh
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker-compose pull
+            docker-compose up -d
+            docker system prune -af
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
