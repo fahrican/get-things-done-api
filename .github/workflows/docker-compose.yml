@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  get-things-done-be:
+    image: fahrican/get-things-done-be:latest
+    environment:
+      - SERVER_PORT=${SERVER_PORT}
+      - JPA_DATABASE=${JPA_DATABASE}
+      - DATASOURCE_URL=${DATASOURCE_URL}
+      - DATASOURCE_DRIVER_CLASS_NAME=${DATASOURCE_DRIVER_CLASS_NAME}
+      - DATASOURCE_USERNAME=${DATASOURCE_USERNAME}
+      - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
