@@ -41,14 +41,14 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: fahrican/get-things-done:latest
+          tags: fahrican/get-things-done-be:latest
           context: .
 
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: ':white_check_mark: pushed fahrican/get-things-done:${{steps.build-number.outputs.BUILD_NUMBER}} to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done'
+          text: ':white_check_mark: pushed fahrican/get-things-done-be:${{steps.build-number.outputs.BUILD_NUMBER}} to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done-be'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
