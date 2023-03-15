@@ -18,9 +18,6 @@ env:
   DATASOURCE_DRIVER_CLASS_NAME: ${{ secrets.DATASOURCE_DRIVER_CLASS_NAME }}
   DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
   DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
-  USER_NAME: ${{ secrets.USER_NAME }}
-  DROPLET_IP: ${{ secrets.DROPLET_IP }}
-
 
 jobs:
   build:
@@ -45,14 +42,14 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: fahrican/get-things-done-be:latest
+          tags: fahrican/get-things-done-api:latest
           context: .
 
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: ':white_check_mark: pushed fahrican/get-things-done-be:${{steps.build-number.outputs.BUILD_NUMBER}} to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done-be'
+          text: ':white_check_mark: pushed fahrican/get-things-done-api:${{steps.build-number.outputs.BUILD_NUMBER}} to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done-api'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -68,16 +65,5 @@ jobs:
           text: 'Digital Ocean deployment started... :grimacing: :crossed_fingers: ان شاء الله خير'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      - uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: ${{ secrets.USER_NAME }}
-          password: ${{ secrets.USER_PW }}
-          port: ${{ secrets.DROPLET_PORT }}
-          script: |
-            docker-compose pull
-            docker-compose up -d
-            docker system prune -af
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
+      - uses: actions/checkout@v3
+      - run: ./.github/workflows/deploy.sh
