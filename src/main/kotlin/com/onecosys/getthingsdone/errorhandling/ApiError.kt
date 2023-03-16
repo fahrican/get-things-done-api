@@ -7,5 +7,5 @@ data class ApiError(
     val message: String? = "Something went wrong",
     val status: HttpStatus,
     val code: Int = status.value(),
-    val timestamp: LocalDateTime = LocalDateTime.now(),
+    val timestamp: LocalDateTime = LocalDateTime.now()
 )
