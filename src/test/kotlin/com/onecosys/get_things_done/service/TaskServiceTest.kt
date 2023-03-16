@@ -98,14 +98,7 @@ internal class TaskServiceTest {
 
     @Test
     fun `when task gets created then check if it gets properly created`() {
-        task.description = createRequest.description
-        task.isReminderSet = createRequest.isReminderSet
-        task.isTaskOpen = createRequest.isTaskOpen
-        task.startedOn = createRequest.startedOn
-        task.finishedOn = createRequest.finishedOn
-        task.timeInterval = createRequest.timeInterval
-        task.timeTaken = createRequest.timeTaken
-        task.priority = createRequest.priority
+        task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone())
 
         every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
             date.atStartOfDay(ZoneId.systemDefault()).toInstant(),
@@ -137,25 +130,25 @@ internal class TaskServiceTest {
 
     @Test
     fun `when client wants to create a task with description more than 255 characters then check for bad request exception`() {
-        val taskRequest = TaskCreateRequest(
+        val taskDescriptionTooLong = TaskCreateRequest(
             description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to,  took a galley of type and scrambled",
-            isReminderSet = false,
-            isTaskOpen = false,
-            startedOn = null,
-            finishedOn = null,
-            timeInterval = "0d",
-            timeTaken = 0,
-            priority = Priority.LOW,
+            isReminderSet = true,
+            isTaskOpen = true,
+            startedOn = LocalDateTime.now(),
+            finishedOn = LocalDateTime.now(),
+            timeInterval = "35d",
+            timeTaken = 1,
+            priority = Priority.MEDIUM,
         )
 
-        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
+        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskDescriptionTooLong) }
         assertThat(exception.message).isEqualTo("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         verify { mockRepository.save(any()) wasNot called }
     }
 
     @Test
     fun `when client wants to create a task with description less than 3 characters then check for bad request exception`() {
-        val taskRequest = TaskCreateRequest(
+        val taskDescriptionTooShort = TaskCreateRequest(
             description = "ab",
             isReminderSet = false,
             isTaskOpen = false,
@@ -166,7 +159,7 @@ internal class TaskServiceTest {
             priority = Priority.LOW,
         )
 
-        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
+        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskDescriptionTooShort) }
         assertThat(exception.message).isEqualTo("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         verify { mockRepository.save(any()) wasNot called }
     }

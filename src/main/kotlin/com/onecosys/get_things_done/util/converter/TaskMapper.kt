@@ -1,7 +1,7 @@
-package com.onecosys.get_things_done.util.converter
+package com.onecosys.get_things_done.util.converter // ktlint-disable package-name
 
-import com.onecosys.get_things_done.model.entity.Task
 import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.entity.Task
 import com.onecosys.get_things_done.model.request.TaskCreateRequest
 import org.springframework.stereotype.Component
 import java.time.Clock
@@ -20,7 +20,7 @@ class TaskMapper {
         entity.finishedOn,
         entity.timeInterval,
         entity.timeTaken,
-        entity.priority
+        entity.priority,
     )
 
     fun toEntity(request: TaskCreateRequest, clock: Clock): Task {

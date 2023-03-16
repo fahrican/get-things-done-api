@@ -1,10 +1,10 @@
-package com.onecosys.get_things_done.service
+package com.onecosys.get_things_done.service // ktlint-disable package-name
 
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
 import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.model.entity.Task
-import com.onecosys.get_things_done.model.request.*
+import com.onecosys.get_things_done.model.request.* // ktlint-disable no-wildcard-imports
 import com.onecosys.get_things_done.repository.TaskRepository
 import com.onecosys.get_things_done.util.TaskTimestamp
 import com.onecosys.get_things_done.util.converter.TaskMapper
@@ -28,7 +28,6 @@ class TaskServiceImpl(
         }
     }
 
-
     override fun getTaskById(id: Long): TaskDto {
         validateTaskIdExistence(id)
         val task: Task = repository.findTaskById(id)
@@ -39,7 +38,6 @@ class TaskServiceImpl(
         val descriptionLength: Int = createRequest.description.length
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
-
         }
         if (repository.existsByDescription(createRequest.description)) {
             throw BadRequestException("A task with the description '${createRequest.description}' already exists")
