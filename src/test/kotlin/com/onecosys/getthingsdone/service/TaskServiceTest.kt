@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.service
 
-import com.onecosys.getthingsdone.errorhandling.BadRequestException
-import com.onecosys.getthingsdone.errorhandling.TaskNotFoundException
+import com.onecosys.getthingsdone.error.handling.BadRequestException
+import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
 import com.onecosys.getthingsdone.model.dto.TaskDto
 import com.onecosys.getthingsdone.model.entity.Priority
 import com.onecosys.getthingsdone.model.entity.Task

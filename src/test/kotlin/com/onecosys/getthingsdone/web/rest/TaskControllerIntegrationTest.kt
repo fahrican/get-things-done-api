@@ -2,8 +2,8 @@ package com.onecosys.getthingsdone.web.rest
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.errorhandling.BadRequestException
-import com.onecosys.getthingsdone.errorhandling.TaskNotFoundException
+import com.onecosys.getthingsdone.error.handling.BadRequestException
+import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
 import com.onecosys.getthingsdone.model.dto.TaskDto
 import com.onecosys.getthingsdone.model.entity.Priority
 import com.onecosys.getthingsdone.model.request.* // ktlint-disable no-wildcard-imports
