@@ -17,7 +17,6 @@ internal class TaskRepositoryTestEmbedded {
     private val numberOfClosedTasksInTestDataSql = 2
     private val numberOfOpenTasksInTestDataSql = 1
 
-
     @Test
     @Sql("classpath:test-data.sql")
     fun `when task saved through SQL file then check if it is not null`() {

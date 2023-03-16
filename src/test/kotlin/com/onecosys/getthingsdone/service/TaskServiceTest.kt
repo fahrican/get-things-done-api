@@ -57,7 +57,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.LOW,
+            priority = Priority.LOW
         )
         clock = Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         task = Task()
@@ -102,7 +102,7 @@ internal class TaskServiceTest {
 
         every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
             date.atStartOfDay(ZoneId.systemDefault()).toInstant(),
-            ZoneId.systemDefault(),
+            ZoneId.systemDefault()
         )
         every { mockRepository.save(any()) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
@@ -138,7 +138,7 @@ internal class TaskServiceTest {
             finishedOn = LocalDateTime.now(),
             timeInterval = "35d",
             timeTaken = 1,
-            priority = Priority.MEDIUM,
+            priority = Priority.MEDIUM
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskDescriptionTooLong) }
@@ -156,7 +156,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.LOW,
+            priority = Priority.LOW
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskDescriptionTooShort) }
@@ -171,7 +171,7 @@ internal class TaskServiceTest {
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
         task.createdOn = LocalDateTime.now(
-            Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()),
+            Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         )
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
@@ -181,7 +181,7 @@ internal class TaskServiceTest {
 
         every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
             date.atStartOfDay(ZoneId.systemDefault()).toInstant(),
-            ZoneId.systemDefault(),
+            ZoneId.systemDefault()
         )
         every { mockRepository.save(capture(taskSlot)) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
@@ -260,14 +260,14 @@ internal class TaskServiceTest {
                 isReminderSet = false,
                 isTaskOpen = false,
                 startedOn = LocalDateTime.now(
-                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()),
+                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
                 ),
                 finishedOn = LocalDateTime.now(
-                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()),
+                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
                 ),
                 timeInterval = "0d",
                 timeTaken = 0,
-                priority = Priority.LOW,
+                priority = Priority.LOW
             )
 
         every { mockRepository.existsById(any()) } returns true
