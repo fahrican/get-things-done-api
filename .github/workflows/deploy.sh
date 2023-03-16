@@ -8,4 +8,4 @@ echo "Deploying via remote SSH"
 sshpass -p "$USER_PW" ssh -o StrictHostKeyChecking=no -p "$DROPLET_PORT" "$USER_PLUS_DROPLET" \
   "docker-compose pull && docker-compose up -d && docker system prune -af"
 
-echo "Successfully deployed, hoooooray!"
+echo "Successfully deployed, hooray!"
