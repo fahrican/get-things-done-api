@@ -20,7 +20,7 @@ class TaskMapper {
         entity.finishedOn,
         entity.timeInterval,
         entity.timeTaken,
-        entity.priority,
+        entity.priority
     )
 
     fun toEntity(request: TaskCreateRequest, clock: Clock): Task {

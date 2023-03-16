@@ -44,7 +44,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         finishedOn = null,
         timeInterval = "1d",
         timeTaken = 1,
-        priority = Priority.LOW,
+        priority = Priority.LOW
     )
 
     @BeforeEach
@@ -65,7 +65,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW,
+            priority = Priority.LOW
         )
         val taskDtos = setOf(dummyDto1, taskDto2)
 
@@ -91,7 +91,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW,
+            priority = Priority.LOW
         )
 
         `when`(mockService.getTasks(TaskStatus.OPEN)).thenReturn(setOf(taskDto2))
@@ -150,7 +150,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW,
+            priority = Priority.LOW
         )
         val badRequestException =
             BadRequestException("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
@@ -159,7 +159,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)),
+                .content(mapper.writeValueAsString(request))
         )
 
         resultActions.andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -175,7 +175,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW,
+            priority = Priority.LOW
         )
         val taskDto = TaskDto(
             0,
@@ -187,14 +187,14 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW,
+            priority = Priority.LOW
         )
 
         `when`(mockService.createTask(request)).thenReturn(taskDto)
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)),
+                .content(mapper.writeValueAsString(request))
         )
 
         resultActions.andExpect(MockMvcResultMatchers.status().isCreated)
@@ -216,7 +216,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW,
+            priority = Priority.LOW
         )
         val dummyDto = TaskDto(
             44,
@@ -228,14 +228,14 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = dateTime,
             timeInterval = "3d",
             timeTaken = 3,
-            priority = Priority.MEDIUM,
+            priority = Priority.MEDIUM
         )
 
         `when`(mockService.updateTask(dummyDto.id!!, request)).thenReturn(dummyDto)
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/v1/tasks/${dummyDto.id}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)),
+                .content(mapper.writeValueAsString(request))
         )
 
         resultActions.andExpect(MockMvcResultMatchers.status().isOk)
