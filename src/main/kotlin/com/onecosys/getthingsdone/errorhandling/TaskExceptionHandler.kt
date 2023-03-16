@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.error_handling
+package com.onecosys.getthingsdone.errorhandling
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
