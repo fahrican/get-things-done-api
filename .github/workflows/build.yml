@@ -33,6 +33,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_MARKDOWN: false
           VALIDATE_SQLFLUFF: false
+          VALIDATE_BASH: true
+          VALIDATE_BASH_FLAG_OPTS: "-x gradlew"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
