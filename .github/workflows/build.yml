@@ -49,7 +49,7 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: ':white_check_mark: pushed fahrican/get-things-done-api:${{steps.build-number.outputs.BUILD_NUMBER}} to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done-api'
+          text: ':white_check_mark: pushed fahrican/get-things-done-api:latest to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done-api'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 

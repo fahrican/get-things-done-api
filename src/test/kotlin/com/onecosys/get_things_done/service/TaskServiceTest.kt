@@ -1,31 +1,30 @@
-package com.onecosys.get_things_done.service
+package com.onecosys.get_things_done.service // ktlint-disable package-name
 
-import com.onecosys.get_things_done.model.entity.Priority
-import com.onecosys.get_things_done.model.entity.Task
-import com.onecosys.get_things_done.model.dto.TaskDto
 import com.onecosys.get_things_done.error_handling.BadRequestException
 import com.onecosys.get_things_done.error_handling.TaskNotFoundException
-import com.onecosys.get_things_done.model.request.*
+import com.onecosys.get_things_done.model.dto.TaskDto
+import com.onecosys.get_things_done.model.entity.Priority
+import com.onecosys.get_things_done.model.entity.Task
+import com.onecosys.get_things_done.model.request.* // ktlint-disable no-wildcard-imports
 import com.onecosys.get_things_done.repository.TaskRepository
-import com.onecosys.get_things_done.util.converter.TaskMapper
 import com.onecosys.get_things_done.util.TaskTimestamp
+import com.onecosys.get_things_done.util.converter.TaskMapper
 import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.verify
 import io.mockk.called
-import io.mockk.slot
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.slot
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.Clock
 import java.time.ZoneId
-
 
 @ExtendWith(MockKExtension::class)
 internal class TaskServiceTest {
@@ -47,7 +46,6 @@ internal class TaskServiceTest {
     private lateinit var createRequest: TaskCreateRequest
     private lateinit var objectUnderTest: TaskService
 
-
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
@@ -59,7 +57,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.LOW
+            priority = Priority.LOW,
         )
         clock = Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         task = Task()
@@ -110,7 +108,8 @@ internal class TaskServiceTest {
         task.priority = createRequest.priority
 
         every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
-            date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()
+            date.atStartOfDay(ZoneId.systemDefault()).toInstant(),
+            ZoneId.systemDefault(),
         )
         every { mockRepository.save(any()) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
@@ -146,7 +145,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.LOW
+            priority = Priority.LOW,
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
@@ -164,7 +163,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.LOW
+            priority = Priority.LOW,
         )
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(taskRequest) }
@@ -179,7 +178,7 @@ internal class TaskServiceTest {
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
         task.createdOn = LocalDateTime.now(
-            Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+            Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()),
         )
         task.startedOn = createRequest.startedOn
         task.finishedOn = createRequest.finishedOn
@@ -188,7 +187,8 @@ internal class TaskServiceTest {
         task.priority = createRequest.priority
 
         every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
-            date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()
+            date.atStartOfDay(ZoneId.systemDefault()).toInstant(),
+            ZoneId.systemDefault(),
         )
         every { mockRepository.save(capture(taskSlot)) } returns task
         val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
@@ -246,7 +246,6 @@ internal class TaskServiceTest {
         assertThat(deleteTaskMsg).isEqualTo("Task with id: $taskId has been deleted.")
     }
 
-
     @Test
     fun `when delete by task id is called then check if argument could be captured`() {
         val taskIdSlot = slot<Long>()
@@ -268,14 +267,14 @@ internal class TaskServiceTest {
                 isReminderSet = false,
                 isTaskOpen = false,
                 startedOn = LocalDateTime.now(
-                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()),
                 ),
                 finishedOn = LocalDateTime.now(
-                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()),
                 ),
                 timeInterval = "0d",
                 timeTaken = 0,
-                priority = Priority.LOW
+                priority = Priority.LOW,
             )
 
         every { mockRepository.existsById(any()) } returns true
