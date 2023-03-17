@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Slack Notification Ci/Cd started
-      - uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
@@ -98,6 +98,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Deploy to DigitalOcean
+        uses: actions/checkout@v3
         run: ./.github/workflows/deploy.sh
 
       - name: Notify deployment results
