@@ -82,6 +82,7 @@ done
 
 APP_HOME=$( cd "${APP_HOME:-./}" && pwd -P ) || exit
 
+# shellcheck disable=SC2034
 APP_NAME="Gradle"
 APP_BASE_NAME=${0##*/}
 
