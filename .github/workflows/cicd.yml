@@ -94,6 +94,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
 
   deploy:
+    name: Deploy Project
     needs: build
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -101,11 +102,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Notify deployment started
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: 'Digital Ocean deployment started... :crossed_fingers: ان شاء الله خير'
+        env:
+          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
-
       - name: Deploy to target server
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ env.DROPLET_PORT }} ${{ env.DEPLOYMENT_USER }}@${{ env.DEPLOYMENT_HOST }} "\
@@ -118,6 +127,6 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'Digital Ocean deployment started... :rocket: :crossed_fingers: ان شاء الله خير'
+          text: 'Digital Ocean deployment finished... :rocket: :palms_up_together: ٱلْحَمْدُ لِلَّٰهِ'
         env:
           SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
