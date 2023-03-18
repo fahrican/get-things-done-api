@@ -113,7 +113,6 @@ jobs:
 
       - name: Deploy to Droplet
         run: |
-          sudo apt-get install -y sshpass
           sshpass -p "${{ env.DEPLOYMENT_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p ${{ env.DROPLET_PORT }} ${{ env.DEPLOYMENT_USER }}@${{ env.DEPLOYMENT_HOST }} "\
           docker-compose pull && \
           docker-compose up -d && \
