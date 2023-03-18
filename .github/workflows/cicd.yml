@@ -8,19 +8,10 @@ on:
     branches:
       - master
 
-env:
-  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  DEPLOYMENT_HOST: ${{ secrets.DEPLOYMENT_HOST }}
-  DEPLOYMENT_USER: ${{ secrets.DEPLOYMENT_USER }}
-  DROPLET_PORT: ${{ secrets.DROPLET_PORT }}
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
 jobs:
   build:
     name: Build Project
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Slack Notification Ci/Cd started
@@ -30,7 +21,7 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: 'CI/CD started... :eyes: بسم الله الرحمن الرحيم'
         env:
-          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -51,7 +42,7 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         env:
-          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Super Linter Slack Notification
         uses: 8398a7/action-slack@v3
@@ -60,13 +51,13 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: 'Super Linter finished... :heavy_check_mark: لطيف'
         env:
-          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docker Hub Slack Notification
         uses: 8398a7/action-slack@v3
@@ -75,7 +66,7 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: 'Docker Hub Login... :lock: طيب'
         env:
-          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
@@ -91,17 +82,14 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: ':white_check_mark: pushed fahrican/get-things-done-api:latest to docker hub... https://hub.docker.com/repository/docker/fahrican/get-things-done-api'
         env:
-          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy:
     name: Deploy Project
     needs: build
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Notify deployment started
         uses: 8398a7/action-slack@v3
         with:
@@ -109,16 +97,16 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: 'Digital Ocean deployment started... :crossed_fingers: ان شاء الله خير'
         env:
-          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to Droplet
         run: |
-          ssh -o StrictHostKeyChecking=no -p ${{ env.DROPLET_PORT }} ${{ env.DEPLOYMENT_USER }}@${{ env.DEPLOYMENT_HOST }} "\
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.DROPLET_PORT }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "\
             docker-compose pull && \
             docker-compose up -d && \
             docker system prune -af"
@@ -130,4 +118,4 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: 'Digital Ocean deployment finished... :rocket: :palms_up_together: ٱلْحَمْدُ لِلَّٰهِ'
         env:
-          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
