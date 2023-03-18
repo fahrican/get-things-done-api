@@ -1,4 +1,4 @@
-name: CI
+name: Build & Deployment
 
 on:
   push:
@@ -12,6 +12,10 @@ env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  DEPLOYMENT_HOST: ${{ secrets.DEPLOYMENT_HOST }}
+  DEPLOYMENT_USER: ${{ secrets.DEPLOYMENT_USER }}
+  DROPLET_PORT: ${{ secrets.DROPLET_PORT }}
 
 jobs:
   build:
@@ -97,10 +101,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy to DigitalOcean
-        uses: actions/checkout@v3
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
 
-      - run: ./.github/workflows/deploy.sh
+      - name: Deploy to target server
+        run: |
+          ssh -o StrictHostKeyChecking=no -p ${{ env.DROPLET_PORT }} ${{ env.DEPLOYMENT_USER }}@${{ env.DEPLOYMENT_HOST }} "\
+            docker-compose pull && \
+            docker-compose up -d && \
+            docker system prune -af"
 
       - name: Notify deployment results
         uses: 8398a7/action-slack@v3
