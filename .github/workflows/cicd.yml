@@ -14,8 +14,8 @@ env:
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   DEPLOYMENT_HOST: ${{ secrets.DEPLOYMENT_HOST }}
   DEPLOYMENT_USER: ${{ secrets.DEPLOYMENT_USER }}
-  DEPLOYMENT_PASSWORD: ${{ secrets.DEPLOYMENT_PASSWORD }}
   DROPLET_PORT: ${{ secrets.DROPLET_PORT }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
 jobs:
   build:
@@ -111,12 +111,17 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
 
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
+
       - name: Deploy to Droplet
         run: |
-          sshpass -p "${{ env.DEPLOYMENT_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p ${{ env.DROPLET_PORT }} ${{ env.DEPLOYMENT_USER }}@${{ env.DEPLOYMENT_HOST }} "\
-          docker-compose pull && \
-          docker-compose up -d && \
-          docker system prune -af"
+          ssh -o StrictHostKeyChecking=no -p ${{ env.DROPLET_PORT }} ${{ env.DEPLOYMENT_USER }}@${{ env.DEPLOYMENT_HOST }} "\
+            docker-compose pull && \
+            docker-compose up -d && \
+            docker system prune -af"
 
       - name: Notify deployment results
         uses: 8398a7/action-slack@v3
