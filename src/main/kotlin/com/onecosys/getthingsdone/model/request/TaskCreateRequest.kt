@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.model.request
 
 import com.onecosys.getthingsdone.model.entity.Priority
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Size
 
 data class TaskCreateRequest(
 
