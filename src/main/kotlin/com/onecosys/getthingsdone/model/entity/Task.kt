@@ -2,19 +2,10 @@ package com.onecosys.getthingsdone.model.entity
 
 import com.onecosys.getthingsdone.model.request.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.model.request.MIN_DESCRIPTION_LENGTH
+import jakarta.persistence.* // ktlint-disable no-wildcard-imports
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.SequenceGenerator
-import javax.persistence.Table
-import javax.persistence.UniqueConstraint
 
 @Entity
 @Table(
