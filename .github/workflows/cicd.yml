@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Slack Notification Ci/Cd started
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
@@ -37,7 +37,7 @@ jobs:
           VALIDATE_SQLFLUFF: false
 
       - name: Super Linter Slack Notification
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
@@ -52,7 +52,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docker Hub Slack Notification
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
@@ -68,7 +68,7 @@ jobs:
           context: .
 
       - name: Notify Docker push results
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Notify deployment started
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
@@ -104,7 +104,7 @@ jobs:
             docker system prune -af"
 
       - name: Notify deployment results
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
