@@ -19,7 +19,7 @@ repositories {
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "fahrican_get-things-done-api")
+        property("sonar.projectKey", System.getenv("SONAR_PROJECT_KEY"))
         property("sonar.organization", System.getenv("SONAR_ORG"))
         property("sonar.host.url", "https://sonarcloud.io")
     }
