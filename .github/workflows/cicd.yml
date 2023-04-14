@@ -30,7 +30,7 @@ jobs:
           VALIDATE_MARKDOWN: false
           VALIDATE_SQLFLUFF: false
 
-      - name: Super Linter Slack Notification
+      - name: Sonar Cloud Slack Notification
         uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
@@ -66,6 +66,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         run: ./gradlew build sonarqube --info
 
   build:
