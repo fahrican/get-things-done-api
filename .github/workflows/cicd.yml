@@ -39,7 +39,8 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3.5.2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
@@ -62,6 +63,7 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
+
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -86,7 +88,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.5.2
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.0.6
