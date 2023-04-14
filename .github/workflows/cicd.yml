@@ -9,17 +9,39 @@ on:
       - master
 
 jobs:
+  validate:
+    name: Validate Code Base
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Super Linter Slack Notification
+        uses: 8398a7/action-slack@v3.15.1
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: 'Super Linter finished... :eyes: لطيف'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Run Super-Linter
+        uses: github/super-linter@v5.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_MARKDOWN: false
+          VALIDATE_SQLFLUFF: false
+
   build:
     name: Build Project
+    needs: validate
     runs-on: ubuntu-22.04
-
     steps:
+
       - name: Slack Notification Ci/Cd started
         uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'CI/CD started... :eyes: بسم الله الرحمن الرحيم'
+          text: 'CI/CD started... :hut: بسم الله الرحمن الرحيم'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -27,26 +49,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Run Super-Linter
-        uses: github/super-linter@v4.10.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_MARKDOWN: false
-          VALIDATE_SQLFLUFF: false
-
-      - name: Super Linter Slack Notification
-        uses: 8398a7/action-slack@v3.15.1
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'Super Linter finished... :heavy_check_mark: لطيف'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: gradle/wrapper-validation-action@v1.0.6
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v2.1.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -61,7 +67,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4.0.0
         with:
           push: true
           tags: fahrican/get-things-done-api:latest
@@ -82,6 +88,7 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
+
       - name: Notify deployment started
         uses: 8398a7/action-slack@v3.15.1
         with:
@@ -92,7 +99,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Setup SSH agent
-        uses: webfactory/ssh-agent@v0.7.0
+        uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
