@@ -9,6 +9,12 @@ on:
       - master
 
 jobs:
+  validate:
+    name: Validate Code Base
+    runs-on: ubuntu-22.04
+    steps:
+
+
   build:
     name: Build Project
     runs-on: ubuntu-22.04
