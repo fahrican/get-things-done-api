@@ -24,7 +24,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Run Super-Linter
-        uses: github/super-linter@v4.10.1
+        uses: github/super-linter@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_MARKDOWN: false
