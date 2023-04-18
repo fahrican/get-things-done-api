@@ -26,6 +26,11 @@ sonarqube {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -68,7 +73,24 @@ tasks.jacocoTestReport {
     }
 }
 
-jacoco {
-    toolVersion = "0.8.8"
-    reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.5".toBigDecimal()
+            }
+        }
+
+        rule {
+            isEnabled = false
+            element = "CLASS"
+            includes = listOf("org.gradle.*")
+
+            limit {
+                counter = "LINE"
+                value = "TOTALCOUNT"
+                maximum = "0.3".toBigDecimal()
+            }
+        }
+    }
 }
