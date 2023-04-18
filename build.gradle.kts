@@ -94,3 +94,13 @@ tasks.jacocoTestCoverageVerification {
         }
     }
 }
+
+tasks.withType<JacocoReport> {
+    classDirectories.setFrom(
+        sourceSets.main.get().output.asFileTree.matching {
+            exclude(
+                "com/onecosys/getthingsdone/GetThingsDoneApplication.kt"
+            )
+        }
+    )
+}
