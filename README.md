@@ -1,6 +1,6 @@
 # Get Things Done Backend
 
-[![CI](https://github.com/fahrican/get_things_done/actions/workflows/build.yml/badge.svg)](https://github.com/fahrican/get_things_done/actions/workflows/build.yml)
+[![CI](https://github.com/fahrican/get_things_done/actions/workflows/cicd.yml/badge.svg)](https://github.com/fahrican/get_things_done/actions/workflows/cicd.yml)
 
 ## This is the backend of my personal project to track all my tasks
 
