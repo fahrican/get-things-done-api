@@ -11,17 +11,9 @@ on:
 jobs:
   validate:
     name: Validate Code Base
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-22.04
     steps:
-
-      - name: Super Linter Slack Notification
-        uses: 8398a7/action-slack@v3.15.1
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'Super Linter finished... :eyes: لطيف'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Run Super-Linter
         uses: github/super-linter@v5.0.0
@@ -30,12 +22,12 @@ jobs:
           VALIDATE_MARKDOWN: false
           VALIDATE_SQLFLUFF: false
 
-      - name: Sonar Cloud Slack Notification
+      - name: Super Linter Slack Notification
         uses: 8398a7/action-slack@v3.15.1
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'Sonar Cloud check started... :cloud: لطيف'
+          text: 'Super Linter finished... :eyes: اجل '
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -57,6 +49,15 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
+      - name: Sonar Cloud Slack Notification
+        uses: 8398a7/action-slack@v3.15.1
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: 'Sonar Cloud check started... :cloud: لطيف'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
@@ -74,6 +75,7 @@ jobs:
 
   build:
     name: Build Project
+    if: github.event_name == 'pull_request'
     needs: validate
     runs-on: ubuntu-22.04
     steps:
@@ -126,7 +128,6 @@ jobs:
 
   deploy:
     name: Deploy Project
-    needs: build
     if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
