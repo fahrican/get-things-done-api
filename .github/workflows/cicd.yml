@@ -126,7 +126,6 @@ jobs:
 
   deploy:
     name: Deploy Project
-    needs: build
     if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
