@@ -11,6 +11,7 @@ on:
 jobs:
   validate:
     name: Validate Code Base
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-22.04
     steps:
 
@@ -74,6 +75,7 @@ jobs:
 
   build:
     name: Build Project
+    if: github.event_name == 'pull_request'
     needs: validate
     runs-on: ubuntu-22.04
     steps:
