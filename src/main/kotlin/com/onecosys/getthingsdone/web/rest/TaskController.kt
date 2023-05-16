@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.web.rest
 
 import com.onecosys.getthingsdone.model.dto.TaskDto
-import com.onecosys.getthingsdone.model.request.TaskCreateRequest
-import com.onecosys.getthingsdone.model.request.TaskStatus
-import com.onecosys.getthingsdone.model.request.TaskUpdateRequest
+import com.onecosys.getthingsdone.model.dto.TaskCreateDto
+import com.onecosys.getthingsdone.model.TaskStatus
+import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
 import com.onecosys.getthingsdone.service.TaskService
 import jakarta.validation.Valid
 import org.springframework.http.HttpHeaders
@@ -36,7 +36,7 @@ class TaskController(private val service: TaskService) {
     @PostMapping
     fun createTask(
         @Valid @RequestBody
-        createRequest: TaskCreateRequest
+        createRequest: TaskCreateDto
     ): ResponseEntity<TaskDto> {
         val task = service.createTask(createRequest)
         return ResponseEntity(task, HttpStatus.CREATED)
@@ -46,7 +46,7 @@ class TaskController(private val service: TaskService) {
     fun updateTask(
         @PathVariable id: Long,
         @Valid @RequestBody
-        updateRequest: TaskUpdateRequest
+        updateRequest: TaskUpdateDto
     ): ResponseEntity<TaskDto> = ResponseEntity.ok(service.updateTask(id, updateRequest))
 
     @DeleteMapping("{id}")

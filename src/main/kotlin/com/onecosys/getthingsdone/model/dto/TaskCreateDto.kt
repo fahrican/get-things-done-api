@@ -1,11 +1,11 @@
-package com.onecosys.getthingsdone.model.request
+package com.onecosys.getthingsdone.model.dto
 
-import com.onecosys.getthingsdone.model.entity.Priority
+import com.onecosys.getthingsdone.model.Priority
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
-data class TaskCreateRequest(
+data class TaskCreateDto(
 
     @Size(min = MIN_DESCRIPTION_LENGTH, max = MAX_DESCRIPTION_LENGTH)
     val description: String,

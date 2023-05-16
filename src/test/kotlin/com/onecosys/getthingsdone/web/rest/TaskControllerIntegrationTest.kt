@@ -4,9 +4,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.error.handling.BadRequestException
 import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
+import com.onecosys.getthingsdone.model.TaskStatus
+import com.onecosys.getthingsdone.model.Priority
+import com.onecosys.getthingsdone.model.dto.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.model.dto.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.model.dto.TaskCreateDto
 import com.onecosys.getthingsdone.model.dto.TaskDto
-import com.onecosys.getthingsdone.model.entity.Priority
-import com.onecosys.getthingsdone.model.request.* // ktlint-disable no-wildcard-imports
+import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
 import com.onecosys.getthingsdone.service.TaskService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -142,7 +146,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given task creation when description is the same to another then check for bad request exception`() {
-        val request = TaskCreateRequest(
+        val request = TaskCreateDto(
             description = "t",
             isReminderSet = false,
             isTaskOpen = false,
@@ -167,7 +171,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given create task request when task gets created then check for correct property`() {
-        val request = TaskCreateRequest(
+        val request = TaskCreateDto(
             description = "test for db",
             isReminderSet = false,
             isTaskOpen = false,
@@ -208,7 +212,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val dateTime = LocalDateTime.parse(str, formatter)
 
-        val request = TaskUpdateRequest(
+        val request = TaskUpdateDto(
             "update task",
             isReminderSet = false,
             isTaskOpen = false,

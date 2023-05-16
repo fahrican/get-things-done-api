@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.service
 
 import com.onecosys.getthingsdone.model.dto.TaskDto
-import com.onecosys.getthingsdone.model.request.TaskCreateRequest
-import com.onecosys.getthingsdone.model.request.TaskStatus
-import com.onecosys.getthingsdone.model.request.TaskUpdateRequest
+import com.onecosys.getthingsdone.model.dto.TaskCreateDto
+import com.onecosys.getthingsdone.model.TaskStatus
+import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
 
 interface TaskService {
 
@@ -11,9 +11,9 @@ interface TaskService {
 
     fun getTaskById(id: Long): TaskDto
 
-    fun createTask(createRequest: TaskCreateRequest): TaskDto
+    fun createTask(createRequest: TaskCreateDto): TaskDto
 
-    fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskDto
+    fun updateTask(id: Long, updateRequest: TaskUpdateDto): TaskDto
 
     fun deleteTask(id: Long): String
 }

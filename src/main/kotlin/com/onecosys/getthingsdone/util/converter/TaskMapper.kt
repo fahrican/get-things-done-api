@@ -2,7 +2,7 @@ package com.onecosys.getthingsdone.util.converter
 
 import com.onecosys.getthingsdone.model.dto.TaskDto
 import com.onecosys.getthingsdone.model.entity.Task
-import com.onecosys.getthingsdone.model.request.TaskCreateRequest
+import com.onecosys.getthingsdone.model.dto.TaskCreateDto
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime
@@ -23,7 +23,7 @@ class TaskMapper {
         entity.priority
     )
 
-    fun toEntity(request: TaskCreateRequest, clock: Clock): Task {
+    fun toEntity(request: TaskCreateDto, clock: Clock): Task {
         val task = Task()
         task.description = request.description
         task.isReminderSet = request.isReminderSet

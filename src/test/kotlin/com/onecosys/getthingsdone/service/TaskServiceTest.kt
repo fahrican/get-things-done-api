@@ -2,10 +2,14 @@ package com.onecosys.getthingsdone.service
 
 import com.onecosys.getthingsdone.error.handling.BadRequestException
 import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
+import com.onecosys.getthingsdone.model.TaskStatus
+import com.onecosys.getthingsdone.model.Priority
+import com.onecosys.getthingsdone.model.dto.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.model.dto.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.model.dto.TaskCreateDto
 import com.onecosys.getthingsdone.model.dto.TaskDto
-import com.onecosys.getthingsdone.model.entity.Priority
+import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
 import com.onecosys.getthingsdone.model.entity.Task
-import com.onecosys.getthingsdone.model.request.* // ktlint-disable no-wildcard-imports
 import com.onecosys.getthingsdone.repository.TaskRepository
 import com.onecosys.getthingsdone.util.TaskTimestamp
 import com.onecosys.getthingsdone.util.converter.TaskMapper
@@ -43,13 +47,13 @@ internal class TaskServiceTest {
     private lateinit var clock: Clock
 
     private lateinit var task: Task
-    private lateinit var createRequest: TaskCreateRequest
+    private lateinit var createRequest: TaskCreateDto
     private lateinit var objectUnderTest: TaskService
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
-        createRequest = TaskCreateRequest(
+        createRequest = TaskCreateDto(
             "test task",
             isReminderSet = false,
             isTaskOpen = false,
@@ -130,7 +134,7 @@ internal class TaskServiceTest {
 
     @Test
     fun `when client wants to create a task with description more than 255 characters then check for bad request exception`() {
-        val taskDescriptionTooLong = TaskCreateRequest(
+        val taskDescriptionTooLong = TaskCreateDto(
             description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to,  took a galley of type and scrambled",
             isReminderSet = true,
             isTaskOpen = true,
@@ -148,7 +152,7 @@ internal class TaskServiceTest {
 
     @Test
     fun `when client wants to create a task with description less than 3 characters then check for bad request exception`() {
-        val taskDescriptionTooShort = TaskCreateRequest(
+        val taskDescriptionTooShort = TaskCreateDto(
             description = "ab",
             isReminderSet = false,
             isTaskOpen = false,
@@ -255,7 +259,7 @@ internal class TaskServiceTest {
     fun `when update task is called with task request argument then expect specific description fpr actual task`() {
         task.description = "test task"
         val updateRequest =
-            TaskUpdateRequest(
+            TaskUpdateDto(
                 task.description,
                 isReminderSet = false,
                 isTaskOpen = false,
