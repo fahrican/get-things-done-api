@@ -4,11 +4,11 @@ import com.onecosys.getthingsdone.error.handling.BadRequestException
 import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
 import com.onecosys.getthingsdone.model.TaskStatus
 import com.onecosys.getthingsdone.model.Priority
-import com.onecosys.getthingsdone.model.dto.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.model.dto.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.model.dto.TaskCreateDto
-import com.onecosys.getthingsdone.model.dto.TaskDto
+import com.onecosys.getthingsdone.model.dto.TaskFetchDto
 import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
+import com.onecosys.getthingsdone.model.entity.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.model.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.model.entity.Task
 import com.onecosys.getthingsdone.repository.TaskRepository
 import com.onecosys.getthingsdone.util.TaskTimestamp
@@ -73,7 +73,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(Task(), Task())
 
         every { mockRepository.findAllByOrderByIdAsc() } returns expectedTasks.toMutableSet()
-        val actualList: Set<TaskDto> = objectUnderTest.getTasks(null)
+        val actualList: Set<TaskFetchDto> = objectUnderTest.getTasks(null)
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
     }
@@ -84,7 +84,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(true) } returns expectedTasks.toMutableSet()
-        val actualList: Set<TaskDto> = objectUnderTest.getTasks(TaskStatus.OPEN)
+        val actualList: Set<TaskFetchDto> = objectUnderTest.getTasks(TaskStatus.OPEN)
 
         assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -95,7 +95,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false) } returns expectedTasks.toMutableSet()
-        val actualList: Set<TaskDto> = objectUnderTest.getTasks(TaskStatus.CLOSED)
+        val actualList: Set<TaskFetchDto> = objectUnderTest.getTasks(TaskStatus.CLOSED)
 
         assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -109,18 +109,18 @@ internal class TaskServiceTest {
             ZoneId.systemDefault()
         )
         every { mockRepository.save(any()) } returns task
-        val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
+        val actualTaskFetchDto: TaskFetchDto = objectUnderTest.createTask(createRequest)
 
-        assertThat(actualTaskDto.id).isEqualTo(task.id)
-        assertThat(actualTaskDto.description).isEqualTo(createRequest.description)
-        assertThat(actualTaskDto.isReminderSet).isEqualTo(task.isReminderSet)
-        assertThat(actualTaskDto.isTaskOpen).isEqualTo(task.isTaskOpen)
-        assertThat(actualTaskDto.startedOn).isEqualTo(task.startedOn)
-        assertThat(actualTaskDto.finishedOn).isEqualTo(task.finishedOn)
-        assertThat(actualTaskDto.timeInterval).isEqualTo(task.timeInterval)
-        assertThat(actualTaskDto.timeTaken).isEqualTo(task.timeTaken)
-        assertThat(actualTaskDto.priority).isEqualTo(task.priority)
-        assertThat(actualTaskDto.createdOn).isEqualTo(task.createdOn)
+        assertThat(actualTaskFetchDto.id).isEqualTo(task.id)
+        assertThat(actualTaskFetchDto.description).isEqualTo(createRequest.description)
+        assertThat(actualTaskFetchDto.isReminderSet).isEqualTo(task.isReminderSet)
+        assertThat(actualTaskFetchDto.isTaskOpen).isEqualTo(task.isTaskOpen)
+        assertThat(actualTaskFetchDto.startedOn).isEqualTo(task.startedOn)
+        assertThat(actualTaskFetchDto.finishedOn).isEqualTo(task.finishedOn)
+        assertThat(actualTaskFetchDto.timeInterval).isEqualTo(task.timeInterval)
+        assertThat(actualTaskFetchDto.timeTaken).isEqualTo(task.timeTaken)
+        assertThat(actualTaskFetchDto.priority).isEqualTo(task.priority)
+        assertThat(actualTaskFetchDto.createdOn).isEqualTo(task.createdOn)
     }
 
     @Test
@@ -188,19 +188,19 @@ internal class TaskServiceTest {
             ZoneId.systemDefault()
         )
         every { mockRepository.save(capture(taskSlot)) } returns task
-        val actualTaskDto: TaskDto = objectUnderTest.createTask(createRequest)
+        val actualTaskFetchDto: TaskFetchDto = objectUnderTest.createTask(createRequest)
 
         verify { mockRepository.save(capture(taskSlot)) }
-        assertThat(actualTaskDto.id).isEqualTo(taskSlot.captured.id)
-        assertThat(actualTaskDto.description).isEqualTo(taskSlot.captured.description)
-        assertThat(actualTaskDto.isReminderSet).isEqualTo(taskSlot.captured.isReminderSet)
-        assertThat(actualTaskDto.isTaskOpen).isEqualTo(taskSlot.captured.isTaskOpen)
-        assertThat(actualTaskDto.createdOn).isEqualTo(taskSlot.captured.createdOn)
-        assertThat(actualTaskDto.startedOn).isEqualTo(taskSlot.captured.startedOn)
-        assertThat(actualTaskDto.finishedOn).isEqualTo(taskSlot.captured.finishedOn)
-        assertThat(actualTaskDto.timeInterval).isEqualTo(taskSlot.captured.timeInterval)
-        assertThat(actualTaskDto.timeTaken).isEqualTo(taskSlot.captured.timeTaken)
-        assertThat(actualTaskDto.priority).isEqualTo(taskSlot.captured.priority)
+        assertThat(actualTaskFetchDto.id).isEqualTo(taskSlot.captured.id)
+        assertThat(actualTaskFetchDto.description).isEqualTo(taskSlot.captured.description)
+        assertThat(actualTaskFetchDto.isReminderSet).isEqualTo(taskSlot.captured.isReminderSet)
+        assertThat(actualTaskFetchDto.isTaskOpen).isEqualTo(taskSlot.captured.isTaskOpen)
+        assertThat(actualTaskFetchDto.createdOn).isEqualTo(taskSlot.captured.createdOn)
+        assertThat(actualTaskFetchDto.startedOn).isEqualTo(taskSlot.captured.startedOn)
+        assertThat(actualTaskFetchDto.finishedOn).isEqualTo(taskSlot.captured.finishedOn)
+        assertThat(actualTaskFetchDto.timeInterval).isEqualTo(taskSlot.captured.timeInterval)
+        assertThat(actualTaskFetchDto.timeTaken).isEqualTo(taskSlot.captured.timeTaken)
+        assertThat(actualTaskFetchDto.priority).isEqualTo(taskSlot.captured.priority)
     }
 
     @Test

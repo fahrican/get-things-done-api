@@ -1,8 +1,6 @@
 package com.onecosys.getthingsdone.model.entity
 
 import com.onecosys.getthingsdone.model.Priority
-import com.onecosys.getthingsdone.model.dto.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.model.dto.MIN_DESCRIPTION_LENGTH
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -58,3 +56,6 @@ class Task {
     @Enumerated(EnumType.STRING)
     var priority: Priority = Priority.LOW
 }
+
+const val MIN_DESCRIPTION_LENGTH: Int = 3
+const val MAX_DESCRIPTION_LENGTH: Int = 255

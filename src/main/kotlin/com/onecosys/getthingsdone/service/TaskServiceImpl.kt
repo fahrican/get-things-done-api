@@ -4,6 +4,8 @@ import com.onecosys.getthingsdone.error.handling.BadRequestException
 import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
 import com.onecosys.getthingsdone.model.TaskStatus
 import com.onecosys.getthingsdone.model.dto.*
+import com.onecosys.getthingsdone.model.entity.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.model.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.model.entity.Task
 import com.onecosys.getthingsdone.repository.TaskRepository
 import com.onecosys.getthingsdone.util.TaskTimestamp
@@ -20,7 +22,7 @@ class TaskServiceImpl(
     private val taskTimestamp: TaskTimestamp
 ) : TaskService {
 
-    override fun getTasks(status: TaskStatus?): Set<TaskDto> {
+    override fun getTasks(status: TaskStatus?): Set<TaskFetchDto> {
         return when (status) {
             TaskStatus.OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto).toSet()
             TaskStatus.CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false).map(mapper::toDto).toSet()
@@ -28,13 +30,13 @@ class TaskServiceImpl(
         }
     }
 
-    override fun getTaskById(id: Long): TaskDto {
+    override fun getTaskById(id: Long): TaskFetchDto {
         validateTaskIdExistence(id)
         val task: Task = repository.findTaskById(id)
         return mapper.toDto(task)
     }
 
-    override fun createTask(createRequest: TaskCreateDto): TaskDto {
+    override fun createTask(createRequest: TaskCreateDto): TaskFetchDto {
         val descriptionLength: Int = createRequest.description.length
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
@@ -47,7 +49,7 @@ class TaskServiceImpl(
         return mapper.toDto(savedTask)
     }
 
-    override fun updateTask(id: Long, updateRequest: TaskUpdateDto): TaskDto {
+    override fun updateTask(id: Long, updateRequest: TaskUpdateDto): TaskFetchDto {
         validateTaskIdExistence(id)
         val existingTask: Task = repository.findTaskById(id)
 
