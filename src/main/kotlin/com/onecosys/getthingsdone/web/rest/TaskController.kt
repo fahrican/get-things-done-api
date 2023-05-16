@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.web.rest
 
-import com.onecosys.getthingsdone.model.dto.TaskDto
+import com.onecosys.getthingsdone.model.dto.TaskFetchDto
 import com.onecosys.getthingsdone.model.dto.TaskCreateDto
 import com.onecosys.getthingsdone.model.TaskStatus
 import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
@@ -28,16 +28,16 @@ class TaskController(private val service: TaskService) {
     @GetMapping
     fun getTasks(
         @RequestParam("status", required = false) status: TaskStatus?
-    ): ResponseEntity<Set<TaskDto>> = ResponseEntity.ok(service.getTasks(status))
+    ): ResponseEntity<Set<TaskFetchDto>> = ResponseEntity.ok(service.getTasks(status))
 
     @GetMapping("{id}")
-    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDto> = ResponseEntity.ok(service.getTaskById(id))
+    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskFetchDto> = ResponseEntity.ok(service.getTaskById(id))
 
     @PostMapping
     fun createTask(
         @Valid @RequestBody
         createRequest: TaskCreateDto
-    ): ResponseEntity<TaskDto> {
+    ): ResponseEntity<TaskFetchDto> {
         val task = service.createTask(createRequest)
         return ResponseEntity(task, HttpStatus.CREATED)
     }
@@ -47,7 +47,7 @@ class TaskController(private val service: TaskService) {
         @PathVariable id: Long,
         @Valid @RequestBody
         updateRequest: TaskUpdateDto
-    ): ResponseEntity<TaskDto> = ResponseEntity.ok(service.updateTask(id, updateRequest))
+    ): ResponseEntity<TaskFetchDto> = ResponseEntity.ok(service.updateTask(id, updateRequest))
 
     @DeleteMapping("{id}")
     fun deleteTask(@PathVariable id: Long): ResponseEntity<Unit> {

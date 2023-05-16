@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.util.converter
 
-import com.onecosys.getthingsdone.model.dto.TaskDto
+import com.onecosys.getthingsdone.model.dto.TaskFetchDto
 import com.onecosys.getthingsdone.model.entity.Task
 import com.onecosys.getthingsdone.model.dto.TaskCreateDto
 import org.springframework.stereotype.Component
@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 @Component
 class TaskMapper {
 
-    fun toDto(entity: Task) = TaskDto(
+    fun toDto(entity: Task) = TaskFetchDto(
         entity.id,
         entity.description,
         entity.isReminderSet,

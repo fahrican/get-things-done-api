@@ -1,6 +1,8 @@
 package com.onecosys.getthingsdone.model.dto
 
 import com.onecosys.getthingsdone.model.Priority
+import com.onecosys.getthingsdone.model.entity.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.model.entity.MIN_DESCRIPTION_LENGTH
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
@@ -25,5 +27,3 @@ data class TaskCreateDto(
 
     val priority: Priority
 )
-const val MIN_DESCRIPTION_LENGTH: Int = 3
-const val MAX_DESCRIPTION_LENGTH: Int = 255
