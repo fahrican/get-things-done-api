@@ -1,16 +1,26 @@
 package com.onecosys.getthingsdone.model.entity
 
-import com.onecosys.getthingsdone.model.request.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.model.request.MIN_DESCRIPTION_LENGTH
-import jakarta.persistence.* // ktlint-disable no-wildcard-imports
+import com.onecosys.getthingsdone.model.Priority
+import com.onecosys.getthingsdone.model.dto.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.model.dto.MIN_DESCRIPTION_LENGTH
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
 @Entity
 @Table(
-    name = "task",
-    uniqueConstraints = [UniqueConstraint(name = "uk_task_description", columnNames = ["description"])]
+        name = "task",
+        uniqueConstraints = [UniqueConstraint(name = "uk_task_description", columnNames = ["description"])]
 )
 class Task {
 

@@ -2,9 +2,9 @@ package com.onecosys.getthingsdone.service
 
 import com.onecosys.getthingsdone.error.handling.BadRequestException
 import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
-import com.onecosys.getthingsdone.model.dto.TaskDto
+import com.onecosys.getthingsdone.model.TaskStatus
+import com.onecosys.getthingsdone.model.dto.*
 import com.onecosys.getthingsdone.model.entity.Task
-import com.onecosys.getthingsdone.model.request.* // ktlint-disable no-wildcard-imports
 import com.onecosys.getthingsdone.repository.TaskRepository
 import com.onecosys.getthingsdone.util.TaskTimestamp
 import com.onecosys.getthingsdone.util.converter.TaskMapper
@@ -34,7 +34,7 @@ class TaskServiceImpl(
         return mapper.toDto(task)
     }
 
-    override fun createTask(createRequest: TaskCreateRequest): TaskDto {
+    override fun createTask(createRequest: TaskCreateDto): TaskDto {
         val descriptionLength: Int = createRequest.description.length
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
@@ -47,11 +47,11 @@ class TaskServiceImpl(
         return mapper.toDto(savedTask)
     }
 
-    override fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskDto {
+    override fun updateTask(id: Long, updateRequest: TaskUpdateDto): TaskDto {
         validateTaskIdExistence(id)
         val existingTask: Task = repository.findTaskById(id)
 
-        for (prop in TaskUpdateRequest::class.memberProperties) {
+        for (prop in TaskUpdateDto::class.memberProperties) {
             if (prop.get(updateRequest) != null) {
                 val field: Field? = ReflectionUtils.findField(Task::class.java, prop.name)
                 field?.let {
