@@ -42,7 +42,7 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 
     // Swagger / Open API
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.15")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 
     // Unit Testing stuff
     testImplementation("org.springframework.boot:spring-boot-starter-test")
