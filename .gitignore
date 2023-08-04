@@ -214,6 +214,7 @@ gradle-app.setting
 
 # project files
 application-staging.yml
+app.log*
 
 # Eclipse Gradle plugin generated files
 # Eclipse Core
