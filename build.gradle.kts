@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.0.5"
-    id("io.spring.dependency-management") version "1.1.0"
+    id("org.springframework.boot") version "3.0.9"
+    id("io.spring.dependency-management") version "1.1.1"
     id("org.sonarqube") version "3.5.0.2730"
     kotlin("jvm") version "1.8.21"
     kotlin("plugin.spring") version "1.8.21"
