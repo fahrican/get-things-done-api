@@ -24,7 +24,7 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-    show-sql: true
+    show-sql: false
 
 springdoc:
   api-docs:
