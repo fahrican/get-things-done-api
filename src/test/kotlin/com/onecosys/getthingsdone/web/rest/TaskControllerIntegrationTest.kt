@@ -6,9 +6,9 @@ import com.onecosys.getthingsdone.error.handling.BadRequestException
 import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
 import com.onecosys.getthingsdone.model.TaskStatus
 import com.onecosys.getthingsdone.model.Priority
-import com.onecosys.getthingsdone.model.dto.TaskCreateDto
-import com.onecosys.getthingsdone.model.dto.TaskFetchDto
-import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
+import com.onecosys.getthingsdone.model.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.model.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.model.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.model.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.model.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.service.TaskService
@@ -38,7 +38,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     private val mapper = jacksonObjectMapper()
 
     private val taskId: Long = 33
-    private val dummyDto1 = TaskFetchDto(
+    private val dummyDto1 = TaskFetchResponse(
             33,
             "test1",
             isReminderSet = false,
@@ -59,7 +59,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     @Test
     fun `given all tasks when fetch happen then check for size`() {
         // GIVEN
-        val taskFetchDto2 = TaskFetchDto(
+        val taskFetchResponse2 = TaskFetchResponse(
                 44,
                 "test2",
                 isReminderSet = false,
@@ -71,7 +71,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 timeTaken = 2,
                 priority = Priority.LOW
         )
-        val taskDtos = setOf(dummyDto1, taskFetchDto2)
+        val taskDtos = setOf(dummyDto1, taskFetchResponse2)
 
         // WHEN
         `when`(mockService.getTasks(null)).thenReturn(taskDtos)
@@ -85,7 +85,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given open tasks when fetch happen then check for size and isTaskOpen is true`() {
-        val taskFetchDto2 = TaskFetchDto(
+        val taskFetchResponse2 = TaskFetchResponse(
                 44,
                 "test2",
                 isReminderSet = false,
@@ -98,13 +98,13 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 priority = Priority.LOW
         )
 
-        `when`(mockService.getTasks(TaskStatus.OPEN)).thenReturn(setOf(taskFetchDto2))
+        `when`(mockService.getTasks(TaskStatus.OPEN)).thenReturn(setOf(taskFetchResponse2))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(taskFetchDto2.isTaskOpen))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(taskFetchResponse2.isTaskOpen))
     }
 
     @Test
@@ -146,7 +146,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given task creation when description is the same to another then check for bad request exception`() {
-        val request = TaskCreateDto(
+        val request = TaskCreateRequest(
                 description = "t",
                 isReminderSet = false,
                 isTaskOpen = false,
@@ -171,7 +171,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     @Test
     fun `given create task request when task gets created then check for correct property`() {
-        val request = TaskCreateDto(
+        val request = TaskCreateRequest(
                 description = "test for db",
                 isReminderSet = false,
                 isTaskOpen = false,
@@ -181,7 +181,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 timeTaken = 2,
                 priority = Priority.LOW
         )
-        val taskFetchDto = TaskFetchDto(
+        val taskFetchResponse = TaskFetchResponse(
                 0,
                 "test for db",
                 isReminderSet = false,
@@ -194,7 +194,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 priority = Priority.LOW
         )
 
-        `when`(mockService.createTask(request)).thenReturn(taskFetchDto)
+        `when`(mockService.createTask(request)).thenReturn(taskFetchResponse)
         val resultActions: ResultActions = mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -203,7 +203,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
         resultActions.andExpect(MockMvcResultMatchers.status().isCreated)
         resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.timeTaken").value(taskFetchDto.timeTaken))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.timeTaken").value(taskFetchResponse.timeTaken))
     }
 
     @Test
@@ -212,7 +212,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val dateTime = LocalDateTime.parse(str, formatter)
 
-        val request = TaskUpdateDto(
+        val request = TaskUpdateRequest(
                 "update task",
                 isReminderSet = false,
                 isTaskOpen = false,
@@ -222,7 +222,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
                 timeTaken = 2,
                 priority = Priority.LOW
         )
-        val dummyDto = TaskFetchDto(
+        val dummyDto = TaskFetchResponse(
                 44,
                 request.description ?: "",
                 isReminderSet = true,

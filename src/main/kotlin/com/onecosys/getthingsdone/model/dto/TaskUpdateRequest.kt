@@ -3,7 +3,7 @@ package com.onecosys.getthingsdone.model.dto
 import com.onecosys.getthingsdone.model.Priority
 import java.time.LocalDateTime
 
-data class TaskUpdateDto(
+data class TaskUpdateRequest(
     val description: String?,
     val isReminderSet: Boolean?,
     val isTaskOpen: Boolean?,

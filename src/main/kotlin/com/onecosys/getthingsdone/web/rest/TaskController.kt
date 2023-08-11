@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.web.rest
 
-import com.onecosys.getthingsdone.model.dto.TaskFetchDto
-import com.onecosys.getthingsdone.model.dto.TaskCreateDto
+import com.onecosys.getthingsdone.model.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.model.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.model.TaskStatus
-import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
+import com.onecosys.getthingsdone.model.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.service.TaskService
 import jakarta.validation.Valid
 import org.springframework.http.HttpHeaders
@@ -28,16 +28,16 @@ class TaskController(private val service: TaskService) {
     @GetMapping
     fun getTasks(
         @RequestParam("status", required = false) status: TaskStatus?
-    ): ResponseEntity<Set<TaskFetchDto>> = ResponseEntity.ok(service.getTasks(status))
+    ): ResponseEntity<Set<TaskFetchResponse>> = ResponseEntity.ok(service.getTasks(status))
 
     @GetMapping("{id}")
-    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskFetchDto> = ResponseEntity.ok(service.getTaskById(id))
+    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskFetchResponse> = ResponseEntity.ok(service.getTaskById(id))
 
     @PostMapping
     fun createTask(
         @Valid @RequestBody
-        createRequest: TaskCreateDto
-    ): ResponseEntity<TaskFetchDto> {
+        createRequest: TaskCreateRequest
+    ): ResponseEntity<TaskFetchResponse> {
         val task = service.createTask(createRequest)
         return ResponseEntity(task, HttpStatus.CREATED)
     }
@@ -46,8 +46,8 @@ class TaskController(private val service: TaskService) {
     fun updateTask(
         @PathVariable id: Long,
         @Valid @RequestBody
-        updateRequest: TaskUpdateDto
-    ): ResponseEntity<TaskFetchDto> = ResponseEntity.ok(service.updateTask(id, updateRequest))
+        updateRequest: TaskUpdateRequest
+    ): ResponseEntity<TaskFetchResponse> = ResponseEntity.ok(service.updateTask(id, updateRequest))
 
     @DeleteMapping("{id}")
     fun deleteTask(@PathVariable id: Long): ResponseEntity<Unit> {
