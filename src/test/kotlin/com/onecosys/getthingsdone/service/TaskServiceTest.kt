@@ -4,9 +4,9 @@ import com.onecosys.getthingsdone.error.handling.BadRequestException
 import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
 import com.onecosys.getthingsdone.model.TaskStatus
 import com.onecosys.getthingsdone.model.Priority
-import com.onecosys.getthingsdone.model.dto.TaskCreateDto
-import com.onecosys.getthingsdone.model.dto.TaskFetchDto
-import com.onecosys.getthingsdone.model.dto.TaskUpdateDto
+import com.onecosys.getthingsdone.model.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.model.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.model.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.model.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.model.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.model.entity.Task
@@ -47,13 +47,13 @@ internal class TaskServiceTest {
     private lateinit var clock: Clock
 
     private lateinit var task: Task
-    private lateinit var createRequest: TaskCreateDto
+    private lateinit var createRequest: TaskCreateRequest
     private lateinit var objectUnderTest: TaskService
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
-        createRequest = TaskCreateDto(
+        createRequest = TaskCreateRequest(
             "test task",
             isReminderSet = false,
             isTaskOpen = false,
@@ -73,7 +73,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(Task(), Task())
 
         every { mockRepository.findAllByOrderByIdAsc() } returns expectedTasks.toMutableSet()
-        val actualList: Set<TaskFetchDto> = objectUnderTest.getTasks(null)
+        val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(null)
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
     }
@@ -84,7 +84,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(true) } returns expectedTasks.toMutableSet()
-        val actualList: Set<TaskFetchDto> = objectUnderTest.getTasks(TaskStatus.OPEN)
+        val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(TaskStatus.OPEN)
 
         assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -95,7 +95,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every { mockRepository.findAllByIsTaskOpenOrderByIdAsc(false) } returns expectedTasks.toMutableSet()
-        val actualList: Set<TaskFetchDto> = objectUnderTest.getTasks(TaskStatus.CLOSED)
+        val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(TaskStatus.CLOSED)
 
         assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -109,18 +109,18 @@ internal class TaskServiceTest {
             ZoneId.systemDefault()
         )
         every { mockRepository.save(any()) } returns task
-        val actualTaskFetchDto: TaskFetchDto = objectUnderTest.createTask(createRequest)
+        val actualTaskFetchResponse: TaskFetchResponse = objectUnderTest.createTask(createRequest)
 
-        assertThat(actualTaskFetchDto.id).isEqualTo(task.id)
-        assertThat(actualTaskFetchDto.description).isEqualTo(createRequest.description)
-        assertThat(actualTaskFetchDto.isReminderSet).isEqualTo(task.isReminderSet)
-        assertThat(actualTaskFetchDto.isTaskOpen).isEqualTo(task.isTaskOpen)
-        assertThat(actualTaskFetchDto.startedOn).isEqualTo(task.startedOn)
-        assertThat(actualTaskFetchDto.finishedOn).isEqualTo(task.finishedOn)
-        assertThat(actualTaskFetchDto.timeInterval).isEqualTo(task.timeInterval)
-        assertThat(actualTaskFetchDto.timeTaken).isEqualTo(task.timeTaken)
-        assertThat(actualTaskFetchDto.priority).isEqualTo(task.priority)
-        assertThat(actualTaskFetchDto.createdOn).isEqualTo(task.createdOn)
+        assertThat(actualTaskFetchResponse.id).isEqualTo(task.id)
+        assertThat(actualTaskFetchResponse.description).isEqualTo(createRequest.description)
+        assertThat(actualTaskFetchResponse.isReminderSet).isEqualTo(task.isReminderSet)
+        assertThat(actualTaskFetchResponse.isTaskOpen).isEqualTo(task.isTaskOpen)
+        assertThat(actualTaskFetchResponse.startedOn).isEqualTo(task.startedOn)
+        assertThat(actualTaskFetchResponse.finishedOn).isEqualTo(task.finishedOn)
+        assertThat(actualTaskFetchResponse.timeInterval).isEqualTo(task.timeInterval)
+        assertThat(actualTaskFetchResponse.timeTaken).isEqualTo(task.timeTaken)
+        assertThat(actualTaskFetchResponse.priority).isEqualTo(task.priority)
+        assertThat(actualTaskFetchResponse.createdOn).isEqualTo(task.createdOn)
     }
 
     @Test
@@ -134,7 +134,7 @@ internal class TaskServiceTest {
 
     @Test
     fun `when client wants to create a task with description more than 255 characters then check for bad request exception`() {
-        val taskDescriptionTooLong = TaskCreateDto(
+        val taskDescriptionTooLong = TaskCreateRequest(
             description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to,  took a galley of type and scrambled",
             isReminderSet = true,
             isTaskOpen = true,
@@ -152,7 +152,7 @@ internal class TaskServiceTest {
 
     @Test
     fun `when client wants to create a task with description less than 3 characters then check for bad request exception`() {
-        val taskDescriptionTooShort = TaskCreateDto(
+        val taskDescriptionTooShort = TaskCreateRequest(
             description = "ab",
             isReminderSet = false,
             isTaskOpen = false,
@@ -188,19 +188,19 @@ internal class TaskServiceTest {
             ZoneId.systemDefault()
         )
         every { mockRepository.save(capture(taskSlot)) } returns task
-        val actualTaskFetchDto: TaskFetchDto = objectUnderTest.createTask(createRequest)
+        val actualTaskFetchResponse: TaskFetchResponse = objectUnderTest.createTask(createRequest)
 
         verify { mockRepository.save(capture(taskSlot)) }
-        assertThat(actualTaskFetchDto.id).isEqualTo(taskSlot.captured.id)
-        assertThat(actualTaskFetchDto.description).isEqualTo(taskSlot.captured.description)
-        assertThat(actualTaskFetchDto.isReminderSet).isEqualTo(taskSlot.captured.isReminderSet)
-        assertThat(actualTaskFetchDto.isTaskOpen).isEqualTo(taskSlot.captured.isTaskOpen)
-        assertThat(actualTaskFetchDto.createdOn).isEqualTo(taskSlot.captured.createdOn)
-        assertThat(actualTaskFetchDto.startedOn).isEqualTo(taskSlot.captured.startedOn)
-        assertThat(actualTaskFetchDto.finishedOn).isEqualTo(taskSlot.captured.finishedOn)
-        assertThat(actualTaskFetchDto.timeInterval).isEqualTo(taskSlot.captured.timeInterval)
-        assertThat(actualTaskFetchDto.timeTaken).isEqualTo(taskSlot.captured.timeTaken)
-        assertThat(actualTaskFetchDto.priority).isEqualTo(taskSlot.captured.priority)
+        assertThat(actualTaskFetchResponse.id).isEqualTo(taskSlot.captured.id)
+        assertThat(actualTaskFetchResponse.description).isEqualTo(taskSlot.captured.description)
+        assertThat(actualTaskFetchResponse.isReminderSet).isEqualTo(taskSlot.captured.isReminderSet)
+        assertThat(actualTaskFetchResponse.isTaskOpen).isEqualTo(taskSlot.captured.isTaskOpen)
+        assertThat(actualTaskFetchResponse.createdOn).isEqualTo(taskSlot.captured.createdOn)
+        assertThat(actualTaskFetchResponse.startedOn).isEqualTo(taskSlot.captured.startedOn)
+        assertThat(actualTaskFetchResponse.finishedOn).isEqualTo(taskSlot.captured.finishedOn)
+        assertThat(actualTaskFetchResponse.timeInterval).isEqualTo(taskSlot.captured.timeInterval)
+        assertThat(actualTaskFetchResponse.timeTaken).isEqualTo(taskSlot.captured.timeTaken)
+        assertThat(actualTaskFetchResponse.priority).isEqualTo(taskSlot.captured.priority)
     }
 
     @Test
@@ -259,7 +259,7 @@ internal class TaskServiceTest {
     fun `when update task is called with task request argument then expect specific description fpr actual task`() {
         task.description = "test task"
         val updateRequest =
-            TaskUpdateDto(
+            TaskUpdateRequest(
                 task.description,
                 isReminderSet = false,
                 isTaskOpen = false,

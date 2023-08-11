@@ -3,7 +3,7 @@ package com.onecosys.getthingsdone.model.dto
 import com.onecosys.getthingsdone.model.Priority
 import java.time.LocalDateTime
 
-data class TaskFetchDto(
+data class TaskFetchResponse(
     val id: Long?,
     val description: String,
     val isReminderSet: Boolean,

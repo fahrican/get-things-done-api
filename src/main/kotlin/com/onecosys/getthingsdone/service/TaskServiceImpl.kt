@@ -22,7 +22,7 @@ class TaskServiceImpl(
     private val taskTimestamp: TaskTimestamp
 ) : TaskService {
 
-    override fun getTasks(status: TaskStatus?): Set<TaskFetchDto> {
+    override fun getTasks(status: TaskStatus?): Set<TaskFetchResponse> {
         return when (status) {
             TaskStatus.OPEN -> repository.findAllByIsTaskOpenOrderByIdAsc(true).map(mapper::toDto).toSet()
             TaskStatus.CLOSED -> repository.findAllByIsTaskOpenOrderByIdAsc(false).map(mapper::toDto).toSet()
@@ -30,13 +30,13 @@ class TaskServiceImpl(
         }
     }
 
-    override fun getTaskById(id: Long): TaskFetchDto {
+    override fun getTaskById(id: Long): TaskFetchResponse {
         validateTaskIdExistence(id)
         val task: Task = repository.findTaskById(id)
         return mapper.toDto(task)
     }
 
-    override fun createTask(createRequest: TaskCreateDto): TaskFetchDto {
+    override fun createTask(createRequest: TaskCreateRequest): TaskFetchResponse {
         val descriptionLength: Int = createRequest.description.length
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
@@ -49,11 +49,11 @@ class TaskServiceImpl(
         return mapper.toDto(savedTask)
     }
 
-    override fun updateTask(id: Long, updateRequest: TaskUpdateDto): TaskFetchDto {
+    override fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskFetchResponse {
         validateTaskIdExistence(id)
         val existingTask: Task = repository.findTaskById(id)
 
-        for (prop in TaskUpdateDto::class.memberProperties) {
+        for (prop in TaskUpdateRequest::class.memberProperties) {
             if (prop.get(updateRequest) != null) {
                 val field: Field? = ReflectionUtils.findField(Task::class.java, prop.name)
                 field?.let {
