@@ -26,10 +26,6 @@ spring:
             non_contextual_creation: true
     show-sql: false
 
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/product-service
-
 springdoc:
   api-docs:
     path: '/api/v3/api-docs'
