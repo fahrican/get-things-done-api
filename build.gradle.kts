@@ -57,6 +57,7 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
     testImplementation("org.testcontainers:mongodb:$testcontainersVersion")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:4.3.1")
 }
 
 tasks.withType<KotlinCompile> {
