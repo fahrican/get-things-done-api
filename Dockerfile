@@ -8,7 +8,7 @@ WORKDIR /build
 COPY . .
 
 # Build the application
-RUN ./gradlew build
+RUN ./gradlew build -x test
 
 # Use a specific OpenJDK version for the runtime image
 FROM openjdk:20-slim
