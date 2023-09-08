@@ -1,23 +1,24 @@
 openapi: 3.0.1
 info:
   title: Task Management API v1
-  description: |-
-    
-    This API exposes RESTful CRUD operations for tracking tasks. 
-    
-    Some useful links:
-    - [Web UI](https://justluxurylifestyle.com/app/open-tasks)
-    - [GitHUb source code](https://github.com/fahrican/get-things-done-api)
-
+  description: |2-
+        This API exposes RESTful CRUD operations for tracking tasks. 
+        Some useful links:
+        - [Web UI](https://justluxurylifestyle.com/app/open-tasks)
+        - [GitHUb source code](https://github.com/fahrican/get-things-done-api)
+  license:
+    name: MIT License
+    url: https://github.com/fahrican/get-things-done-api/LICENSE.txt
   version: 1.0.0
 servers:
-  - url: https://task-manager.justluxurylifestyle.com
+  - url: http://localhost:9091
     description: Generated server url
 paths:
   /api/v1/tasks:
     get:
       tags:
-        - task-controller
+        - task
+      summary: Get all tasks
       operationId: getTasks
       parameters:
         - name: status
@@ -30,17 +31,19 @@ paths:
               - CLOSED
       responses:
         '200':
-          description: OK
+          description: all open & closed tasks
           content:
-            '*/*':
+            application/json:
               schema:
-                uniqueItems: true
                 type: array
                 items:
                   $ref: '#/components/schemas/TaskFetchResponse'
+        '400':
+          description: Bad Request
     post:
       tags:
-        - task-controller
+        - task
+      summary: Create a new task
       operationId: createTask
       requestBody:
         content:
@@ -49,16 +52,19 @@ paths:
               $ref: '#/components/schemas/TaskCreateRequest'
         required: true
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Task successfully created
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/TaskFetchResponse'
+        '400':
+          description: Invalid input
   /api/v1/tasks/{id}:
     get:
       tags:
-        - task-controller
+        - task
+      summary: Get task by its ID
       operationId: getTaskById
       parameters:
         - name: id
@@ -69,14 +75,19 @@ paths:
             format: int64
       responses:
         '200':
-          description: OK
+          description: Found the task by the supplied ID
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/TaskFetchResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Task not found
     delete:
       tags:
-        - task-controller
+        - task
+      summary: Delete a task by its ID
       operationId: deleteTask
       parameters:
         - name: id
@@ -86,15 +97,16 @@ paths:
             type: integer
             format: int64
       responses:
-        '200':
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Unit'
+        '204':
+          description: Task successfully deleted
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Task not found
     patch:
       tags:
-        - task-controller
+        - task
+      summary: Update an existing task
       operationId: updateTask
       parameters:
         - name: id
@@ -111,11 +123,15 @@ paths:
         required: true
       responses:
         '200':
-          description: OK
+          description: Task successfully updated
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/TaskFetchResponse'
+        '400':
+          description: Invalid input
+        '404':
+          description: Task not found
 components:
   schemas:
     TaskCreateRequest:
@@ -217,5 +233,3 @@ components:
             - LOW
             - MEDIUM
             - HIGH
-    Unit:
-      type: object
