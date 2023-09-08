@@ -12,10 +12,11 @@ import org.springframework.boot.runApplication
         title = "Task Management API v1",
         version = "1.0.0",
         description =
-        "    This API exposes RESTful CRUD operations for tracking tasks. \n" +
-                "    Some useful links:\n" +
-                "    - [Web UI](https://justluxurylifestyle.com/app/open-tasks)\n" +
-                "    - [GitHUb source code](https://github.com/fahrican/get-things-done-api)",
+        "This API exposes RESTful CRUD operations for tracking tasks.\n" +
+                "\n" +
+                "Some useful links:\n" +
+                "- [Web UI](https://justluxurylifestyle.com/app/open-tasks)\n" +
+                "- [GitHUb source code](https://github.com/fahrican/get-things-done-api)",
         license = License(name = "MIT License", url = "https://github.com/fahrican/get-things-done-api/LICENSE.txt")
     )
 )
