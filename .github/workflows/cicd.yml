@@ -89,8 +89,7 @@ jobs:
 
   build:
     name: Build Project
-    if: github.event_name == 'pull_request'
-    needs: test
+    if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
@@ -133,6 +132,7 @@ jobs:
   deploy:
     name: Deploy Project
     if: github.event_name == 'push'
+    needs: build
     runs-on: ubuntu-22.04
     steps:
 
