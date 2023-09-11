@@ -36,26 +36,11 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-  test:
-    name: Run All Tests
-    if: github.event_name == 'pull_request'
-    needs: validate
-    runs-on: ubuntu-22.04
-    steps:
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3.12.0
         with:
           java-version: 17
           distribution: 'zulu' # Alternative distribution options are available
-
-
-  build:
-    name: Build Project
-    if: github.event_name == 'pull_request'
-    needs: test
-    runs-on: ubuntu-22.04
-    steps:
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v3.3.2
@@ -80,6 +65,21 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        run: ./gradlew build sonarqube --info
+
+  build:
+    name: Build Project
+    if: github.event_name == 'pull_request'
+    needs: validate
+    runs-on: ubuntu-22.04
+    steps:
+
       - name: Slack Notification Ci/Cd started
         uses: 8398a7/action-slack@v3.15.1
         with:
@@ -91,14 +91,6 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v3.6.0
-
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_ORG: ${{ secrets.SONAR_ORG }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-        run: ./gradlew build sonarqube --info
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.1.0
