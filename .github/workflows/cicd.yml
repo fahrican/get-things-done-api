@@ -102,7 +102,7 @@ jobs:
   build:
     name: Build Project
     if: github.event_name == 'pull_request'
-    needs: validate
+    needs: test
     runs-on: ubuntu-22.04
     steps:
       - name: Docker Hub Slack Notification
