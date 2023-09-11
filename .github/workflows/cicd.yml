@@ -72,14 +72,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_ORG: ${{ secrets.SONAR_ORG }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-        run: ./gradlew build sonarqube --info
-
   build:
     name: Build Project
     if: github.event_name == 'pull_request'
@@ -98,6 +90,14 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v3.6.0
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        run: ./gradlew build sonarqube --info
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.1.0
