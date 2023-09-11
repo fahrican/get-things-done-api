@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.1.1"
-    id("io.spring.dependency-management") version "1.1.1"
+    id("org.springframework.boot") version "3.1.3"
+    id("io.spring.dependency-management") version "1.1.3"
     id("org.sonarqube") version "3.5.0.2730"
-    kotlin("jvm") version "1.8.21"
-    kotlin("plugin.spring") version "1.8.21"
-    kotlin("plugin.jpa") version "1.8.21"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.spring") version "1.8.22"
+    kotlin("plugin.jpa") version "1.8.22"
     jacoco
 }
 
@@ -45,18 +45,18 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 
     // Swagger / Open API
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
     // Unit Testing stuff
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.assertj:assertj-core:3.24.2")
-    testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("io.mockk:mockk:1.13.7")
 
     // Integration Testing
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:5.6.2")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:5.7.2")
 }
 
 tasks.withType<KotlinCompile> {
