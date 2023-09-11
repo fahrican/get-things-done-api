@@ -92,9 +92,6 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3.6.0
-
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.1.0
 
