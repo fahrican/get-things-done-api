@@ -17,7 +17,7 @@ import org.springframework.boot.runApplication
                 "Some useful links:\n" +
                 "- [Web UI](https://justluxurylifestyle.com/app/open-tasks)\n" +
                 "- [GitHUb source code](https://github.com/fahrican/get-things-done-api)",
-        license = License(name = "MIT License", url = "https://github.com/fahrican/get-things-done-api/LICENSE.txt")
+        license = License(name = "MIT License", url = "https://github.com/fahrican/get-things-done-api/blob/master/LICENSE.txt")
     )
 )
 class GetThingsDoneApplication
