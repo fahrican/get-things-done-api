@@ -49,6 +49,14 @@ jobs:
           java-version: 17
           distribution: 'zulu' # Alternative distribution options are available
 
+
+  build:
+    name: Build Project
+    if: github.event_name == 'pull_request'
+    needs: test
+    runs-on: ubuntu-22.04
+    steps:
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v3.3.2
         with:
@@ -71,13 +79,6 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
-
-  build:
-    name: Build Project
-    if: github.event_name == 'pull_request'
-    needs: test
-    runs-on: ubuntu-22.04
-    steps:
 
       - name: Slack Notification Ci/Cd started
         uses: 8398a7/action-slack@v3.15.1
