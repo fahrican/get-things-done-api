@@ -14,7 +14,6 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-22.04
     steps:
-
       - name: Run Super-Linter
         uses: super-linter/super-linter@v5.2.1
         env:
@@ -31,6 +30,12 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  test:
+    name: Run All Tests
+    if: github.event_name == 'pull_request'
+    needs: validate
+    runs-on: ubuntu-22.04
+    steps:
       - name: Checkout Repository
         uses: actions/checkout@v3.6.0
         with:
@@ -73,13 +78,6 @@ jobs:
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         run: ./gradlew build sonarqube --info
 
-  build:
-    name: Build Project
-    if: github.event_name == 'pull_request'
-    needs: validate
-    runs-on: ubuntu-22.04
-    steps:
-
       - name: Slack Notification Ci/Cd started
         uses: 8398a7/action-slack@v3.15.1
         with:
@@ -89,6 +87,11 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  build:
+    name: Build Project
+    if: github.event_name == 'push'
+    runs-on: ubuntu-22.04
+    steps:
       - name: Checkout Repository
         uses: actions/checkout@v3.6.0
 
@@ -129,6 +132,7 @@ jobs:
   deploy:
     name: Deploy Project
     if: github.event_name == 'push'
+    needs: build
     runs-on: ubuntu-22.04
     steps:
 
