@@ -153,7 +153,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.DROPLET_PORT }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "\
             export BUILD_VERSION=${{ github.sha }} && \
-            echo "Pulling image with version $BUILD_VERSION" && \
             docker-compose pull && \
             docker-compose up -d && \
             docker system prune -af"
