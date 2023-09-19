@@ -9,10 +9,10 @@ info:
     - [GitHUb source code](https://github.com/fahrican/get-things-done-api)
   license:
     name: MIT License
-    url: https://github.com/fahrican/get-things-done-api/LICENSE.txt
+    url: https://github.com/fahrican/get-things-done-api/blob/master/LICENSE.txt
   version: 1.0.0
 servers:
-  - url: http://localhost:9091
+  - url: http://task-manager.justluxurylifestyle.com
     description: Generated server url
 paths:
   /api/v1/tasks:
