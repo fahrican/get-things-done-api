@@ -13,7 +13,7 @@ info:
   version: 1.0.0
 servers:
   - url: http://task-manager.justluxurylifestyle.com
-    description: Generated server url
+    description: Server URL for production
 paths:
   /api/v1/tasks:
     get:
