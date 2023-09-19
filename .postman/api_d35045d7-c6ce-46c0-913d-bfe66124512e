@@ -14,8 +14,8 @@ files[] = {"id":"25408237-068c2420-9782-4467-8416-ac0bfeda8f5a","path":"Task Man
 [config.relations.collections.metaData]
 
 [config.relations.apiDefinition]
-files[] = {"path":"api-docs.yml","metaData":{}}
+files[] = {"path":"openapi.yml","metaData":{}}
 
 [config.relations.apiDefinition.metaData]
 type = openapi:3
-rootFiles[] = api-docs.yml
+rootFiles[] = openapi.yml
