@@ -29,4 +29,4 @@ springdoc:
     path: '/api/swagger-ui.html'
     configUrl: '/api/v3/api-docs/swagger-config'
     disable-swagger-default-url: true
-    url: '/api/v3/api-docs.yaml'  # Change this line
+    url: '/api/v3/api-docs.yaml'
