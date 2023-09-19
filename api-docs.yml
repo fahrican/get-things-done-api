@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Task Management API v1
   description: |-
-    This API exposes RESTful CRUD operations for tracking tasks test.
+    This API exposes RESTful CRUD operations for tracking tasks with any client.
 
     Some useful links:
     - [Web UI](https://justluxurylifestyle.com/app/open-tasks)
