@@ -2,18 +2,18 @@ openapi: 3.0.1
 info:
   title: Task Management API v1
   description: |-
-    This API exposes RESTful CRUD operations for tracking tasks.
+    This API exposes RESTful CRUD operations for tracking tasks with any client.
 
     Some useful links:
     - [Web UI](https://justluxurylifestyle.com/app/open-tasks)
     - [GitHUb source code](https://github.com/fahrican/get-things-done-api)
   license:
     name: MIT License
-    url: https://github.com/fahrican/get-things-done-api/LICENSE.txt
+    url: https://github.com/fahrican/get-things-done-api/blob/master/LICENSE.txt
   version: 1.0.0
 servers:
-  - url: http://localhost:9091
-    description: Generated server url
+  - url: http://task-manager.justluxurylifestyle.com
+    description: Server URL for production
 paths:
   /api/v1/tasks:
     get:
