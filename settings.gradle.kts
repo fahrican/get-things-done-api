@@ -1,1 +1,1 @@
-rootProject.name = "get_things_done"
+rootProject.name = "get-things-done-api"
