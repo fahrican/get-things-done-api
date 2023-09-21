@@ -26,4 +26,4 @@ COPY --from=builder /build/build/libs/get-things-done-api-0.0.1-SNAPSHOT.jar get
 USER app
 
 # Set the entrypoint command
-ENTRYPOINT ["java", "-jar", "get_things_done.jar"]
+ENTRYPOINT ["java", "-jar", "get-things-done-api.jar"]
