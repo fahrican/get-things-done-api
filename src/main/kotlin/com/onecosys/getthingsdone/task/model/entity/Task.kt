@@ -1,6 +1,6 @@
-package com.onecosys.getthingsdone.model.entity
+package com.onecosys.getthingsdone.task.model.entity
 
-import com.onecosys.getthingsdone.model.Priority
+import com.onecosys.getthingsdone.task.model.Priority
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

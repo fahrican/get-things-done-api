@@ -1,6 +1,6 @@
-package com.onecosys.getthingsdone.repository
+package com.onecosys.getthingsdone.task.repository
 
-import com.onecosys.getthingsdone.model.entity.Task
+import com.onecosys.getthingsdone.task.model.entity.Task
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

@@ -1,8 +1,8 @@
-package com.onecosys.getthingsdone.model.dto
+package com.onecosys.getthingsdone.task.model.dto
 
-import com.onecosys.getthingsdone.model.Priority
-import com.onecosys.getthingsdone.model.entity.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.model.entity.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.model.Priority
+import com.onecosys.getthingsdone.task.model.entity.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.model.entity.MIN_DESCRIPTION_LENGTH
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime

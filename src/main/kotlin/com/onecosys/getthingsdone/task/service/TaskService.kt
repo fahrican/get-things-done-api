@@ -1,9 +1,9 @@
-package com.onecosys.getthingsdone.service
+package com.onecosys.getthingsdone.task.service
 
-import com.onecosys.getthingsdone.model.dto.TaskFetchResponse
-import com.onecosys.getthingsdone.model.dto.TaskCreateRequest
-import com.onecosys.getthingsdone.model.TaskStatus
-import com.onecosys.getthingsdone.model.dto.TaskUpdateRequest
+import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.task.model.TaskStatus
+import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
 
 interface TaskService {
 

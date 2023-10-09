@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.error
+package com.onecosys.getthingsdone.task.error
 
 import org.springframework.http.HttpStatus
 import java.time.LocalDateTime

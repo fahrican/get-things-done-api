@@ -1,10 +1,10 @@
-package com.onecosys.getthingsdone.web.rest
+package com.onecosys.getthingsdone.task.web.rest
 
-import com.onecosys.getthingsdone.model.dto.TaskFetchResponse
-import com.onecosys.getthingsdone.model.dto.TaskCreateRequest
-import com.onecosys.getthingsdone.model.TaskStatus
-import com.onecosys.getthingsdone.model.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.service.TaskService
+import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.task.model.TaskStatus
+import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
+import com.onecosys.getthingsdone.task.service.TaskService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content

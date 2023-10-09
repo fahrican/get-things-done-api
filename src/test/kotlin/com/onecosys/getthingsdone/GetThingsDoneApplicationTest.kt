@@ -1,8 +1,8 @@
 package com.onecosys.getthingsdone
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.model.Priority
-import com.onecosys.getthingsdone.model.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.task.model.Priority
+import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

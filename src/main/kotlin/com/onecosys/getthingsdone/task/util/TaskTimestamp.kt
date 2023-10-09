@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.util
+package com.onecosys.getthingsdone.task.util
 
 import org.springframework.stereotype.Component
 import java.time.Clock

@@ -2,16 +2,17 @@ package com.onecosys.getthingsdone.web.rest
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.error.handling.BadRequestException
-import com.onecosys.getthingsdone.error.handling.TaskNotFoundException
-import com.onecosys.getthingsdone.model.TaskStatus
-import com.onecosys.getthingsdone.model.Priority
-import com.onecosys.getthingsdone.model.dto.TaskCreateRequest
-import com.onecosys.getthingsdone.model.dto.TaskFetchResponse
-import com.onecosys.getthingsdone.model.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.model.entity.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.model.entity.MIN_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.service.TaskService
+import com.onecosys.getthingsdone.task.error.handling.BadRequestException
+import com.onecosys.getthingsdone.task.error.handling.TaskNotFoundException
+import com.onecosys.getthingsdone.task.model.TaskStatus
+import com.onecosys.getthingsdone.task.model.Priority
+import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
+import com.onecosys.getthingsdone.task.model.entity.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.model.entity.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.service.TaskService
+import com.onecosys.getthingsdone.task.web.rest.TaskController
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
