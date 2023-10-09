@@ -15,6 +15,7 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 val testcontainersVersion = "1.19.0"
+val jwtVersion = "0.12.2"
 
 repositories {
     mavenCentral()
@@ -40,8 +41,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.0.4")
     runtimeOnly("org.postgresql:postgresql:42.5.4")
     runtimeOnly("com.h2database:h2:2.2.222")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
+    implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
 
     // Swagger / Open API
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
@@ -50,6 +55,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("io.mockk:mockk:1.13.7")
+    testImplementation("org.springframework.security:spring-security-test")
 
     // Integration Testing
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
