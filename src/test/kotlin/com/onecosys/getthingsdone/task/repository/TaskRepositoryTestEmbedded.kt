@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.repository
+package com.onecosys.getthingsdone.task.repository
 
 import com.onecosys.getthingsdone.task.model.entity.Task
 import com.onecosys.getthingsdone.task.repository.TaskRepository

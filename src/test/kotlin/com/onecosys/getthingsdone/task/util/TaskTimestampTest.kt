@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.util
+package com.onecosys.getthingsdone.task.util
 
 import com.onecosys.getthingsdone.task.util.TaskTimestamp
 import org.assertj.core.api.Assertions.assertThat

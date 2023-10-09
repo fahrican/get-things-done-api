@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.web.rest
+package com.onecosys.getthingsdone.task.rest
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper

@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.service
+package com.onecosys.getthingsdone.task.service
 
 import com.onecosys.getthingsdone.task.error.handling.BadRequestException
 import com.onecosys.getthingsdone.task.error.handling.TaskNotFoundException
