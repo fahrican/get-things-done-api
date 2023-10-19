@@ -7,6 +7,7 @@ import com.onecosys.getthingsdone.authorization.Role
 import com.onecosys.getthingsdone.authorization.User
 import com.onecosys.getthingsdone.authorization.UserRepository
 import com.onecosys.getthingsdone.config.JwtService
+import com.onecosys.getthingsdone.task.error.handling.BadRequestException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -21,6 +22,9 @@ class AuthenticationService(
 ) {
 
     fun register(request: RegisterRequest): AuthenticationResponse {
+        val existingUser: User? =  repository.findByEmail(request.email)
+        if (existingUser != null) throw  BadRequestException("User email already exists!")
+
         val user = User()
         user.firstName = request.firstName
         user.lastName = request.lastName
