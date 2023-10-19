@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.service
 
-import com.onecosys.getthingsdone.task.error.handling.BadRequestException
-import com.onecosys.getthingsdone.task.error.handling.TaskNotFoundException
+import com.onecosys.getthingsdone.task.error.BadRequestException
+import com.onecosys.getthingsdone.task.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.model.TaskStatus
 import com.onecosys.getthingsdone.task.model.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.model.entity.MIN_DESCRIPTION_LENGTH

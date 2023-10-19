@@ -1,6 +1,5 @@
-package com.onecosys.getthingsdone.task.error.handling
+package com.onecosys.getthingsdone.task.error
 
-import com.onecosys.getthingsdone.task.error.ApiError
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice

@@ -2,8 +2,8 @@ package com.onecosys.getthingsdone.task.rest
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.task.error.handling.BadRequestException
-import com.onecosys.getthingsdone.task.error.handling.TaskNotFoundException
+import com.onecosys.getthingsdone.task.error.BadRequestException
+import com.onecosys.getthingsdone.task.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.model.TaskStatus
 import com.onecosys.getthingsdone.task.model.Priority
 import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest

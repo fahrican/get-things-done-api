@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.service
 
-import com.onecosys.getthingsdone.task.error.handling.BadRequestException
-import com.onecosys.getthingsdone.task.error.handling.TaskNotFoundException
+import com.onecosys.getthingsdone.task.error.BadRequestException
+import com.onecosys.getthingsdone.task.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.model.TaskStatus
 import com.onecosys.getthingsdone.task.model.Priority
 import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
@@ -11,8 +11,6 @@ import com.onecosys.getthingsdone.task.model.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.model.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.model.entity.Task
 import com.onecosys.getthingsdone.task.repository.TaskRepository
-import com.onecosys.getthingsdone.task.service.TaskService
-import com.onecosys.getthingsdone.task.service.TaskServiceImpl
 import com.onecosys.getthingsdone.task.util.TaskTimestamp
 import com.onecosys.getthingsdone.task.util.converter.TaskMapper
 import io.mockk.MockKAnnotations
