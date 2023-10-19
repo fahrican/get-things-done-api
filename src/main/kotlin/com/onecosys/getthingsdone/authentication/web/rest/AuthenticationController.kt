@@ -20,7 +20,7 @@ class AuthenticationController(private val service: AuthenticationService) {
     }
 
     @PostMapping("login")
-    fun login(@RequestBody request: AuthenticationRequest): ResponseEntity<AuthenticationResponse> {
+    fun authenticate(@RequestBody request: AuthenticationRequest): ResponseEntity<AuthenticationResponse> {
         return ResponseEntity.ok(service.authenticate(request))
     }
 }
