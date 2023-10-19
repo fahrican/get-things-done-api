@@ -3,11 +3,11 @@ package com.onecosys.getthingsdone.authentication.service
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
+import com.onecosys.getthingsdone.authentication.error.SignUpException
 import com.onecosys.getthingsdone.authorization.Role
 import com.onecosys.getthingsdone.authorization.User
 import com.onecosys.getthingsdone.authorization.UserRepository
 import com.onecosys.getthingsdone.config.JwtService
-import com.onecosys.getthingsdone.task.error.handling.BadRequestException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -22,8 +22,8 @@ class AuthenticationService(
 ) {
 
     fun register(request: RegisterRequest): AuthenticationResponse {
-        val existingUser: User? =  repository.findByEmail(request.email)
-        if (existingUser != null) throw  BadRequestException("User email already exists!")
+        val existingUser: User? = repository.findByEmail(request.email)
+        if (existingUser != null) throw SignUpException("User email already exists!")
 
         val user = User()
         user.firstName = request.firstName
@@ -42,6 +42,6 @@ class AuthenticationService(
         val user: User? = repository.findByEmail(request.email)
         var jwToken = ""
         user?.let { jwToken = jwtService.generateToken(user) }
-        return  AuthenticationResponse(jwToken)
+        return AuthenticationResponse(jwToken)
     }
 }

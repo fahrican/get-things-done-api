@@ -1,0 +1,25 @@
+package com.onecosys.getthingsdone.authentication.error
+
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.web.bind.annotation.ExceptionHandler
+
+@ControllerAdvice
+class AuthExceptionHandler {
+
+    @ExceptionHandler(UsernameNotFoundException::class)
+    fun handleUsernameNotFoundException(exception: UsernameNotFoundException): ResponseEntity<AuthError> {
+        val error = AuthError(message = exception.message, status = HttpStatus.NOT_FOUND)
+        return ResponseEntity(error, error.status)
+    }
+
+    @ExceptionHandler(SignUpException::class)
+    fun handleSignUpException(exception: SignUpException): ResponseEntity<AuthError> {
+        val error = AuthError(message = exception.message, status = HttpStatus.CONFLICT)
+        return ResponseEntity(error, error.status)
+    }
+}
+
+data class SignUpException(override val message: String) : RuntimeException()
