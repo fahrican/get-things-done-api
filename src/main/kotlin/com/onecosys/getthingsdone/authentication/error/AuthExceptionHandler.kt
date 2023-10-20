@@ -20,6 +20,17 @@ class AuthExceptionHandler {
         val error = AuthError(message = exception.message, status = HttpStatus.CONFLICT)
         return ResponseEntity(error, error.status)
     }
+
+    @ExceptionHandler(JwtAuthenticationException::class)
+    fun handleJwtAuthenticationException(exception: JwtAuthenticationException): ResponseEntity<AuthError> {
+        val error = AuthError(message = exception.message, status = HttpStatus.UNAUTHORIZED)
+        return ResponseEntity(error, error.status)
+    }
 }
 
 data class SignUpException(override val message: String) : RuntimeException()
+
+data class JwtAuthenticationException(
+    override val message: String,
+    override val cause: Throwable? = null
+) : RuntimeException(message, cause)

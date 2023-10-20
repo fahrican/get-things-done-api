@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.config
 
+import com.onecosys.getthingsdone.authentication.error.JwtAuthenticationException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -18,7 +19,8 @@ class JwtAuthenticationFilter(
 ) : OncePerRequestFilter() {
 
     companion object {
-        private const val JWT_TOKEN_START_INDEX = 7
+        private const val AUTH_HEADER = "Authorization"
+        private const val BEARER_TOKEN_PREFIX = "Bearer "
     }
 
     override fun doFilterInternal(
@@ -26,23 +28,25 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val authHeader: String? = request.getHeader("Authorization")
+        val authHeader: String? = request.getHeader(AUTH_HEADER)
 
-        // Extract JWT from header and validate
-        authHeader?.takeIf { it.startsWith("Bearer ") }?.let {
-            val jwt = it.substring(JWT_TOKEN_START_INDEX)
-            val userEmail: String = jwtService.extractUsername(jwt)
+        if (authHeader?.startsWith(BEARER_TOKEN_PREFIX) == true) {
+            val jwt = authHeader.drop(BEARER_TOKEN_PREFIX.length)
 
-            // Set user authentication in the context if the JWT is valid and no authentication exists
             if (SecurityContextHolder.getContext().authentication == null) {
-                val userDetails: UserDetails = userService.loadUserByUsername(userEmail)
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    val authToken =
-                        UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities).apply {
+                runCatching {
+                    val userEmail = jwtService.extractUsername(jwt)
+                    val userDetails: UserDetails = userService.loadUserByUsername(userEmail)
+
+                    if (jwtService.isTokenValid(jwt, userDetails)) {
+                        val authToken = UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.authorities
+                        ).apply {
                             details = WebAuthenticationDetailsSource().buildDetails(request)
                         }
-                    SecurityContextHolder.getContext().authentication = authToken
-                }
+                        SecurityContextHolder.getContext().authentication = authToken
+                    }
+                }.onFailure { throw JwtAuthenticationException("Error processing JWT token", it) }
             }
         }
 
