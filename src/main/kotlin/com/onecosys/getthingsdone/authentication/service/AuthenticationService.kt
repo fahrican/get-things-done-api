@@ -22,7 +22,7 @@ class AuthenticationService(
     private val authenticationManager: AuthenticationManager
 ) {
 
-    fun register(request: RegisterRequest): AuthenticationResponse {
+    fun signUp(request: RegisterRequest): AuthenticationResponse {
         repository.findByEmail(request.email)?.let {
             throw SignUpException("User email already exists!")
         }
@@ -40,7 +40,7 @@ class AuthenticationService(
         return AuthenticationResponse(jwtToken)
     }
 
-    fun authenticate(request: AuthenticationRequest): AuthenticationResponse {
+    fun signIn(request: AuthenticationRequest): AuthenticationResponse {
         authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.email, request.password))
         val user: User = repository.findByEmail(request.email) ?: throw UsernameNotFoundException("User not found")
         val jwtToken = jwtService.generateToken(user)
