@@ -18,10 +18,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
@@ -30,8 +30,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(controllers = [TaskController::class])
+@AutoConfigureMockMvc(addFilters = false)
 internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @MockBean
@@ -62,7 +64,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given all tasks when fetch happen then check for size`() {
         // GIVEN
         val taskFetchResponse2 = TaskFetchResponse(
@@ -91,7 +92,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given open tasks when fetch happen then check for size and isTaskOpen is true`() {
         val taskFetchResponse2 = TaskFetchResponse(
             44,
@@ -116,7 +116,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
@@ -127,7 +126,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given one task when get task by id is called then check for correct description`() {
         `when`(mockService.getTaskById(33)).thenReturn(dummyDto1)
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/${dummyDto1.id}"))
@@ -138,7 +136,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given one task when get task by id is called with string instead of int then check for internal server error`() {
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/404L"))
 
@@ -146,18 +143,16 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given task id when id does not exist then check for task not found exception`() {
         val id: Long = 121
 
         `when`(mockService.deleteTask(id)).thenThrow(TaskNotFoundException("Task with ID: $id does not exist!"))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/$id"))
 
-        resultActions.andExpect(MockMvcResultMatchers.status().isNotFound)
+        resultActions.andExpect(MockMvcResultMatchers.status().isNotFound())
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given task creation when description is the same to another then check for bad request exception`() {
         val request = TaskCreateRequest(
             description = "t",
@@ -183,7 +178,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given create task request when task gets created then check for correct property`() {
         val request = TaskCreateRequest(
             description = "test for db",
@@ -221,7 +215,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given update task request when task gets updated then check for correct property`() {
         val str = "1986-04-08 12:30"
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
@@ -267,7 +260,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `given id for delete request when delete task is performed then check for the message`() {
         val expectedHeaderValue = "Task with id: $taskId has been deleted."
 
