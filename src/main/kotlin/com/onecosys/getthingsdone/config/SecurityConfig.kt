@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.config
 
+import com.onecosys.getthingsdone.authentication.web.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider

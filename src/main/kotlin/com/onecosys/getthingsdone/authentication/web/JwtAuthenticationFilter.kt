@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.config
+package com.onecosys.getthingsdone.authentication.web
 
 import com.onecosys.getthingsdone.authentication.error.JwtAuthenticationException
 import com.onecosys.getthingsdone.authentication.service.JwtService
