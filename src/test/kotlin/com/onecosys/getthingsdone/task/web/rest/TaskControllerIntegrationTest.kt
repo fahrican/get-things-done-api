@@ -2,7 +2,7 @@ package com.onecosys.getthingsdone.task.web.rest
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.config.JwtService
+import com.onecosys.getthingsdone.authentication.service.JwtService
 import com.onecosys.getthingsdone.task.error.BadRequestException
 import com.onecosys.getthingsdone.task.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.model.Priority

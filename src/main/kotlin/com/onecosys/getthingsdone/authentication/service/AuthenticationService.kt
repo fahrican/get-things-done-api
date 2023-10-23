@@ -9,7 +9,6 @@ import com.onecosys.getthingsdone.authorization.model.Role
 import com.onecosys.getthingsdone.authorization.model.User
 import com.onecosys.getthingsdone.authorization.UserRepository
 import com.onecosys.getthingsdone.authorization.model.Token
-import com.onecosys.getthingsdone.config.JwtService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UsernameNotFoundException

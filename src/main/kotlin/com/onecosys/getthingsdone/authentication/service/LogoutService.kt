@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.config
+package com.onecosys.getthingsdone.authentication.service
 
 import com.onecosys.getthingsdone.authorization.TokenRepository
 import com.onecosys.getthingsdone.authorization.model.Token

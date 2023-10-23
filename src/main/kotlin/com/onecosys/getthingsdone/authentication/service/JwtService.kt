@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.config
+package com.onecosys.getthingsdone.authentication.service
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
