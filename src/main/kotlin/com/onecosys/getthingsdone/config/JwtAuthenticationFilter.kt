@@ -1,6 +1,7 @@
 package com.onecosys.getthingsdone.config
 
 import com.onecosys.getthingsdone.authentication.error.JwtAuthenticationException
+import com.onecosys.getthingsdone.authorization.TokenRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -15,7 +16,8 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class JwtAuthenticationFilter(
     private val jwtService: JwtService,
-    private val userService: UserDetailsService
+    private val userService: UserDetailsService,
+    private val tokenRepository: TokenRepository
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -31,14 +33,20 @@ class JwtAuthenticationFilter(
         val authHeader: String? = request.getHeader(AUTH_HEADER)
 
         if (authHeader?.startsWith(BEARER_TOKEN_PREFIX) == true) {
-            val jwt = authHeader.drop(BEARER_TOKEN_PREFIX.length)
+            val jwt: String = authHeader.drop(BEARER_TOKEN_PREFIX.length)
 
             if (SecurityContextHolder.getContext().authentication == null) {
                 runCatching {
                     val userEmail = jwtService.extractUsername(jwt)
                     val userDetails: UserDetails = userService.loadUserByUsername(userEmail)
 
-                    if (jwtService.isTokenValid(jwt, userDetails)) {
+                    val token = tokenRepository.findByToken(jwt)
+                    var isTokenValid = false
+                    token?.let {
+                        isTokenValid = (!it.expired && !it.revoked)
+                    }
+
+                    if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                         val authToken = UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.authorities
                         ).apply {
