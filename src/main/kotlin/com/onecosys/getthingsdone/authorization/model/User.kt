@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.authorization
+package com.onecosys.getthingsdone.authorization.model
 
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -6,6 +6,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
@@ -36,7 +37,10 @@ class User(
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    var role: Role = Role.USER
+    var role: Role = Role.USER,
+
+    @OneToMany(mappedBy = "user")
+    private val tokens: List<Token>? = null
 
 ) : UserDetails {
 
