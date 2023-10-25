@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TokenRepository : JpaRepository<Token, Long> {
 
-
     @Query(
         value = """
             select t from Token t inner join User u 
@@ -17,7 +16,6 @@ interface TokenRepository : JpaRepository<Token, Long> {
             """
     )
     fun findAllValidTokenByUser(id: Long?): List<Token?>?
-
 
     fun findByToken(token: String): Token?
 }
