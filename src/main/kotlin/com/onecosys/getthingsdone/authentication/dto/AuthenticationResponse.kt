@@ -1,3 +1,3 @@
 package com.onecosys.getthingsdone.authentication.dto
 
-data class AuthenticationResponse(val token: String)
+data class AuthenticationResponse(val accessToken: String, val refreshToken: String)
