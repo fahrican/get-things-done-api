@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service
 class LogoutService(private val repository: TokenRepository) : LogoutHandler {
 
     companion object {
-        private const val AUTH_HEADER = "Authorization"
-        private const val BEARER_TOKEN_PREFIX = "Bearer "
+        const val AUTH_HEADER = "Authorization"
+        const val BEARER_TOKEN_PREFIX = "Bearer "
     }
 
     override fun logout(request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication?) {

@@ -2,6 +2,8 @@ package com.onecosys.getthingsdone.authentication.web
 
 import com.onecosys.getthingsdone.authentication.error.JwtAuthenticationException
 import com.onecosys.getthingsdone.authentication.service.JwtService
+import com.onecosys.getthingsdone.authentication.service.LogoutService.Companion.AUTH_HEADER
+import com.onecosys.getthingsdone.authentication.service.LogoutService.Companion.BEARER_TOKEN_PREFIX
 import com.onecosys.getthingsdone.authorization.TokenRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -20,11 +22,6 @@ class JwtAuthenticationFilter(
     private val userService: UserDetailsService,
     private val tokenRepository: TokenRepository
 ) : OncePerRequestFilter() {
-
-    companion object {
-        private const val AUTH_HEADER = "Authorization"
-        private const val BEARER_TOKEN_PREFIX = "Bearer "
-    }
 
     override fun doFilterInternal(
         request: HttpServletRequest,
