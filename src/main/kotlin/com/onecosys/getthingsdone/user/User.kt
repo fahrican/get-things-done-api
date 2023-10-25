@@ -1,5 +1,7 @@
-package com.onecosys.getthingsdone.authorization.model
+package com.onecosys.getthingsdone.user
 
+import com.onecosys.getthingsdone.authorization.model.Role
+import com.onecosys.getthingsdone.authorization.model.Token
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated

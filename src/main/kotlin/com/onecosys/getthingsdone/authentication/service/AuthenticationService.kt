@@ -6,8 +6,8 @@ import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 import com.onecosys.getthingsdone.authentication.error.SignUpException
 import com.onecosys.getthingsdone.authorization.TokenRepository
 import com.onecosys.getthingsdone.authorization.model.Role
-import com.onecosys.getthingsdone.authorization.model.User
-import com.onecosys.getthingsdone.authorization.UserRepository
+import com.onecosys.getthingsdone.user.User
+import com.onecosys.getthingsdone.user.UserRepository
 import com.onecosys.getthingsdone.authorization.model.Token
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
