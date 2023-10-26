@@ -20,13 +20,35 @@ class SecurityConfig(
     private val logoutHandler: LogoutHandler
 ) {
 
+    companion object {
+        private val WHITE_LIST_URL = arrayOf(
+            "/api/v1/auth/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-ui.html"
+        )
+    }
+
     @Bean
     fun filterRequests(httpSecurity: HttpSecurity): SecurityFilterChain {
         httpSecurity
             .csrf { csrf -> csrf.disable() }  // using lambda to disable CSRF
             .authorizeHttpRequests {
-                it.requestMatchers("api/v1/auth/**")
-                    .permitAll()
+                it.requestMatchers(
+                    "api/v1/auth/**",
+                    "api/swagger-ui/**",
+                    "api/v3/api-docs",
+                    "api/swagger-ui.html",
+                    "api/v3/api-docs/swagger-config",
+                    "api/v3/api-docs"
+                ).permitAll()
                     .anyRequest()
                     .authenticated()
             }
