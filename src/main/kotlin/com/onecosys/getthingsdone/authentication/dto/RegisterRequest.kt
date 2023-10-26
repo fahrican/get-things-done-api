@@ -1,7 +1,5 @@
 package com.onecosys.getthingsdone.authentication.dto
 
-import com.onecosys.getthingsdone.authorization.model.Role
-
 data class RegisterRequest(
     val firstName: String,
     val lastName: String,
@@ -9,5 +7,4 @@ data class RegisterRequest(
     val username: String,
     val password: String,
     val passwordConfirmation: String,
-    val role: Role,
 )

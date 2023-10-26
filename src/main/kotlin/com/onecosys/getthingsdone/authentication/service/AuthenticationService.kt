@@ -32,7 +32,6 @@ class AuthenticationService(
             email = request.email
             _username = request.username
             _password = passwordEncoder.encode(request.password)
-            role = request.role
         }
 
         val savedUser = userRepository.save(user)
