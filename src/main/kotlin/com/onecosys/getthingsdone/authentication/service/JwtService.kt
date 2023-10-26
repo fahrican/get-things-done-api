@@ -20,6 +20,11 @@ class JwtService {
         Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString))
     }
 
+    companion object {
+        private const val EXPIRATION_AFTER_ONE_DAY: Long = 1000 * 60 * 60 * 24
+        private const val EXPIRATION_AFTER_SEVEN_DAYS: Long = 1000 * 60 * 60 * 24 * 7
+    }
+
     private fun extractAllClaims(token: String): Claims = Jwts.parser()
         .verifyWith(secretKey)
         .build()
@@ -34,18 +39,29 @@ class JwtService {
         return (extractUsername(token) == userDetails.username) && !isTokenExpired(token)
     }
 
-    fun generateToken(userDetails: UserDetails): String {
+    fun generateAccessToken(
+        claims: HashMap<String, Any>,
+        userDetails: UserDetails
+    ): String = generateToken(claims, userDetails, EXPIRATION_AFTER_ONE_DAY)
+
+    fun generateAccessToken(userDetails: UserDetails): String =
+        generateToken(HashMap(), userDetails, EXPIRATION_AFTER_ONE_DAY)
+
+
+    fun generateRefreshToken(userDetails: UserDetails): String {
         val claims = HashMap<String, Any>()
-        return generateToken(claims, userDetails)
+        return generateToken(claims, userDetails, EXPIRATION_AFTER_SEVEN_DAYS)
     }
 
-    private fun setExpirationAfterADay() = Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)
-
-    private fun generateToken(extractClaims: Map<String, Any>, userDetails: UserDetails): String = Jwts.builder()
+    private fun generateToken(
+        extractClaims: Map<String, Any>,
+        userDetails: UserDetails,
+        expirationTime: Long
+    ): String = Jwts.builder()
         .claims(extractClaims)
         .subject(userDetails.username)
         .issuedAt(Date(System.currentTimeMillis()))
-        .expiration(setExpirationAfterADay())
+        .expiration(Date(System.currentTimeMillis() + expirationTime))
         .signWith(secretKey)
         .compact()
 }

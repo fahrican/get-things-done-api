@@ -5,9 +5,8 @@ import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 import com.onecosys.getthingsdone.authentication.error.SignUpException
 import com.onecosys.getthingsdone.authorization.TokenRepository
-import com.onecosys.getthingsdone.authorization.model.Role
-import com.onecosys.getthingsdone.authorization.model.User
-import com.onecosys.getthingsdone.authorization.UserRepository
+import com.onecosys.getthingsdone.user.User
+import com.onecosys.getthingsdone.user.UserRepository
 import com.onecosys.getthingsdone.authorization.model.Token
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -34,24 +33,25 @@ class AuthenticationService(
             lastName = request.lastName
             email = request.email
             userPassword = passwordEncoder.encode(request.password)
-            role = Role.USER
+            role = request.role
         }
 
         val savedUser = userRepository.save(user)
-        val jwtToken = jwtService.generateToken(user)
-
+        val jwtToken = jwtService.generateAccessToken(user)
+        val refreshToken = jwtService.generateRefreshToken(user)
         saveUserToken(savedUser, jwtToken)
 
-        return AuthenticationResponse(jwtToken)
+        return AuthenticationResponse(jwtToken, refreshToken)
     }
 
     fun signIn(request: AuthenticationRequest): AuthenticationResponse {
         authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.email, request.password))
         val user: User = userRepository.findByEmail(request.email) ?: throw UsernameNotFoundException("User not found")
-        val jwtToken = jwtService.generateToken(user)
+        val jwtToken = jwtService.generateAccessToken(user)
+        val refreshToken = jwtService.generateRefreshToken(user)
         revokeAllUserTokens(user)
         saveUserToken(user, jwtToken)
-        return AuthenticationResponse(jwtToken)
+        return AuthenticationResponse(jwtToken, refreshToken)
     }
 
     private fun saveUserToken(user: User, jwtToken: String) {

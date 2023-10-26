@@ -5,6 +5,7 @@ import com.onecosys.getthingsdone.authorization.model.Token
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.LogoutHandler
 import org.springframework.stereotype.Service
 
@@ -25,6 +26,7 @@ class LogoutService(private val repository: TokenRepository) : LogoutHandler {
                 this.expired = true
                 this.revoked = true
                 repository.save(storedToken)
+                SecurityContextHolder.clearContext()
             }
         }
     }

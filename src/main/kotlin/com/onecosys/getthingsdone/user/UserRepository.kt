@@ -1,6 +1,5 @@
-package com.onecosys.getthingsdone.authorization
+package com.onecosys.getthingsdone.user
 
-import com.onecosys.getthingsdone.authorization.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
