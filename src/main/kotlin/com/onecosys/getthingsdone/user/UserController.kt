@@ -17,4 +17,10 @@ class UserController(private val service: UserService) {
         @Valid @RequestBody request: PasswordChangeRequest,
         connectedUser: Principal
     ) = ResponseEntity.ok(service.changePassword(request, connectedUser))
+
+    @PatchMapping("info")
+    fun updateInfo(
+        @Valid @RequestBody request: InfoChangeRequest,
+        connectedUser: Principal
+    ): ResponseEntity<UserInfoResponse> = ResponseEntity.ok(service.changeInfo(request, connectedUser))
 }
