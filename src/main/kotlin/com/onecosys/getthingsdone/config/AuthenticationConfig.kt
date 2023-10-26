@@ -17,7 +17,7 @@ class AuthenticationConfig(private val repository: UserRepository) {
     @Bean
     fun getUsername() =
         UserDetailsService { username ->
-            repository.findByEmail(username) ?: throw UsernameNotFoundException("User not found")
+            repository.findBy_username(username) ?: throw UsernameNotFoundException("User not found")
         }
 
     @Bean

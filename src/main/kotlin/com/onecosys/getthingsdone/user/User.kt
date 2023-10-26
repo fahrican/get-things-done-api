@@ -35,7 +35,11 @@ class User(
     @NotBlank
     var email: String = "",
 
-    var userPassword: String = "",
+    @NotBlank
+    var _username: String = "",
+
+    @NotBlank
+    var _password: String = "",
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -48,9 +52,9 @@ class User(
 
     override fun getAuthorities(): List<GrantedAuthority> = listOf(SimpleGrantedAuthority(role.name))
 
-    override fun getPassword() = userPassword
+    override fun getPassword() = _password
 
-    override fun getUsername() = email
+    override fun getUsername() = _username
 
     override fun isAccountNonExpired() = true
 

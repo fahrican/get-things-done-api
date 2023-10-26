@@ -15,6 +15,12 @@ class AuthenticationExceptionHandler {
         return ResponseEntity(error, error.status)
     }
 
+    @ExceptionHandler(EmailNotFoundException::class)
+    fun handleEmailNotFoundException(exception: EmailNotFoundException): ResponseEntity<AuthenticationError> {
+        val error = AuthenticationError(message = exception.message, status = HttpStatus.NOT_FOUND)
+        return ResponseEntity(error, error.status)
+    }
+
     @ExceptionHandler(SignUpException::class)
     fun handleSignUpException(exception: SignUpException): ResponseEntity<AuthenticationError> {
         val error = AuthenticationError(message = exception.message, status = HttpStatus.CONFLICT)
@@ -29,6 +35,7 @@ class AuthenticationExceptionHandler {
 }
 
 data class SignUpException(override val message: String) : RuntimeException()
+data class EmailNotFoundException(override val message: String) : RuntimeException()
 
 data class JwtAuthenticationException(
     override val message: String,

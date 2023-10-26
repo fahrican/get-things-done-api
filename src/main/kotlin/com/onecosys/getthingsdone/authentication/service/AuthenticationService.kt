@@ -24,15 +24,14 @@ class AuthenticationService(
 ) {
 
     fun signUp(request: RegisterRequest): AuthenticationResponse {
-        userRepository.findByEmail(request.email)?.let {
-            throw SignUpException("User email already exists!")
-        }
+        checkForSignUpMistakes(request)
 
         val user = User().apply {
             firstName = request.firstName
             lastName = request.lastName
             email = request.email
-            userPassword = passwordEncoder.encode(request.password)
+            _username = request.username
+            _password = passwordEncoder.encode(request.password)
             role = request.role
         }
 
@@ -44,9 +43,23 @@ class AuthenticationService(
         return AuthenticationResponse(jwtToken, refreshToken)
     }
 
+    private fun checkForSignUpMistakes(request: RegisterRequest) {
+        userRepository.findByEmail(request.email)?.let {
+            throw SignUpException("User email already exists!")
+        }
+
+        userRepository.findBy_username(request.username)?.let {
+            throw SignUpException("Username already exists!")
+        }
+
+        if (request.password != request.passwordConfirmation) {
+            throw SignUpException("Password and password confirmation does not match!")
+        }
+    }
+
     fun signIn(request: AuthenticationRequest): AuthenticationResponse {
-        authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.email, request.password))
-        val user: User = userRepository.findByEmail(request.email) ?: throw UsernameNotFoundException("User not found")
+        authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
+        val user: User = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
         val jwtToken = jwtService.generateAccessToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
         revokeAllUserTokens(user)
