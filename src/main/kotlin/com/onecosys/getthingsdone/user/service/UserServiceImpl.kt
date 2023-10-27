@@ -20,17 +20,17 @@ class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val repository: UserRepository,
     private val mapper: UserInfoMapper
-): UserService {
+) : UserService {
 
     override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
 
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
-        if (!passwordEncoder.matches(request.currentPassword, user.password)) {
+        check(!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw IllegalStateException("The current password is wrong!")
         }
 
-        if (request.newPassword != request.newPasswordConfirmation) {
+        check(request.newPassword != request.newPasswordConfirmation) {
             throw IllegalStateException("Your new password does not match with the password confirmation!")
         }
 
