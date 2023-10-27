@@ -22,9 +22,13 @@ class UserServiceImpl(
     private val mapper: UserInfoMapper
 ) : UserService {
 
-    override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
+    override fun changePassword(id: Long, request: UserPasswordUpdateRequest, connectedUser: Principal) {
 
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+
+        check(id != user.id) {
+            throw IllegalStateException("Use ID does not match ID of logged in user!")
+        }
 
         check(!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw IllegalStateException("The current password is wrong!")
@@ -38,8 +42,12 @@ class UserServiceImpl(
         repository.save(user)
     }
 
-    override fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
+    override fun changeInfo(id: Long, request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+
+        check(id != user.id) {
+            throw IllegalStateException("Use ID does not match ID of logged in user!")
+        }
 
         for (prop in UserInfoUpdateRequest::class.memberProperties) {
             if (prop.get(request) != null) {

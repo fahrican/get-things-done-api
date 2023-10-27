@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 class UserInfoMapper {
 
     fun toDto(entity: User) = UserInfoResponse(
+        entity.id,
         entity.firstName,
         entity.lastName,
         entity.email
