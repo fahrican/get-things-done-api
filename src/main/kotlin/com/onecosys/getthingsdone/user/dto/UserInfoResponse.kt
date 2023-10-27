@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.user
+package com.onecosys.getthingsdone.user.dto
 
 data class UserInfoResponse(
     val firstName: String,

@@ -1,7 +1,6 @@
 package com.onecosys.getthingsdone.authentication.service
 
 import org.springframework.security.core.userdetails.UserDetails
-import java.util.HashMap
 
 interface JwtService {
 

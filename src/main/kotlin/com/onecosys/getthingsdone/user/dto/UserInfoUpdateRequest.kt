@@ -1,6 +1,6 @@
-package com.onecosys.getthingsdone.user
+package com.onecosys.getthingsdone.user.dto
 
-data class InfoChangeRequest(
+data class UserInfoUpdateRequest(
     val firstName: String?,
     val lastName: String?,
     val email: String?,

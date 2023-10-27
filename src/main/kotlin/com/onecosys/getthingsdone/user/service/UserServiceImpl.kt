@@ -1,5 +1,11 @@
-package com.onecosys.getthingsdone.user
+package com.onecosys.getthingsdone.user.service
 
+import com.onecosys.getthingsdone.user.dto.UserInfoResponse
+import com.onecosys.getthingsdone.user.dto.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.user.dto.UserPasswordUpdateRequest
+import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.repository.UserRepository
+import com.onecosys.getthingsdone.user.util.UserInfoMapper
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -10,13 +16,13 @@ import org.springframework.util.ReflectionUtils
 
 
 @Service
-class UserService(
+class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val repository: UserRepository,
     private val mapper: UserInfoMapper
-) {
+): UserService {
 
-    fun changePassword(request: PasswordChangeRequest, connectedUser: Principal) {
+    override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
 
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
@@ -32,10 +38,10 @@ class UserService(
         repository.save(user)
     }
 
-    fun changeInfo(request: InfoChangeRequest, connectedUser: Principal): UserInfoResponse {
+    override fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
-        for (prop in InfoChangeRequest::class.memberProperties) {
+        for (prop in UserInfoUpdateRequest::class.memberProperties) {
             if (prop.get(request) != null) {
                 val field: Field? = ReflectionUtils.findField(User::class.java, prop.name)
                 field?.let {

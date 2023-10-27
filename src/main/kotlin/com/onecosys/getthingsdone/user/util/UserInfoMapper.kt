@@ -1,6 +1,7 @@
-package com.onecosys.getthingsdone.user
+package com.onecosys.getthingsdone.user.util
 
-import jakarta.persistence.Entity
+import com.onecosys.getthingsdone.user.dto.UserInfoResponse
+import com.onecosys.getthingsdone.user.entity.User
 import org.springframework.stereotype.Component
 
 @Component
