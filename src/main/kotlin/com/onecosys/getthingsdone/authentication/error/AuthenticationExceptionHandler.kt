@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.server.ResponseStatusException
 
 @ControllerAdvice
 class AuthenticationExceptionHandler {
@@ -54,6 +55,12 @@ class AuthenticationExceptionHandler {
     @ExceptionHandler(PasswordConfirmationMismatchException::class)
     fun handlePasswordConfirmationMismatchException(exception: PasswordConfirmationMismatchException): ResponseEntity<AuthenticationError> {
         val error = AuthenticationError(message = exception.message, status = HttpStatus.CONFLICT)
+        return ResponseEntity(error, error.status)
+    }
+
+    @ExceptionHandler(ResponseStatusException::class)
+    fun handleResponseStatusException(exception: ResponseStatusException): ResponseEntity<AuthenticationError> {
+        val error = AuthenticationError(message = exception.message, status = HttpStatus.UNAUTHORIZED)
         return ResponseEntity(error, error.status)
     }
 }

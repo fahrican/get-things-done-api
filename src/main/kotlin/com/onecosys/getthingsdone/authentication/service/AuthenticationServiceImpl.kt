@@ -9,11 +9,14 @@ import com.onecosys.getthingsdone.authorization.TokenRepository
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import com.onecosys.getthingsdone.authorization.model.Token
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class AuthenticationServiceImpl(
@@ -54,9 +57,14 @@ class AuthenticationServiceImpl(
     }
 
     override fun signIn(request: AuthenticationRequest): AuthenticationResponse {
-        authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
-        val user: User =
-            userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
+        try {
+            authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
+        } catch (e: BadCredentialsException) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username or password is incorrect")
+        }
+
+        val user = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
+
         val jwtToken = jwtService.generateAccessToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
         revokeAllUserTokens(user)
