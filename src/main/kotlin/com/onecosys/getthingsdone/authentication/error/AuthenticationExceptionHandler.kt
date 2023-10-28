@@ -47,13 +47,13 @@ class AuthenticationExceptionHandler {
 
     @ExceptionHandler(IncorrectPasswordException::class)
     fun handleIncorrectPasswordException(exception: IncorrectPasswordException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.NOT_FOUND)
+        val error = AuthenticationError(message = exception.message, status = HttpStatus.CONFLICT)
         return ResponseEntity(error, error.status)
     }
 
     @ExceptionHandler(PasswordConfirmationMismatchException::class)
     fun handlePasswordConfirmationMismatchException(exception: PasswordConfirmationMismatchException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.NOT_FOUND)
+        val error = AuthenticationError(message = exception.message, status = HttpStatus.CONFLICT)
         return ResponseEntity(error, error.status)
     }
 }
