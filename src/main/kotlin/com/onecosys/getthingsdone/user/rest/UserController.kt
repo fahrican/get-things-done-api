@@ -17,14 +17,14 @@ import java.security.Principal
 @RequestMapping("api/v1/users")
 class UserController(private val service: UserService) {
 
-    @PatchMapping("password/{id}")
+    @PatchMapping("{id}/password")
     fun changePassword(
         @PathVariable id: Long,
         @Valid @RequestBody request: UserPasswordUpdateRequest,
         connectedUser: Principal
     ) = ResponseEntity.ok(service.changePassword(id, request, connectedUser))
 
-    @PatchMapping("info/{id}")
+    @PatchMapping("{id}/info")
     fun updateInfo(
         @PathVariable id: Long,
         @Valid @RequestBody request: UserInfoUpdateRequest,
