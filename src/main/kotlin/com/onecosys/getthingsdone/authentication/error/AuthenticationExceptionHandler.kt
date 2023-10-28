@@ -1,89 +1,64 @@
 package com.onecosys.getthingsdone.authentication.error
 
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.context.request.WebRequest
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
-class AuthenticationExceptionHandler {
+class AuthenticationExceptionHandler : ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(UsernameNotFoundException::class)
-    fun handleUsernameNotFoundException(exception: UsernameNotFoundException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.NOT_FOUND)
-        return ResponseEntity(error, error.status)
+    override fun handleMethodArgumentNotValid(
+        exception: MethodArgumentNotValidException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any>? {
+        val errorDetails = exception.bindingResult.fieldErrors.joinToString("\n") { "${it.field}: ${it.defaultMessage}" }
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, errorDetails)
     }
 
-    @ExceptionHandler(EmailNotFoundException::class)
-    fun handleEmailNotFoundException(exception: EmailNotFoundException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.NOT_FOUND)
-        return ResponseEntity(error, error.status)
-    }
+    @ExceptionHandler(UsernameNotFoundException::class, EmailNotFoundException::class, UserNotFoundException::class)
+    fun handleNotFoundException(exception: RuntimeException): ResponseEntity<Any> =
+        buildResponseEntity(HttpStatus.NOT_FOUND, exception.message)
 
-    @ExceptionHandler(SignUpException::class)
-    fun handleSignUpException(exception: SignUpException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.CONFLICT)
-        return ResponseEntity(error, error.status)
-    }
+    @ExceptionHandler(
+        SignUpException::class,
+        UserMismatchException::class,
+        IncorrectPasswordException::class,
+        PasswordConfirmationMismatchException::class
+    )
+    fun handleConflictException(exception: RuntimeException): ResponseEntity<Any> =
+        buildResponseEntity(HttpStatus.CONFLICT, exception.message)
 
-    @ExceptionHandler(JwtAuthenticationException::class)
-    fun handleJwtAuthenticationException(exception: JwtAuthenticationException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.UNAUTHORIZED)
-        return ResponseEntity(error, error.status)
-    }
+    @ExceptionHandler(JwtAuthenticationException::class, UsernamePasswordMismatchException::class)
+    fun handleUnauthorizedException(exception: RuntimeException): ResponseEntity<Any> =
+        buildResponseEntity(HttpStatus.UNAUTHORIZED, exception.message)
 
-    @ExceptionHandler(UserMismatchException::class)
-    fun handleUserMismatchException(exception: UserMismatchException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.CONFLICT)
-        return ResponseEntity(error, error.status)
-    }
-
-    @ExceptionHandler(UserNotFoundException::class)
-    fun handleUserNotFoundException(exception: UserNotFoundException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.NOT_FOUND)
-        return ResponseEntity(error, error.status)
-    }
-
-    @ExceptionHandler(IncorrectPasswordException::class)
-    fun handleIncorrectPasswordException(exception: IncorrectPasswordException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.CONFLICT)
-        return ResponseEntity(error, error.status)
-    }
-
-    @ExceptionHandler(PasswordConfirmationMismatchException::class)
-    fun handlePasswordConfirmationMismatchException(exception: PasswordConfirmationMismatchException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.CONFLICT)
-        return ResponseEntity(error, error.status)
-    }
-
-    @ExceptionHandler(UsernamePasswordMismatchException::class)
-    fun handleUsernamePasswordMismatchException(exception: UsernamePasswordMismatchException): ResponseEntity<AuthenticationError> {
-        val error = AuthenticationError(message = exception.message, status = HttpStatus.UNAUTHORIZED)
-        return ResponseEntity(error, error.status)
+    private fun buildResponseEntity(status: HttpStatus, message: String?): ResponseEntity<Any> {
+        val error = AuthenticationError(message = message, status = status)
+        return ResponseEntity(error, status)
     }
 }
 
-data class SignUpException(override val message: String) : RuntimeException()
+class SignUpException(message: String) : RuntimeException(message)
 
-data class EmailNotFoundException(override val message: String) : RuntimeException()
+class EmailNotFoundException(message: String) : RuntimeException(message)
 
-data class JwtAuthenticationException(
-    override val message: String,
-    override val cause: Throwable? = null
-) : RuntimeException(message, cause)
+class JwtAuthenticationException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
-data class UserMismatchException(override val message: String) : RuntimeException()
+class UserMismatchException(message: String) : RuntimeException(message)
 
-data class UserNotFoundException(override val message: String) : RuntimeException()
+class UserNotFoundException(message: String) : RuntimeException(message)
 
-data class IncorrectPasswordException(override val message: String) : RuntimeException()
+class IncorrectPasswordException(message: String) : RuntimeException(message)
 
-data class PasswordConfirmationMismatchException(override val message: String) : RuntimeException()
+class PasswordConfirmationMismatchException(message: String) : RuntimeException(message)
 
-data class UsernamePasswordMismatchException(
-    val status: HttpStatusCode,
-    val errMsg: String
-) : ResponseStatusException(status, errMsg)
+class UsernamePasswordMismatchException(message: String) : RuntimeException(message)

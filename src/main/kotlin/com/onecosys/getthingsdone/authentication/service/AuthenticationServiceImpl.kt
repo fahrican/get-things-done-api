@@ -10,7 +10,6 @@ import com.onecosys.getthingsdone.authorization.TokenRepository
 import com.onecosys.getthingsdone.authorization.model.Token
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
-import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -60,7 +59,7 @@ class AuthenticationServiceImpl(
         try {
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
         } catch (e: BadCredentialsException) {
-            throw UsernamePasswordMismatchException(HttpStatus.UNAUTHORIZED, "Username or password is incorrect")
+            throw UsernamePasswordMismatchException("Username or password is incorrect")
         }
 
         val user = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
