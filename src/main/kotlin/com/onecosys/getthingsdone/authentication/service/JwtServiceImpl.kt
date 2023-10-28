@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.authentication.error.JwtAuthenticationException
+import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders

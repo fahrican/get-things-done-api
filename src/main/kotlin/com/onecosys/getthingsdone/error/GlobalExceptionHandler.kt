@@ -1,21 +1,27 @@
-package com.onecosys.getthingsdone.authentication.error
+package com.onecosys.getthingsdone.error
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
-class AuthenticationExceptionHandler {
+class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
-    private fun buildResponseEntity(status: HttpStatus, message: String?): ResponseEntity<Any> {
-        val error = AuthenticationError(message = message, status = status)
+    private fun buildResponseEntity(status: HttpStatus, message: String?): ResponseEntity<ApiError> {
+        val error = ApiError(message = message, status = status)
         return ResponseEntity(error, status)
     }
 
-    @ExceptionHandler(UsernameNotFoundException::class, EmailNotFoundException::class, UserNotFoundException::class)
-    fun handleNotFoundException(exception: RuntimeException): ResponseEntity<Any> =
+    @ExceptionHandler(
+        UsernameNotFoundException::class,
+        EmailNotFoundException::class,
+        UserNotFoundException::class,
+        TaskNotFoundException::class
+    )
+    fun handleNotFoundException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.NOT_FOUND, exception.message)
 
     @ExceptionHandler(
@@ -24,13 +30,21 @@ class AuthenticationExceptionHandler {
         IncorrectPasswordException::class,
         PasswordConfirmationMismatchException::class
     )
-    fun handleConflictException(exception: RuntimeException): ResponseEntity<Any> =
+    fun handleConflictException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.CONFLICT, exception.message)
 
     @ExceptionHandler(JwtAuthenticationException::class, UsernamePasswordMismatchException::class)
-    fun handleUnauthorizedException(exception: RuntimeException): ResponseEntity<Any> =
+    fun handleUnauthorizedException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.UNAUTHORIZED, exception.message)
+
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequestException(exception: BadRequestException): ResponseEntity<ApiError> =
+        buildResponseEntity(HttpStatus.BAD_REQUEST, exception.message)
 }
+
+class TaskNotFoundException(message: String) : RuntimeException(message)
+
+class BadRequestException(message: String) : RuntimeException(message)
 
 class SignUpException(message: String) : RuntimeException(message)
 

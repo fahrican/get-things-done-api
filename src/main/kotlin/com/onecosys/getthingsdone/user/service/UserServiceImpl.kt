@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.user.service
 
-import com.onecosys.getthingsdone.authentication.error.IncorrectPasswordException
-import com.onecosys.getthingsdone.authentication.error.PasswordConfirmationMismatchException
-import com.onecosys.getthingsdone.authentication.error.UserMismatchException
-import com.onecosys.getthingsdone.authentication.error.UserNotFoundException
+import com.onecosys.getthingsdone.error.IncorrectPasswordException
+import com.onecosys.getthingsdone.error.PasswordConfirmationMismatchException
+import com.onecosys.getthingsdone.error.UserMismatchException
+import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.user.dto.UserInfoResponse
 import com.onecosys.getthingsdone.user.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.user.dto.UserPasswordUpdateRequest
