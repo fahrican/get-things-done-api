@@ -7,9 +7,9 @@ import com.onecosys.getthingsdone.authentication.error.SignUpException
 import com.onecosys.getthingsdone.authentication.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.authorization.TokenRepository
+import com.onecosys.getthingsdone.authorization.model.Token
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
-import com.onecosys.getthingsdone.authorization.model.Token
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
@@ -17,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.web.server.ResponseStatusException
 
 @Service
 class AuthenticationServiceImpl(
