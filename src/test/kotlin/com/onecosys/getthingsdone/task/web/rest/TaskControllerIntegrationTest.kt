@@ -143,7 +143,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given one task when get task by id is called with string instead of int then check for internal server error`() {
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/404L"))
 
-        resultActions.andExpect(MockMvcResultMatchers.status().is5xxServerError)
+        resultActions.andExpect(MockMvcResultMatchers.status().is4xxClientError)
     }
 
     @Test

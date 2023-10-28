@@ -4,28 +4,24 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
-class TaskExceptionAdvice {
+class TaskExceptionAdvice : ResponseEntityExceptionHandler() {
+
+    private fun buildResponseEntity(status: HttpStatus, message: String?): ResponseEntity<ApiError> {
+        val error = ApiError(message = message, status = status)
+        return ResponseEntity(error, status)
+    }
 
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequestException(badRequestException: BadRequestException): ResponseEntity<ApiError> {
-        val error = ApiError(message = badRequestException.message, status = HttpStatus.BAD_REQUEST)
-        return ResponseEntity(error, error.status)
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, badRequestException.message)
     }
 
     @ExceptionHandler(TaskNotFoundException::class)
     fun handleTaskNotFoundException(taskNotFoundException: TaskNotFoundException): ResponseEntity<ApiError> {
-        val error = ApiError(message = taskNotFoundException.message, status = HttpStatus.NOT_FOUND)
-        return ResponseEntity(error, error.status)
-    }
-
-    @ExceptionHandler(Exception::class)
-    fun handleGeneralException(exception: Exception): ResponseEntity<ApiError> {
-        val error = ApiError(message = exception.message, status = HttpStatus.INTERNAL_SERVER_ERROR)
-        println("An exception occurred: ${exception.message}")
-        exception.printStackTrace()
-        return ResponseEntity(error, error.status)
+        return buildResponseEntity(HttpStatus.NOT_FOUND, taskNotFoundException.message)
     }
 }
 

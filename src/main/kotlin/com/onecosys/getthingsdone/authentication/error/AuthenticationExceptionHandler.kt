@@ -1,27 +1,17 @@
 package com.onecosys.getthingsdone.authentication.error
 
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.context.request.WebRequest
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
-class AuthenticationExceptionHandler : ResponseEntityExceptionHandler() {
+class AuthenticationExceptionHandler {
 
-    override fun handleMethodArgumentNotValid(
-        exception: MethodArgumentNotValidException,
-        headers: HttpHeaders,
-        status: HttpStatusCode,
-        request: WebRequest
-    ): ResponseEntity<Any>? {
-        val errorDetails = exception.bindingResult.fieldErrors.joinToString("\n") { "${it.field}: ${it.defaultMessage}" }
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, errorDetails)
+    private fun buildResponseEntity(status: HttpStatus, message: String?): ResponseEntity<Any> {
+        val error = AuthenticationError(message = message, status = status)
+        return ResponseEntity(error, status)
     }
 
     @ExceptionHandler(UsernameNotFoundException::class, EmailNotFoundException::class, UserNotFoundException::class)
@@ -40,11 +30,6 @@ class AuthenticationExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(JwtAuthenticationException::class, UsernamePasswordMismatchException::class)
     fun handleUnauthorizedException(exception: RuntimeException): ResponseEntity<Any> =
         buildResponseEntity(HttpStatus.UNAUTHORIZED, exception.message)
-
-    private fun buildResponseEntity(status: HttpStatus, message: String?): ResponseEntity<Any> {
-        val error = AuthenticationError(message = message, status = status)
-        return ResponseEntity(error, status)
-    }
 }
 
 class SignUpException(message: String) : RuntimeException(message)
