@@ -4,6 +4,7 @@ import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 import com.onecosys.getthingsdone.authentication.error.SignUpException
+import com.onecosys.getthingsdone.authentication.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.authorization.TokenRepository
 import com.onecosys.getthingsdone.user.entity.User
@@ -60,7 +61,7 @@ class AuthenticationServiceImpl(
         try {
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
         } catch (e: BadCredentialsException) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username or password is incorrect")
+            throw UsernamePasswordMismatchException(HttpStatus.UNAUTHORIZED, "Username or password is incorrect")
         }
 
         val user = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")

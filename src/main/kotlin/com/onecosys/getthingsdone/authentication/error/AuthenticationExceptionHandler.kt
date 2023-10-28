@@ -1,6 +1,7 @@
 package com.onecosys.getthingsdone.authentication.error
 
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -58,8 +59,8 @@ class AuthenticationExceptionHandler {
         return ResponseEntity(error, error.status)
     }
 
-    @ExceptionHandler(ResponseStatusException::class)
-    fun handleResponseStatusException(exception: ResponseStatusException): ResponseEntity<AuthenticationError> {
+    @ExceptionHandler(UsernamePasswordMismatchException::class)
+    fun handleUsernamePasswordMismatchException(exception: UsernamePasswordMismatchException): ResponseEntity<AuthenticationError> {
         val error = AuthenticationError(message = exception.message, status = HttpStatus.UNAUTHORIZED)
         return ResponseEntity(error, error.status)
     }
@@ -81,3 +82,8 @@ data class UserNotFoundException(override val message: String) : RuntimeExceptio
 data class IncorrectPasswordException(override val message: String) : RuntimeException()
 
 data class PasswordConfirmationMismatchException(override val message: String) : RuntimeException()
+
+data class UsernamePasswordMismatchException(
+    val status: HttpStatusCode,
+    val errMsg: String
+) : ResponseStatusException(status, errMsg)
