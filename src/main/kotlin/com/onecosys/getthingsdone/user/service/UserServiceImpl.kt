@@ -1,7 +1,6 @@
 package com.onecosys.getthingsdone.user.service
 
-import com.onecosys.getthingsdone.error.IncorrectPasswordException
-import com.onecosys.getthingsdone.error.PasswordConfirmationMismatchException
+import com.onecosys.getthingsdone.error.PasswordMismatchException
 import com.onecosys.getthingsdone.error.UserMismatchException
 import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.user.dto.UserInfoResponse
@@ -32,11 +31,11 @@ class UserServiceImpl(
         val user = repository.findById(id).orElseThrow { throw UserNotFoundException("User with ID: $id not found!") }
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
-            throw IncorrectPasswordException("The current password is wrong!")
+            throw PasswordMismatchException("The current password is wrong!")
         }
 
         if (request.newPassword != request.newPasswordConfirmation) {
-            throw PasswordConfirmationMismatchException("Your new password does not match with the password confirmation!")
+            throw PasswordMismatchException("Your new password does not match with the password confirmation!")
         }
 
         user._password = passwordEncoder.encode(request.newPassword)

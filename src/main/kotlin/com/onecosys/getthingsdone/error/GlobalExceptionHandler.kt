@@ -17,7 +17,6 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(
         UsernameNotFoundException::class,
-        EmailNotFoundException::class,
         UserNotFoundException::class,
         TaskNotFoundException::class
     )
@@ -27,8 +26,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(
         SignUpException::class,
         UserMismatchException::class,
-        IncorrectPasswordException::class,
-        PasswordConfirmationMismatchException::class
+        PasswordMismatchException::class
     )
     fun handleConflictException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.CONFLICT, exception.message)
@@ -48,16 +46,13 @@ class BadRequestException(message: String) : RuntimeException(message)
 
 class SignUpException(message: String) : RuntimeException(message)
 
-class EmailNotFoundException(message: String) : RuntimeException(message)
-
 class JwtAuthenticationException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
 class UserMismatchException(message: String) : RuntimeException(message)
 
 class UserNotFoundException(message: String) : RuntimeException(message)
 
-class IncorrectPasswordException(message: String) : RuntimeException(message)
-
-class PasswordConfirmationMismatchException(message: String) : RuntimeException(message)
+class PasswordMismatchException(message: String) : RuntimeException(message)
 
 class UsernamePasswordMismatchException(message: String) : RuntimeException(message)
+
