@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.dto
 
 data class AuthenticationRequest(
-    val email: String,
+    val username: String,
     val password: String
 )

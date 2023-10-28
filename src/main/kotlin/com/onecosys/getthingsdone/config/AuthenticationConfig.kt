@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.config
 
-import com.onecosys.getthingsdone.user.UserRepository
+import com.onecosys.getthingsdone.user.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
@@ -17,7 +17,7 @@ class AuthenticationConfig(private val repository: UserRepository) {
     @Bean
     fun getUsername() =
         UserDetailsService { username ->
-            repository.findByEmail(username) ?: throw UsernameNotFoundException("User not found")
+            repository.findBy_username(username) ?: throw UsernameNotFoundException("User not found")
         }
 
     @Bean

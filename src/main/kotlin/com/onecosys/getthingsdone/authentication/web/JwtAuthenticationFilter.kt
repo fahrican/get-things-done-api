@@ -1,13 +1,14 @@
 package com.onecosys.getthingsdone.authentication.web
 
-import com.onecosys.getthingsdone.authentication.error.JwtAuthenticationException
 import com.onecosys.getthingsdone.authentication.service.JwtService
 import com.onecosys.getthingsdone.authentication.service.LogoutService.Companion.AUTH_HEADER
 import com.onecosys.getthingsdone.authentication.service.LogoutService.Companion.BEARER_TOKEN_PREFIX
 import com.onecosys.getthingsdone.authorization.TokenRepository
+import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
@@ -23,13 +24,14 @@ class JwtAuthenticationFilter(
     private val tokenRepository: TokenRepository
 ) : OncePerRequestFilter() {
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
         val authHeader: String? = request.getHeader(AUTH_HEADER)
-
         if (authHeader?.startsWith(BEARER_TOKEN_PREFIX) == true) {
             val jwt: String = authHeader.drop(BEARER_TOKEN_PREFIX.length)
 
@@ -37,25 +39,20 @@ class JwtAuthenticationFilter(
                 runCatching {
                     val userEmail = jwtService.extractUsername(jwt)
                     val userDetails: UserDetails = userService.loadUserByUsername(userEmail)
-
                     val token = tokenRepository.findByToken(jwt)
-                    var isTokenValid = false
-                    token?.let {
-                        isTokenValid = (!it.expired && !it.revoked)
-                    }
 
-                    if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+                    if (jwtService.isTokenValid(jwt, userDetails) && token?.expired == false && !token.revoked) {
                         val authToken = UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.authorities
-                        ).apply {
-                            details = WebAuthenticationDetailsSource().buildDetails(request)
-                        }
+                        ).apply { details = WebAuthenticationDetailsSource().buildDetails(request) }
                         SecurityContextHolder.getContext().authentication = authToken
                     }
-                }.onFailure { throw JwtAuthenticationException("Error processing JWT token", it) }
+                }.onFailure {
+                    log.error("Error processing JWT token", it)
+                    throw JwtAuthenticationException("Error processing JWT token", it)
+                }
             }
         }
-
         filterChain.doFilter(request, response)
     }
 }

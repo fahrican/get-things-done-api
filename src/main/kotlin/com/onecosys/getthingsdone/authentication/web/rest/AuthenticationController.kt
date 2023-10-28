@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.RestController
 class AuthenticationController(private val service: AuthenticationService) {
 
     @PostMapping("sign-up")
-    fun signUp(@RequestBody request: RegisterRequest): ResponseEntity<AuthenticationResponse> {
-        return ResponseEntity.ok(service.signUp(request))
-    }
+    fun signUp(@RequestBody request: RegisterRequest): ResponseEntity<AuthenticationResponse> =
+        ResponseEntity.ok(service.signUp(request))
+
 
     @PostMapping("sign-in")
-    fun signIn(@RequestBody request: AuthenticationRequest): ResponseEntity<AuthenticationResponse> {
-        return ResponseEntity.ok(service.signIn(request))
-    }
+    fun signIn(@RequestBody request: AuthenticationRequest): ResponseEntity<AuthenticationResponse> =
+        ResponseEntity.ok(service.signIn(request))
 }

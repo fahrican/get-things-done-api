@@ -1,10 +1,10 @@
-package com.onecosys.getthingsdone.task.error
+package com.onecosys.getthingsdone.error
 
 import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 
 data class ApiError(
-    val message: String? = "Something went wrong",
+    val message: String? = "Something API related went wrong",
     val status: HttpStatus,
     val code: Int = status.value(),
     val timestamp: LocalDateTime = LocalDateTime.now()
