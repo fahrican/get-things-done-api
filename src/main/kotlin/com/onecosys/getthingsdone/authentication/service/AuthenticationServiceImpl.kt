@@ -4,6 +4,7 @@ import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 import com.onecosys.getthingsdone.authentication.error.SignUpException
+import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.authorization.TokenRepository
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
@@ -20,20 +21,15 @@ class AuthenticationServiceImpl(
     private val tokenRepository: TokenRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
-    private val authenticationManager: AuthenticationManager
-): AuthenticationService {
+    private val authenticationManager: AuthenticationManager,
+    private val mapper: UserRegistrationMapper
+) : AuthenticationService {
 
     override fun signUp(request: RegisterRequest): AuthenticationResponse {
 
         checkForSignUpMistakes(request)
 
-        val user = User().apply {
-            firstName = request.firstName
-            lastName = request.lastName
-            email = request.email
-            _username = request.username
-            _password = passwordEncoder.encode(request.password)
-        }
+        val user = mapper.toEntity(request, passwordEncoder)
 
         val savedUser = userRepository.save(user)
         val jwtToken = jwtService.generateAccessToken(user)
@@ -59,7 +55,8 @@ class AuthenticationServiceImpl(
 
     override fun signIn(request: AuthenticationRequest): AuthenticationResponse {
         authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
-        val user: User = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
+        val user: User =
+            userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
         val jwtToken = jwtService.generateAccessToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
         revokeAllUserTokens(user)
