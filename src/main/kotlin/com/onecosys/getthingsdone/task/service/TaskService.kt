@@ -8,7 +8,7 @@ import com.onecosys.getthingsdone.user.entity.User
 
 interface TaskService {
 
-    fun getTasks(status: TaskStatus?): Set<TaskFetchResponse>
+    fun getTasks(user: User, status: TaskStatus?): Set<TaskFetchResponse>
 
     fun getTaskById(id: Long): TaskFetchResponse
 

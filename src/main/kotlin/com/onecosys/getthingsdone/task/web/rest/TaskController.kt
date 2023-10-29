@@ -49,8 +49,13 @@ class TaskController(private val service: TaskService) {
     )
     @GetMapping
     fun getTasks(
-        @RequestParam("status", required = false) status: TaskStatus?
-    ): ResponseEntity<Set<TaskFetchResponse>> = ResponseEntity.ok(service.getTasks(status))
+        authentication: Authentication,
+        @RequestParam status: TaskStatus?
+    ): ResponseEntity<Set<TaskFetchResponse>> {
+        val user = authentication.principal as User
+        val tasks = service.getTasks(user, status)
+        return ResponseEntity(tasks, HttpStatus.OK)
+    }
 
     @Operation(summary = "Get task by its ID", tags = ["task"])
     @ApiResponses(
@@ -90,7 +95,7 @@ class TaskController(private val service: TaskService) {
         @Valid @RequestBody createRequest: TaskCreateRequest,
         authentication: Authentication
     ): ResponseEntity<TaskFetchResponse> {
-        val user = (authentication.principal as User)
+        val user = authentication.principal as User
         val task = service.createTask(createRequest, user)
         return ResponseEntity(task, HttpStatus.CREATED)
     }
