@@ -4,6 +4,7 @@ import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.task.model.TaskStatus
 import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
+import com.onecosys.getthingsdone.user.entity.User
 
 interface TaskService {
 
@@ -11,7 +12,7 @@ interface TaskService {
 
     fun getTaskById(id: Long): TaskFetchResponse
 
-    fun createTask(createRequest: TaskCreateRequest): TaskFetchResponse
+    fun createTask(createRequest: TaskCreateRequest, user: User): TaskFetchResponse
 
     fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskFetchResponse
 

@@ -12,6 +12,7 @@ import com.onecosys.getthingsdone.task.model.entity.Task
 import com.onecosys.getthingsdone.task.repository.TaskRepository
 import com.onecosys.getthingsdone.task.util.TaskTimestamp
 import com.onecosys.getthingsdone.task.util.converter.TaskMapper
+import com.onecosys.getthingsdone.user.entity.User
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
 import java.lang.reflect.Field
@@ -38,7 +39,7 @@ class TaskServiceImpl(
         return mapper.toDto(task)
     }
 
-    override fun createTask(createRequest: TaskCreateRequest): TaskFetchResponse {
+    override fun createTask(createRequest: TaskCreateRequest, user: User): TaskFetchResponse {
         val descriptionLength: Int = createRequest.description.length
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
@@ -47,6 +48,7 @@ class TaskServiceImpl(
             throw BadRequestException("A task with the description '${createRequest.description}' already exists")
         }
         val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone())
+        task.user = user
         val savedTask: Task = repository.save(task)
         return mapper.toDto(savedTask)
     }

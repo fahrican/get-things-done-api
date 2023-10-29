@@ -2,9 +2,12 @@ package com.onecosys.getthingsdone.user.entity
 
 import com.onecosys.getthingsdone.authorization.model.Role
 import com.onecosys.getthingsdone.authorization.model.Token
+import com.onecosys.getthingsdone.task.model.entity.Task
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -46,8 +49,10 @@ class User(
     var role: Role = Role.USER,
 
     @OneToMany(mappedBy = "user")
-    private val tokens: List<Token>? = null
+    private val tokens: List<Token>? = null,
 
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    private val tasks: List<Task>? = null
 ) : UserDetails {
 
     override fun getAuthorities(): List<GrantedAuthority> = listOf(SimpleGrantedAuthority(role.name))
