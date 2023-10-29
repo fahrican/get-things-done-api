@@ -1,8 +1,8 @@
 package com.onecosys.getthingsdone.task.web.rest
 
-import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
-import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.task.model.TaskStatus
+import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.service.TaskService
 import com.onecosys.getthingsdone.user.entity.User
@@ -16,7 +16,6 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.security.Principal
 
 @CrossOrigin
 @RestController
