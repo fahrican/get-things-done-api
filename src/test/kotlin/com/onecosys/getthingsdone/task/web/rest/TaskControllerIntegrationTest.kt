@@ -53,7 +53,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     private val mapper = jacksonObjectMapper()
 
     private val taskId: Long = 33
-    private val dummyDto1 = TaskFetchResponse(
+    private val dummyDto = TaskFetchResponse(
         33,
         "test1",
         isReminderSet = false,
@@ -86,7 +86,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             timeTaken = 2,
             priority = Priority.LOW
         )
-        val taskDtos = setOf(dummyDto1, taskFetchResponse2)
+        val taskDtos = setOf(dummyDto, taskFetchResponse2)
 
         // WHEN
         `when`(mockService.getTasks(mockUserProvider.getUser(),null)).thenReturn(taskDtos)
@@ -127,20 +127,20 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
-        `when`(mockService.getTasks(mockUserProvider.getUser(), TaskStatus.CLOSED)).thenReturn(setOf(dummyDto1))
+        `when`(mockService.getTasks(mockUserProvider.getUser(), TaskStatus.CLOSED)).thenReturn(setOf(dummyDto))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=closed"))
 
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(dummyDto1.isTaskOpen))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(dummyDto.isTaskOpen))
     }
 
     @Test
     fun `given one task when get task by id is called then check for correct description`() {
-        `when`(mockService.getTaskById(33, mockUserProvider.getUser())).thenReturn(dummyDto1)
-        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/${dummyDto1.id}"))
+        `when`(mockService.getTaskById(33, mockUserProvider.getUser())).thenReturn(dummyDto)
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/${dummyDto.id}"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.description").value(dummyDto1.description))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.description").value(dummyDto.description))
     }
 
     @Test

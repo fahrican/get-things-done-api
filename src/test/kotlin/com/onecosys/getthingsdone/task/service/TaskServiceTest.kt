@@ -38,7 +38,7 @@ internal class TaskServiceTest {
     private lateinit var mockRepository: TaskRepository
 
     @RelaxedMockK
-    private lateinit var taskTimestamp: TaskTimestamp
+    private lateinit var mockTaskTimestamp: TaskTimestamp
 
     @RelaxedMockK
     private lateinit var mockUser: User
@@ -69,7 +69,7 @@ internal class TaskServiceTest {
         )
         clock = Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         task = Task()
-        objectUnderTest = TaskServiceImpl(mockRepository, mapper, taskTimestamp)
+        objectUnderTest = TaskServiceImpl(mockRepository, mapper, mockTaskTimestamp)
     }
 
     @Test
@@ -116,9 +116,9 @@ internal class TaskServiceTest {
 
     @Test
     fun `when task gets created then check if it gets properly created`() {
-        task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), mockUser)
+        task = mapper.toEntity(createRequest, mockTaskTimestamp.createClockWithZone(), mockUser)
 
-        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
+        every { mockTaskTimestamp.createClockWithZone() } returns Clock.fixed(
             date.atStartOfDay(ZoneId.systemDefault()).toInstant(),
             ZoneId.systemDefault()
         )
@@ -199,7 +199,7 @@ internal class TaskServiceTest {
         task.timeTaken = createRequest.timeTaken
         task.priority = createRequest.priority
 
-        every { taskTimestamp.createClockWithZone() } returns Clock.fixed(
+        every { mockTaskTimestamp.createClockWithZone() } returns Clock.fixed(
             date.atStartOfDay(ZoneId.systemDefault()).toInstant(),
             ZoneId.systemDefault()
         )
