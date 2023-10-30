@@ -12,7 +12,7 @@ interface TaskRepository : JpaRepository<Task, Long> {
 
     fun existsByDescription(description: String): Boolean
 
-    fun findAllByUserAndIsTaskOpenOrderByIdAsc(user: User, isTaskOpen: Boolean): List<Task>
+    fun findAllByUserAndIsTaskOpenOrderByIdAsc(user: User, isTaskOpen: Boolean): Set<Task>
 
-    fun findAllByUserOrderByIdAsc(user: User): List<Task>
+    fun findAllByUserOrderByIdAsc(user: User): Set<Task>
 }
