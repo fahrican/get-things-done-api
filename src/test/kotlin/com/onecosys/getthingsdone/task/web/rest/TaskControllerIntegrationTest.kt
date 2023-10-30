@@ -14,6 +14,7 @@ import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.model.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.model.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.service.TaskService
+import com.onecosys.getthingsdone.task.util.AuthenticatedUserProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -44,12 +45,15 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     private lateinit var mockJwtService: JwtService
 
     @MockBean
+    private lateinit var mockUserProvider: AuthenticatedUserProvider
+
+    @MockBean
     private lateinit var mockTokenRepository: TokenRepository
 
     private val mapper = jacksonObjectMapper()
 
     private val taskId: Long = 33
-    private val dummyDto1 = TaskFetchResponse(
+    private val dummyDto = TaskFetchResponse(
         33,
         "test1",
         isReminderSet = false,
@@ -82,10 +86,10 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             timeTaken = 2,
             priority = Priority.LOW
         )
-        val taskDtos = setOf(dummyDto1, taskFetchResponse2)
+        val taskDtos = setOf(dummyDto, taskFetchResponse2)
 
         // WHEN
-        `when`(mockService.getTasks(null)).thenReturn(taskDtos)
+        `when`(mockService.getTasks(mockUserProvider.getUser(),null)).thenReturn(taskDtos)
 
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks"))
 
@@ -110,7 +114,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             priority = Priority.LOW
         )
 
-        `when`(mockService.getTasks(TaskStatus.OPEN)).thenReturn(setOf(taskFetchResponse2))
+        `when`(mockService.getTasks(mockUserProvider.getUser(), TaskStatus.OPEN)).thenReturn(setOf(taskFetchResponse2))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
@@ -123,20 +127,20 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
-        `when`(mockService.getTasks(TaskStatus.CLOSED)).thenReturn(setOf(dummyDto1))
+        `when`(mockService.getTasks(mockUserProvider.getUser(), TaskStatus.CLOSED)).thenReturn(setOf(dummyDto))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=closed"))
 
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(dummyDto1.isTaskOpen))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(dummyDto.isTaskOpen))
     }
 
     @Test
     fun `given one task when get task by id is called then check for correct description`() {
-        `when`(mockService.getTaskById(33)).thenReturn(dummyDto1)
-        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/${dummyDto1.id}"))
+        `when`(mockService.getTaskById(33, mockUserProvider.getUser())).thenReturn(dummyDto)
+        val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/${dummyDto.id}"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
         resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.description").value(dummyDto1.description))
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.description").value(dummyDto.description))
     }
 
     @Test
@@ -150,7 +154,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given task id when id does not exist then check for task not found exception`() {
         val id: Long = 121
 
-        `when`(mockService.deleteTask(id)).thenThrow(TaskNotFoundException("Task with ID: $id does not exist!"))
+        `when`(mockService.deleteTask(id, mockUserProvider.getUser())).thenThrow(TaskNotFoundException("Task with ID: $id does not exist!"))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/$id"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -171,7 +175,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         val badRequestException =
             BadRequestException("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
 
-        `when`(mockService.createTask(request)).thenThrow(badRequestException)
+        `when`(mockService.createTask(request, mockUserProvider.getUser())).thenThrow(badRequestException)
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +210,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             priority = Priority.LOW
         )
 
-        `when`(mockService.createTask(request)).thenReturn(taskFetchResponse)
+        `when`(mockService.createTask(request, mockUserProvider.getUser())).thenReturn(taskFetchResponse)
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -247,7 +251,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             priority = Priority.MEDIUM
         )
 
-        `when`(mockService.updateTask(dummyDto.id!!, request)).thenReturn(dummyDto)
+        `when`(mockService.updateTask(dummyDto.id!!, request, mockUserProvider.getUser())).thenReturn(dummyDto)
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/v1/tasks/${dummyDto.id}")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -267,7 +271,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given id for delete request when delete task is performed then check for the message`() {
         val expectedHeaderValue = "Task with id: $taskId has been deleted."
 
-        `when`(mockService.deleteTask(taskId)).thenReturn(expectedHeaderValue)
+        `when`(mockService.deleteTask(taskId, mockUserProvider.getUser())).thenReturn(expectedHeaderValue)
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/$taskId"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().isNoContent)

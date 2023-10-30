@@ -3,12 +3,17 @@ package com.onecosys.getthingsdone
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.task.model.Priority
 import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.task.service.TaskService
+import com.onecosys.getthingsdone.task.util.AuthenticatedUserProvider
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.test.context.support.WithMockUser
@@ -21,6 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import java.time.LocalDateTime
 
 @ActiveProfiles("dev")
 @SpringBootTest
@@ -34,6 +40,12 @@ class GetThingsDoneApplicationTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
+
+    @MockBean
+    private lateinit var mockService: TaskService
+
+    @MockBean
+    private lateinit var mockUserProvider: AuthenticatedUserProvider
 
     private val mapper = jacksonObjectMapper()
 
@@ -61,6 +73,19 @@ class GetThingsDoneApplicationTest {
     @Test
     @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun shouldCreateTask() {
+        val taskFetchResponse = TaskFetchResponse(
+            0,
+            "test for db",
+            isReminderSet = false,
+            isTaskOpen = false,
+            createdOn = LocalDateTime.now(),
+            startedOn = null,
+            finishedOn = null,
+            timeInterval = "2d",
+            timeTaken = 2,
+            priority = Priority.LOW
+        )
+
         val request = TaskCreateRequest(
             description = "test test",
             isReminderSet = true,
@@ -72,6 +97,7 @@ class GetThingsDoneApplicationTest {
             priority = Priority.HIGH
         )
 
+        Mockito.`when`(mockService.createTask(request, mockUserProvider.getUser())).thenReturn(taskFetchResponse)
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
