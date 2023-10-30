@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TaskRepository : JpaRepository<Task, Long> {
 
-    fun findTaskById(id: Long): Task
+    fun findTaskByIdAndUser(id: Long, user: User): Task
 
     fun existsByDescription(description: String): Boolean
 

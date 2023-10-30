@@ -5,7 +5,7 @@ import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.service.TaskService
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.task.util.AuthenticatedUserProvider
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
@@ -16,7 +16,6 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -31,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/tasks")
-class TaskController(private val service: TaskService) {
+class TaskController(private val service: TaskService, private val userProvider: AuthenticatedUserProvider) {
 
     @Operation(summary = "Get all tasks", tags = ["task"])
     @ApiResponses(
@@ -46,12 +45,8 @@ class TaskController(private val service: TaskService) {
             ApiResponse(responseCode = "400", description = "Bad Request", content = [Content()])]
     )
     @GetMapping
-    fun getTasks(
-        authentication: Authentication,
-        @RequestParam status: TaskStatus?
-    ): ResponseEntity<Set<TaskFetchResponse>> {
-        val user = authentication.principal as User
-        val tasks = service.getTasks(user, status)
+    fun getTasks(@RequestParam status: TaskStatus?): ResponseEntity<Set<TaskFetchResponse>> {
+        val tasks = service.getTasks(userProvider.getUser(), status)
         return ResponseEntity(tasks, HttpStatus.OK)
     }
 
@@ -72,7 +67,7 @@ class TaskController(private val service: TaskService) {
     )
     @GetMapping("{id}")
     fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskFetchResponse> =
-        ResponseEntity.ok(service.getTaskById(id))
+        ResponseEntity.ok(service.getTaskById(id, userProvider.getUser()))
 
     @Operation(summary = "Create a new task", tags = ["task"])
     @ApiResponses(
@@ -89,12 +84,8 @@ class TaskController(private val service: TaskService) {
         ]
     )
     @PostMapping
-    fun createTask(
-        @Valid @RequestBody createRequest: TaskCreateRequest,
-        authentication: Authentication
-    ): ResponseEntity<TaskFetchResponse> {
-        val user = authentication.principal as User
-        val task = service.createTask(createRequest, user)
+    fun createTask(@Valid @RequestBody createRequest: TaskCreateRequest): ResponseEntity<TaskFetchResponse> {
+        val task = service.createTask(createRequest, userProvider.getUser())
         return ResponseEntity(task, HttpStatus.CREATED)
     }
 
@@ -116,9 +107,8 @@ class TaskController(private val service: TaskService) {
     @PatchMapping("{id}")
     fun updateTask(
         @PathVariable id: Long,
-        @Valid @RequestBody
-        updateRequest: TaskUpdateRequest
-    ): ResponseEntity<TaskFetchResponse> = ResponseEntity.ok(service.updateTask(id, updateRequest))
+        @Valid @RequestBody updateRequest: TaskUpdateRequest
+    ): ResponseEntity<TaskFetchResponse> = ResponseEntity.ok(service.updateTask(id, updateRequest, userProvider.getUser()))
 
     @Operation(summary = "Delete a task by its ID", tags = ["task"])
     @ApiResponses(
@@ -130,7 +120,7 @@ class TaskController(private val service: TaskService) {
     )
     @DeleteMapping("{id}")
     fun deleteTask(@PathVariable id: Long): ResponseEntity<Unit> {
-        val headerValue: String = service.deleteTask(id)
+        val headerValue: String = service.deleteTask(id, userProvider.getUser())
         val httpHeader = HttpHeaders()
         httpHeader.add("delete-task-header", headerValue)
         return ResponseEntity(null, httpHeader, HttpStatus.NO_CONTENT)

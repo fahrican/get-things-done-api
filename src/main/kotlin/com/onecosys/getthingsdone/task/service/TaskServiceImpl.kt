@@ -28,16 +28,18 @@ class TaskServiceImpl(
     override fun getTasks(user: User, status: TaskStatus?): Set<TaskFetchResponse> {
         return when (status) {
             TaskStatus.OPEN -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true).map(mapper::toDto).toSet()
-            TaskStatus.CLOSED -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false).map(mapper::toDto).toSet()
+            TaskStatus.CLOSED -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false).map(mapper::toDto)
+                .toSet()
+
             else -> repository.findAllByUserOrderByIdAsc(user)
                 .map(mapper::toDto)
                 .toSet()
         }
     }
 
-    override fun getTaskById(id: Long): TaskFetchResponse {
+    override fun getTaskById(id: Long, user: User): TaskFetchResponse {
         validateTaskIdExistence(id)
-        val task: Task = repository.findTaskById(id)
+        val task: Task = repository.findTaskByIdAndUser(id, user)
         return mapper.toDto(task)
     }
 
@@ -49,15 +51,14 @@ class TaskServiceImpl(
         if (repository.existsByDescription(createRequest.description)) {
             throw BadRequestException("A task with the description '${createRequest.description}' already exists")
         }
-        val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone())
-        task.user = user
+        val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), user)
         val savedTask: Task = repository.save(task)
         return mapper.toDto(savedTask)
     }
 
-    override fun updateTask(id: Long, updateRequest: TaskUpdateRequest): TaskFetchResponse {
+    override fun updateTask(id: Long, updateRequest: TaskUpdateRequest, user: User): TaskFetchResponse {
         validateTaskIdExistence(id)
-        val existingTask: Task = repository.findTaskById(id)
+        val existingTask: Task = repository.findTaskByIdAndUser(id, user)
 
         for (prop in TaskUpdateRequest::class.memberProperties) {
             if (prop.get(updateRequest) != null) {
@@ -73,7 +74,7 @@ class TaskServiceImpl(
         return mapper.toDto(savedTask)
     }
 
-    override fun deleteTask(id: Long): String {
+    override fun deleteTask(id: Long, user: User): String {
         validateTaskIdExistence(id)
         repository.deleteById(id)
         return "Task with id: $id has been deleted."
