@@ -1,7 +1,6 @@
 package com.onecosys.getthingsdone
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.info.License
@@ -39,17 +38,16 @@ import org.springframework.boot.runApplication
     ],
     security = [
         SecurityRequirement(
-            name = "bearerAuth"
+            name = "BearerAuth"
         )
     ]
 )
 @SecurityScheme(
-    name = "bearerAuth",
+    name = "BearerAuth",
     description = "JWT authentication description",
     scheme = "bearer",
     type = SecuritySchemeType.HTTP,
     bearerFormat = "JWT",
-    `in` = SecuritySchemeIn.HEADER
 )
 class GetThingsDoneApplication
 
