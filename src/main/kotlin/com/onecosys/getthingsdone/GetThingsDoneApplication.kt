@@ -46,7 +46,7 @@ import org.springframework.boot.runApplication
 @SecurityScheme(
     name = "bearerAuth",
     description = "JWT authentication description",
-    scheme = "Bearer Token",
+    scheme = "bearer",
     type = SecuritySchemeType.HTTP,
     bearerFormat = "JWT",
     `in` = SecuritySchemeIn.HEADER
