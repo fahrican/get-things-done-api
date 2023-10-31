@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.task.web.rest
 
+import com.onecosys.getthingsdone.error.ApiError
 import com.onecosys.getthingsdone.task.model.TaskStatus
 import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
@@ -41,8 +42,8 @@ class TaskController(private val service: TaskService, private val userProvider:
                         mediaType = "application/json",
                         array = (ArraySchema(schema = Schema(implementation = TaskFetchResponse::class)))
                     ))]
-            ),
-            ApiResponse(responseCode = "400", description = "Bad Request", content = [Content()])]
+            )
+        ]
     )
     @GetMapping
     fun getTasks(@RequestParam status: TaskStatus?): ResponseEntity<Set<TaskFetchResponse>> {
@@ -61,8 +62,12 @@ class TaskController(private val service: TaskService, private val userProvider:
                     schema = Schema(implementation = TaskFetchResponse::class)
                 )]
             ),
-            ApiResponse(responseCode = "404", description = "Task not found", content = [Content()]),
-            ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = [Content()])
+            ApiResponse(
+                responseCode = "404", description = "Task not found", content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ApiError::class)
+                )]
+            )
         ]
     )
     @GetMapping("{id}")
@@ -80,7 +85,12 @@ class TaskController(private val service: TaskService, private val userProvider:
                     schema = Schema(implementation = TaskFetchResponse::class)
                 )]
             ),
-            ApiResponse(responseCode = "400", description = "Invalid input", content = [Content()]),
+            ApiResponse(
+                responseCode = "400", description = "Invalid input", content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ApiError::class)
+                )]
+            ),
         ]
     )
     @PostMapping
@@ -100,22 +110,31 @@ class TaskController(private val service: TaskService, private val userProvider:
                     schema = Schema(implementation = TaskFetchResponse::class)
                 )]
             ),
-            ApiResponse(responseCode = "400", description = "Invalid input", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Task not found", content = [Content()])
+            ApiResponse(
+                responseCode = "404", description = "Task not found", content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ApiError::class)
+                )]
+            )
         ]
     )
     @PatchMapping("{id}")
     fun updateTask(
         @PathVariable id: Long,
         @Valid @RequestBody updateRequest: TaskUpdateRequest
-    ): ResponseEntity<TaskFetchResponse> = ResponseEntity.ok(service.updateTask(id, updateRequest, userProvider.getUser()))
+    ): ResponseEntity<TaskFetchResponse> =
+        ResponseEntity.ok(service.updateTask(id, updateRequest, userProvider.getUser()))
 
     @Operation(summary = "Delete a task by its ID", tags = ["task"])
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", description = "Task successfully deleted", content = [Content()]),
-            ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Task not found", content = [Content()])
+            ApiResponse(
+                responseCode = "404", description = "Task not found", content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ApiError::class)
+                )]
+            )
         ]
     )
     @DeleteMapping("{id}")
