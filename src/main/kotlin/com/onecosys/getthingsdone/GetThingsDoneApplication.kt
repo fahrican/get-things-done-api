@@ -39,17 +39,16 @@ import org.springframework.boot.runApplication
     ],
     security = [
         SecurityRequirement(
-            name = "bearerAuth"
+            name = "BearerAuth"
         )
     ]
 )
 @SecurityScheme(
-    name = "bearerAuth",
+    name = "BearerAuth",
     description = "JWT authentication description",
     scheme = "bearer",
     type = SecuritySchemeType.HTTP,
     bearerFormat = "JWT",
-    `in` = SecuritySchemeIn.HEADER
 )
 class GetThingsDoneApplication
 
