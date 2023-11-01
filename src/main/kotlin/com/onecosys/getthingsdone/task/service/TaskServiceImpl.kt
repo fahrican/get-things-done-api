@@ -14,9 +14,7 @@ import com.onecosys.getthingsdone.task.util.TaskTimestamp
 import com.onecosys.getthingsdone.task.util.converter.TaskMapper
 import com.onecosys.getthingsdone.user.entity.User
 import org.springframework.stereotype.Service
-import org.springframework.util.ReflectionUtils
-import java.lang.reflect.Field
-import kotlin.reflect.full.memberProperties
+
 
 @Service
 class TaskServiceImpl(
@@ -60,14 +58,15 @@ class TaskServiceImpl(
         validateTaskIdExistence(id)
         val existingTask: Task = repository.findTaskByIdAndUser(id, user)
 
-        for (prop in TaskUpdateRequest::class.memberProperties) {
-            if (prop.get(updateRequest) != null) {
-                val field: Field? = ReflectionUtils.findField(Task::class.java, prop.name)
-                field?.let {
-                    it.isAccessible = true
-                    ReflectionUtils.setField(it, existingTask, prop.get(updateRequest))
-                }
-            }
+        existingTask.apply {
+            description = updateRequest.description ?: description
+            isReminderSet = updateRequest.isReminderSet ?: isReminderSet
+            isTaskOpen = updateRequest.isTaskOpen ?: isTaskOpen
+            startedOn = updateRequest.startedOn ?: startedOn
+            finishedOn = updateRequest.finishedOn ?: finishedOn
+            timeInterval = updateRequest.timeInterval ?: timeInterval
+            timeTaken = updateRequest.timeTaken ?: timeTaken
+            priority = updateRequest.priority ?: priority
         }
 
         val savedTask: Task = repository.save(existingTask)
