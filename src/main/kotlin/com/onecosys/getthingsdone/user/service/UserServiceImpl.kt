@@ -10,10 +10,7 @@ import com.onecosys.getthingsdone.user.util.UserInfoMapper
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.util.ReflectionUtils
-import java.lang.reflect.Field
 import java.security.Principal
-import kotlin.reflect.full.memberProperties
 
 
 @Service
@@ -41,14 +38,10 @@ class UserServiceImpl(
     override fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
-        for (prop in UserInfoUpdateRequest::class.memberProperties) {
-            if (prop.get(request) != null) {
-                val field: Field? = ReflectionUtils.findField(User::class.java, prop.name)
-                field?.let {
-                    it.isAccessible = true
-                    ReflectionUtils.setField(it, user, prop.get(request))
-                }
-            }
+        user.apply {
+            email = request.email ?: email
+            firstName = request.firstName ?: firstName
+            lastName = request.lastName ?: lastName
         }
 
         val savedUser: User = repository.save(user)
