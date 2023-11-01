@@ -18,7 +18,7 @@ import java.security.Principal
 
 
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("api/v1/user")
 class UserController(private val service: UserService) {
 
     @Operation(summary = "change user password", tags = ["user"])
