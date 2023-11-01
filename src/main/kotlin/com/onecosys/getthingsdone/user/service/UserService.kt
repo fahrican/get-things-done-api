@@ -7,7 +7,7 @@ import java.security.Principal
 
 interface UserService {
 
-    fun changePassword(id: Long, request: UserPasswordUpdateRequest, connectedUser: Principal)
+    fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal)
 
-    fun changeInfo(id: Long, request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse
+    fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse
 }
