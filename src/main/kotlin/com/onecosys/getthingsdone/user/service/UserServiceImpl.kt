@@ -1,8 +1,6 @@
 package com.onecosys.getthingsdone.user.service
 
 import com.onecosys.getthingsdone.error.PasswordMismatchException
-import com.onecosys.getthingsdone.error.UserMismatchException
-import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.user.dto.UserInfoResponse
 import com.onecosys.getthingsdone.user.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.user.dto.UserPasswordUpdateRequest
@@ -12,10 +10,7 @@ import com.onecosys.getthingsdone.user.util.UserInfoMapper
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.util.ReflectionUtils
-import java.lang.reflect.Field
 import java.security.Principal
-import kotlin.reflect.full.memberProperties
 
 
 @Service
@@ -25,10 +20,8 @@ class UserServiceImpl(
     private val mapper: UserInfoMapper
 ) : UserService {
 
-    override fun changePassword(id: Long, request: UserPasswordUpdateRequest, connectedUser: Principal) {
-        checkUserId(connectedUser, id)
-
-        val user = repository.findById(id).orElseThrow { throw UserNotFoundException("User with ID: $id not found!") }
+    override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
+        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw PasswordMismatchException("The current password is wrong!")
@@ -42,28 +35,16 @@ class UserServiceImpl(
         repository.save(user)
     }
 
-    override fun changeInfo(id: Long, request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
-        val user = checkUserId(connectedUser, id)
+    override fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
+        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
-        for (prop in UserInfoUpdateRequest::class.memberProperties) {
-            if (prop.get(request) != null) {
-                val field: Field? = ReflectionUtils.findField(User::class.java, prop.name)
-                field?.let {
-                    it.isAccessible = true
-                    ReflectionUtils.setField(it, user, prop.get(request))
-                }
-            }
+        user.apply {
+            email = request.email ?: email
+            firstName = request.firstName ?: firstName
+            lastName = request.lastName ?: lastName
         }
 
         val savedUser: User = repository.save(user)
         return mapper.toDto(savedUser)
-    }
-
-    private fun checkUserId(connectedUser: Principal, id: Long): User {
-        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
-        if (id != user.id) {
-            throw UserMismatchException("User ID does not match ID of logged in user!")
-        }
-        return user
     }
 }
