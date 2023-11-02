@@ -47,6 +47,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
     implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 
     // Swagger / Open API
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")

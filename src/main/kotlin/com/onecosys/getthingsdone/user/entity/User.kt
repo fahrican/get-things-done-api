@@ -48,7 +48,9 @@ class User(
     @Enumerated(EnumType.STRING)
     var role: Role = Role.USER,
 
-    @OneToMany(mappedBy = "user")
+    var isVerified: Boolean = false,
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     private val tokens: List<Token>? = null,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
@@ -67,5 +69,5 @@ class User(
 
     override fun isCredentialsNonExpired() = true
 
-    override fun isEnabled() = true
+    override fun isEnabled() = isVerified
 }

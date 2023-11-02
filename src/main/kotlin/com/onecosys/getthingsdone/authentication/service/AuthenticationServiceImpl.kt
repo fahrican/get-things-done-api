@@ -10,6 +10,7 @@ import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
+import jakarta.transaction.Transactional
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -27,6 +28,7 @@ class AuthenticationServiceImpl(
     private val mapper: UserRegistrationMapper
 ) : AuthenticationService {
 
+    @Transactional
     override fun signUp(request: RegisterRequest): AuthenticationResponse {
 
         checkForSignUpMistakes(request)
@@ -55,6 +57,7 @@ class AuthenticationServiceImpl(
         }
     }
 
+    @Transactional
     override fun signIn(request: AuthenticationRequest): AuthenticationResponse {
         try {
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
