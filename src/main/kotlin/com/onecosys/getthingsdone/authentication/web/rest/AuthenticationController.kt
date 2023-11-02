@@ -11,14 +11,18 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("api/v1/auth")
-class AuthenticationController(private val service: AuthenticationService) {
+class AuthenticationController(
+    private val service: AuthenticationService
+) {
 
     @Operation(summary = "sign-up user", tags = ["authentication"])
     @ApiResponses(
@@ -40,8 +44,14 @@ class AuthenticationController(private val service: AuthenticationService) {
         ]
     )
     @PostMapping("sign-up")
-    fun signUp(@RequestBody request: RegisterRequest): ResponseEntity<AuthenticationResponse> =
-        ResponseEntity.ok(service.signUp(request))
+    fun signUp(@RequestBody request: RegisterRequest): ResponseEntity<String> =
+        ResponseEntity.ok(service.registerUser(request))
+
+
+    @GetMapping("/verify")
+    fun verifyUser(@RequestParam("token") token: String): ResponseEntity<String> {
+        return ResponseEntity.ok(service.verifyUser(token))
+    }
 
 
     @Operation(summary = "sign-in user", tags = ["authentication"])

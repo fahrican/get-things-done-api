@@ -3,6 +3,8 @@ package com.onecosys.getthingsdone.authentication.service
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
+import com.onecosys.getthingsdone.authentication.dto.VerificationToken
+import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.authorization.TokenRepository
 import com.onecosys.getthingsdone.authorization.model.Token
@@ -17,31 +19,68 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 @Service
 class AuthenticationServiceImpl(
-    private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
-    private val mapper: UserRegistrationMapper
+    private val mapper: UserRegistrationMapper,
+    private val userRepository: UserRepository,
+    private val verificationTokenRepository: VerificationTokenRepository,
+    private val emailService: EmailService
 ) : AuthenticationService {
 
     @Transactional
-    override fun signUp(request: RegisterRequest): AuthenticationResponse {
-
+    override fun registerUser(request: RegisterRequest): String {
         checkForSignUpMistakes(request)
 
-        val user = mapper.toEntity(request, passwordEncoder)
+        val user = User().apply {
+            firstName = request.firstName
+            lastName = request.lastName
+            email = request.email
+            _username = request.username
+            _password = passwordEncoder.encode(request.password)
+        }
 
-        val savedUser = userRepository.save(user)
-        val jwtToken = jwtService.generateAccessToken(user)
-        val refreshToken = jwtService.generateRefreshToken(user)
-        saveUserToken(savedUser, jwtToken)
+        val savedUser = userRepository.save(user) // Save the user and get the persisted entity
 
-        return AuthenticationResponse(jwtToken, refreshToken)
+        val token = UUID.randomUUID().toString()
+        val verificationToken = VerificationToken(
+            token = token,
+            user = savedUser, // Use the saved User entity here
+            expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
+        )
+        verificationTokenRepository.save(verificationToken) // Save the verification token
+
+        emailService.sendVerificationEmail(savedUser, token) // Send email to the saved user
+
+        return "Please check your emails to verify your account."
     }
+
+
+    override fun verifyUser(token: String): String {
+        val verificationToken = verificationTokenRepository.findByToken(token)
+            ?: return "Invalid Token"
+
+        if (verificationToken.isExpired()) {
+            return "Token Expired"
+        }
+
+        val user = verificationToken.user
+        if (user.isVerified) {
+            return "Account Already Verified"
+        }
+
+        user.isVerified = true
+        userRepository.save(user)
+        return "Account Verified Successfully"
+    }
+
 
     private fun checkForSignUpMistakes(request: RegisterRequest) {
         userRepository.findByEmail(request.email)?.let {
