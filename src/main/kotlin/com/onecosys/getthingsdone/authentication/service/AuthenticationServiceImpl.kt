@@ -39,25 +39,19 @@ class AuthenticationServiceImpl(
     override fun registerUser(request: RegisterRequest): String {
         checkForSignUpMistakes(request)
 
-        val user = User().apply {
-            firstName = request.firstName
-            lastName = request.lastName
-            email = request.email
-            _username = request.username
-            _password = passwordEncoder.encode(request.password)
-        }
+        val user = mapper.toEntity(request, passwordEncoder)
 
-        val savedUser = userRepository.save(user) // Save the user and get the persisted entity
+        val savedUser = userRepository.save(user)
 
         val token = UUID.randomUUID().toString()
         val verificationToken = VerificationToken(
             token = token,
-            user = savedUser, // Use the saved User entity here
+            user = savedUser,
             expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
         )
-        verificationTokenRepository.save(verificationToken) // Save the verification token
+        verificationTokenRepository.save(verificationToken)
 
-        emailService.sendVerificationEmail(savedUser, token) // Send email to the saved user
+        emailService.sendVerificationEmail(savedUser, token)
 
         return "Please check your emails to verify your account."
     }
@@ -98,13 +92,17 @@ class AuthenticationServiceImpl(
 
     @Transactional
     override fun signIn(request: AuthenticationRequest): AuthenticationResponse {
+        val user = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
+        if (!user.isVerified) {
+            throw SignUpException("You didn't clicked yet on the verification email link")
+        }
+
         try {
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
         } catch (e: BadCredentialsException) {
             throw UsernamePasswordMismatchException("Username or password is incorrect")
         }
 
-        val user = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
 
         val jwtToken = jwtService.generateAccessToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
