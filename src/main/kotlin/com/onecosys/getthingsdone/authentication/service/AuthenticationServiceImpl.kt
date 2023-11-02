@@ -13,6 +13,7 @@ import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import jakarta.transaction.Transactional
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -34,6 +35,8 @@ class AuthenticationServiceImpl(
     private val verificationTokenRepository: VerificationTokenRepository,
     private val emailService: EmailService
 ) : AuthenticationService {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
     override fun registerUser(request: RegisterRequest): String {
