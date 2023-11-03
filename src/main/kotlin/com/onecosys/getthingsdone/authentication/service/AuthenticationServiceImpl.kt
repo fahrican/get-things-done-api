@@ -81,14 +81,17 @@ class AuthenticationServiceImpl(
 
     private fun checkForSignUpMistakes(request: RegisterRequest) {
         userRepository.findByEmail(request.email)?.let {
+            log.error("Can't find email: $request")
             throw SignUpException("User email already exists!")
         }
 
         userRepository.findBy_username(request.username)?.let {
+            log.error("Can't find username: $request")
             throw SignUpException("Username already exists!")
         }
 
         if (request.password != request.passwordConfirmation) {
+            log.error("Password and password confirmation does not match: $request")
             throw SignUpException("Password and password confirmation does not match!")
         }
     }
@@ -97,15 +100,16 @@ class AuthenticationServiceImpl(
     override fun signIn(request: AuthenticationRequest): AuthenticationResponse {
         val user = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
         if (!user.isVerified) {
+            log.error("user not verified: $user")
             throw SignUpException("You didn't clicked yet on the verification email link")
         }
 
         try {
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
         } catch (e: BadCredentialsException) {
+            log.error("Username or password is incorrect: $user")
             throw UsernamePasswordMismatchException("Username or password is incorrect")
         }
-
 
         val jwtToken = jwtService.generateAccessToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
