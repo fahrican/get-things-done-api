@@ -8,6 +8,7 @@ import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRep
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.authorization.TokenRepository
 import com.onecosys.getthingsdone.authorization.model.Token
+import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.user.entity.User
@@ -39,7 +40,7 @@ class AuthenticationServiceImpl(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    override fun registerUser(request: RegisterRequest): String {
+    override fun signUp(request: RegisterRequest): String {
         checkForSignUpMistakes(request)
 
         val user = mapper.toEntity(request, passwordEncoder)
@@ -61,16 +62,16 @@ class AuthenticationServiceImpl(
 
 
     override fun verifyUser(token: String): String {
-        val verificationToken = verificationTokenRepository.findByToken(token)
-            ?: return "Invalid Token"
+        val verificationToken =
+            verificationTokenRepository.findByToken(token) ?: throw AccountVerificationException("Invalid Token")
 
         if (verificationToken.isExpired()) {
-            return "Token Expired"
+            throw AccountVerificationException("Token Expired")
         }
 
         val user = verificationToken.user
         if (user.isVerified) {
-            return "Account Already Verified"
+            throw AccountVerificationException("Account Already Verified")
         }
 
         user.isVerified = true

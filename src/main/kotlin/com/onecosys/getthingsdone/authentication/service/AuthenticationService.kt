@@ -6,7 +6,7 @@ import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 
 interface AuthenticationService {
 
-    fun registerUser(request: RegisterRequest): String
+    fun signUp(request: RegisterRequest): String
 
     fun verifyUser(token: String): String
 

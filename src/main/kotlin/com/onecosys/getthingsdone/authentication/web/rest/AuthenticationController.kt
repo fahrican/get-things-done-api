@@ -45,10 +45,29 @@ class AuthenticationController(
     )
     @PostMapping("sign-up")
     fun signUp(@RequestBody request: RegisterRequest): ResponseEntity<String> =
-        ResponseEntity.ok(service.registerUser(request))
+        ResponseEntity.ok(service.signUp(request))
 
 
-    @GetMapping("/verify")
+    @Operation(summary = "verify user", tags = ["authentication"])
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "email verification was successful",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = String::class)
+                )]
+            ),
+            ApiResponse(
+                responseCode = "403", description = "Verification step not complete", content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ApiError::class)
+                )]
+            ),
+        ]
+    )
+    @GetMapping("verify")
     fun verifyUser(@RequestParam("token") token: String): ResponseEntity<String> {
         return ResponseEntity.ok(service.verifyUser(token))
     }
