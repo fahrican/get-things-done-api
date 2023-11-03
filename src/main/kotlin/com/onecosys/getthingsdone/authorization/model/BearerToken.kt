@@ -3,8 +3,6 @@ package com.onecosys.getthingsdone.authorization.model
 import com.onecosys.getthingsdone.user.entity.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -15,26 +13,22 @@ import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "token")
-class Token {
+@Table(name = "bearer_token")
+class BearerToken(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "token_sequence")
-    @SequenceGenerator(name = "token_sequence", sequenceName = "token_sequence", allocationSize = 1)
-    val id: Long = 0
-
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bearer_token_sequence")
+    @SequenceGenerator(name = "bearer_token_sequence", sequenceName = "bearer_token_sequence", allocationSize = 1)
+    val id: Long = 0,
 
     @Column(unique = true)
-    var token: String? = null
+    var token: String? = null,
 
-    @Enumerated(EnumType.STRING)
-    var tokenType: TokenType = TokenType.BEARER
+    var revoked: Boolean = false,
 
-    var revoked = false
-
-    var expired = false
+    var expired: Boolean = false,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user: User? = null
-}
+)

@@ -22,6 +22,17 @@ spring:
             non_contextual_creation: true
     show-sql: false
     open-in-view: false
+  mail:
+    host: ${MAIL_HOST:smtp.example.com}
+    port: ${MAIL_PORT:111}
+    username: ${MAIL_USERNAME:email@example.com}
+    password: ${MAIL_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 springdoc:
   api-docs:

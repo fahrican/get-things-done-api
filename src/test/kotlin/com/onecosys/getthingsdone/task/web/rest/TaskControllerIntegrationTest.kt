@@ -3,7 +3,7 @@ package com.onecosys.getthingsdone.task.web.rest
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.authentication.service.JwtService
-import com.onecosys.getthingsdone.authorization.TokenRepository
+import com.onecosys.getthingsdone.authorization.BearerTokenRepository
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.model.Priority
@@ -48,7 +48,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     private lateinit var mockUserProvider: AuthenticatedUserProvider
 
     @MockBean
-    private lateinit var mockTokenRepository: TokenRepository
+    private lateinit var mockBearerTokenRepository: BearerTokenRepository
 
     private val mapper = jacksonObjectMapper()
 

@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
@@ -21,6 +22,8 @@ class JwtServiceImpl : JwtService {
     private val secretKey: SecretKey by lazy {
         Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString))
     }
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     companion object {
         private val EXPIRATION_ONE_DAY = TimeUnit.DAYS.toMillis(1)
@@ -46,6 +49,7 @@ class JwtServiceImpl : JwtService {
                 .parseSignedClaims(token)
                 .payload
         } catch (e: Exception) {
+            log.error("Failed to extract claims from token.", e)
             throw JwtAuthenticationException("Failed to extract claims from token.", e)
         }
 

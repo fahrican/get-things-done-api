@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.authorization.TokenRepository
+import com.onecosys.getthingsdone.authorization.BearerTokenRepository
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
@@ -10,7 +10,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler
 import org.springframework.stereotype.Service
 
 @Service
-class LogoutService(private val repository: TokenRepository) : LogoutHandler {
+class LogoutService(private val repository: BearerTokenRepository) : LogoutHandler {
 
     private val log = LoggerFactory.getLogger(javaClass)
 

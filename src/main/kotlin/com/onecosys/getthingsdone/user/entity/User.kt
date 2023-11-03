@@ -1,7 +1,8 @@
 package com.onecosys.getthingsdone.user.entity
 
+import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authorization.model.Role
-import com.onecosys.getthingsdone.authorization.model.Token
+import com.onecosys.getthingsdone.authorization.model.BearerToken
 import com.onecosys.getthingsdone.task.model.entity.Task
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
@@ -12,6 +13,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
@@ -48,8 +50,13 @@ class User(
     @Enumerated(EnumType.STRING)
     var role: Role = Role.USER,
 
-    @OneToMany(mappedBy = "user")
-    private val tokens: List<Token>? = null,
+    var isVerified: Boolean = false,
+
+    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, optional = true)
+    private val verificationToken: VerificationToken? = null,
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    private val bearerTokens: List<BearerToken>? = null,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     private val tasks: List<Task>? = null
@@ -67,5 +74,5 @@ class User(
 
     override fun isCredentialsNonExpired() = true
 
-    override fun isEnabled() = true
+    override fun isEnabled() = isVerified
 }
