@@ -55,7 +55,6 @@ class User(
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, optional = true)
     private val verificationToken: VerificationToken? = null,
 
-
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     private val bearerTokens: List<BearerToken>? = null,
 

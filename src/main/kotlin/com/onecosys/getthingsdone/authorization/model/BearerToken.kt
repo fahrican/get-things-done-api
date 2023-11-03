@@ -14,22 +14,21 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "bearer_token")
-class BearerToken {
+class BearerToken(
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bearer_token_sequence")
     @SequenceGenerator(name = "bearer_token_sequence", sequenceName = "bearer_token_sequence", allocationSize = 1)
-    val id: Long = 0
-
+    val id: Long = 0,
 
     @Column(unique = true)
-    var token: String? = null
+    var token: String? = null,
 
-    var revoked = false
+    var revoked: Boolean = false,
 
-    var expired = false
+    var expired: Boolean = false,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user: User? = null
-}
+)
