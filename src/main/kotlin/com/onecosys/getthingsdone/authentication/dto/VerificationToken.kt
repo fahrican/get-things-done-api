@@ -8,14 +8,17 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import java.time.Instant
 
 @Entity
 @Table(name = "verification_token")
 class VerificationToken(
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_token_sequence")
+    @SequenceGenerator(name = "verification_token_sequence", sequenceName = "verification_token_sequence", allocationSize = 1)
     val id: Long = 0,
 
     val token: String,

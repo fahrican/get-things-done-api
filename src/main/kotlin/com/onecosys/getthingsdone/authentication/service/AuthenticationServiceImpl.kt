@@ -7,7 +7,7 @@ import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.authorization.TokenRepository
-import com.onecosys.getthingsdone.authorization.model.Token
+import com.onecosys.getthingsdone.authorization.model.BearerToken
 import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
@@ -120,13 +120,13 @@ class AuthenticationServiceImpl(
     }
 
     private fun saveUserToken(user: User, jwtToken: String) {
-        val token = Token().apply {
+        val bearerToken = BearerToken().apply {
             this.user = user
             this.token = jwtToken
             this.expired = false
             this.revoked = false
         }
-        tokenRepository.save(token)
+        tokenRepository.save(bearerToken)
     }
 
     private fun revokeAllUserTokens(user: User) {

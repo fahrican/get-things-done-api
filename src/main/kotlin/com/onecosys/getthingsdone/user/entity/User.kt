@@ -2,7 +2,7 @@ package com.onecosys.getthingsdone.user.entity
 
 import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authorization.model.Role
-import com.onecosys.getthingsdone.authorization.model.Token
+import com.onecosys.getthingsdone.authorization.model.BearerToken
 import com.onecosys.getthingsdone.task.model.entity.Task
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
@@ -57,7 +57,7 @@ class User(
 
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    private val tokens: List<Token>? = null,
+    private val bearerTokens: List<BearerToken>? = null,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     private val tasks: List<Task>? = null

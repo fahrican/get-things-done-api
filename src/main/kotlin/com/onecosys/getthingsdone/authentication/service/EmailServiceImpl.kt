@@ -18,7 +18,7 @@ class EmailServiceImpl(private val mailSender: JavaMailSender): EmailService {
         try {
             val mimeMessage = mailSender.createMimeMessage()
             val helper = MimeMessageHelper(mimeMessage, "utf-8")
-            val link = "https://task-manager.justluxurylifestyle.com/api/v1/auth/verify?token=$token"
+            val link = "http://localhost:9091/api/v1/auth/verify?token=$token"
             helper.setText(buildEmail(user.firstName, link), true)
             helper.setTo(user.email)
             helper.setSubject("Confirm your email for justluxurylifestyle.com")
