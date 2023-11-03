@@ -6,7 +6,7 @@ import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
-import com.onecosys.getthingsdone.authorization.TokenRepository
+import com.onecosys.getthingsdone.authorization.BearerTokenRepository
 import com.onecosys.getthingsdone.authorization.model.BearerToken
 import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
@@ -27,7 +27,7 @@ import java.util.UUID
 
 @Service
 class AuthenticationServiceImpl(
-    private val tokenRepository: TokenRepository,
+    private val bearerTokenRepository: BearerTokenRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
@@ -126,18 +126,18 @@ class AuthenticationServiceImpl(
             this.expired = false
             this.revoked = false
         }
-        tokenRepository.save(bearerToken)
+        bearerTokenRepository.save(bearerToken)
     }
 
     private fun revokeAllUserTokens(user: User) {
-        val validUserTokens = tokenRepository.findAllValidTokenByUser(user.id)
+        val validUserTokens = bearerTokenRepository.findAllValidTokenByUser(user.id)
         validUserTokens?.let { userTokens ->
             if (userTokens.isEmpty()) return
             userTokens.forEach { token ->
                 token?.expired = true
                 token?.revoked = true
             }
-            tokenRepository.saveAll(validUserTokens)
+            bearerTokenRepository.saveAll(validUserTokens)
         }
     }
 }

@@ -3,7 +3,7 @@ package com.onecosys.getthingsdone.authentication.web
 import com.onecosys.getthingsdone.authentication.service.JwtService
 import com.onecosys.getthingsdone.authentication.service.LogoutService.Companion.AUTH_HEADER
 import com.onecosys.getthingsdone.authentication.service.LogoutService.Companion.BEARER_TOKEN_PREFIX
-import com.onecosys.getthingsdone.authorization.TokenRepository
+import com.onecosys.getthingsdone.authorization.BearerTokenRepository
 import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -21,7 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JwtAuthenticationFilter(
     private val jwtService: JwtService,
     private val userService: UserDetailsService,
-    private val tokenRepository: TokenRepository
+    private val bearerTokenRepository: BearerTokenRepository
 ) : OncePerRequestFilter() {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -39,7 +39,7 @@ class JwtAuthenticationFilter(
                 runCatching {
                     val userEmail = jwtService.extractUsername(jwt)
                     val userDetails: UserDetails = userService.loadUserByUsername(userEmail)
-                    val token = tokenRepository.findByToken(jwt)
+                    val token = bearerTokenRepository.findByToken(jwt)
 
                     if (jwtService.isTokenValid(jwt, userDetails) && token?.expired == false && !token.revoked) {
                         val authToken = UsernamePasswordAuthenticationToken(
