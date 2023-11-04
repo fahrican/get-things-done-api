@@ -3,6 +3,7 @@ package com.onecosys.getthingsdone.authentication.web.rest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
+import com.onecosys.getthingsdone.authentication.dto.VerificationResponse
 import com.onecosys.getthingsdone.authentication.service.AuthenticationService
 import com.onecosys.getthingsdone.error.ApiError
 import io.swagger.v3.oas.annotations.Operation
@@ -32,7 +33,7 @@ class AuthenticationController(
                 description = "sign-up was successful",
                 content = [Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = AuthenticationResponse::class)
+                    schema = Schema(implementation = VerificationResponse::class)
                 )]
             ),
             ApiResponse(
@@ -44,7 +45,7 @@ class AuthenticationController(
         ]
     )
     @PostMapping("sign-up")
-    fun signUp(@RequestBody request: RegisterRequest): ResponseEntity<String> =
+    fun signUp(@RequestBody request: RegisterRequest): ResponseEntity<VerificationResponse> =
         ResponseEntity.ok(service.signUp(request))
 
 
@@ -56,7 +57,7 @@ class AuthenticationController(
                 description = "email verification was successful",
                 content = [Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = String::class)
+                    schema = Schema(implementation = VerificationResponse::class)
                 )]
             ),
             ApiResponse(
@@ -68,7 +69,7 @@ class AuthenticationController(
         ]
     )
     @GetMapping("verify")
-    fun verifyUser(@RequestParam("token") token: String): ResponseEntity<String> {
+    fun verifyUser(@RequestParam("token") token: String): ResponseEntity<VerificationResponse> {
         return ResponseEntity.ok(service.verifyUser(token))
     }
 

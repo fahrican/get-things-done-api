@@ -49,7 +49,7 @@ class JwtServiceImpl : JwtService {
                 .parseSignedClaims(token)
                 .payload
         } catch (e: Exception) {
-            log.error("Failed to extract claims from token.", e)
+            log.error("Failed to extract claims from token: ${e.message}")
             throw JwtAuthenticationException("Failed to extract claims from token.", e)
         }
 

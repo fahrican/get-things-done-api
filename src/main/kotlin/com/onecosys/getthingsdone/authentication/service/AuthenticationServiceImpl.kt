@@ -3,6 +3,7 @@ package com.onecosys.getthingsdone.authentication.service
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
+import com.onecosys.getthingsdone.authentication.dto.VerificationResponse
 import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
@@ -40,7 +41,7 @@ class AuthenticationServiceImpl(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    override fun signUp(request: RegisterRequest): String {
+    override fun signUp(request: RegisterRequest): VerificationResponse {
         checkForSignUpMistakes(request)
 
         val user = mapper.toEntity(request, passwordEncoder)
@@ -51,32 +52,34 @@ class AuthenticationServiceImpl(
         val verificationToken = VerificationToken(
             token = token,
             user = savedUser,
-            expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
+            expiryDate = Instant.now().plus(15, ChronoUnit.MINUTES)
         )
         verificationTokenRepository.save(verificationToken)
 
         emailService.sendVerificationEmail(savedUser, token)
 
-        return "Please check your emails to verify your account."
+        return VerificationResponse("Please, check your emails for ${user.email} to verify your account")
     }
 
 
-    override fun verifyUser(token: String): String {
-        val verificationToken =
+    override fun verifyUser(token: String): VerificationResponse {
+        val verificationToken: VerificationToken =
             verificationTokenRepository.findByToken(token) ?: throw AccountVerificationException("Invalid Token")
 
         if (verificationToken.isExpired()) {
+            log.error("Token Expired: $verificationToken")
             throw AccountVerificationException("Token Expired")
         }
 
         val user = verificationToken.user
         if (user.isVerified) {
+            log.error("Account Already Verified: $user")
             throw AccountVerificationException("Account Already Verified")
         }
 
         user.isVerified = true
         userRepository.save(user)
-        return "Account Verified Successfully"
+        return VerificationResponse("Account Verified Successfully")
     }
 
 
@@ -102,7 +105,7 @@ class AuthenticationServiceImpl(
         val user = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
         if (!user.isVerified) {
             log.error("user not verified: $user")
-            throw SignUpException("You didn't clicked yet on the verification email link")
+            throw SignUpException("You didn't clicked yet on the verification link, check your email: ${user.email}")
         }
 
         try {
