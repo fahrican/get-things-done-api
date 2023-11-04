@@ -45,33 +45,29 @@ class AuthenticationServiceImpl(
         checkForSignUpMistakes(request)
 
         val user = mapper.toEntity(request, passwordEncoder)
-
         val savedUser = userRepository.save(user)
+        val (token, verificationToken) = initiateEmailVerificationToken(savedUser)
 
-        val token = UUID.randomUUID().toString()
-        val verificationToken = VerificationToken(
-            token = token,
-            user = savedUser,
-            expiryDate = Instant.now().plus(15, ChronoUnit.MINUTES)
-        )
         verificationTokenRepository.save(verificationToken)
-
         emailService.sendVerificationEmail(savedUser, token)
 
         return VerificationResponse("Please, check your emails for ${user.email} to verify your account")
     }
 
-
+    @Transactional
     override fun verifyUser(token: String): VerificationResponse {
-        val verificationToken: VerificationToken =
+        val currentVerificationToken: VerificationToken =
             verificationTokenRepository.findByToken(token) ?: throw AccountVerificationException("Invalid Token")
 
-        if (verificationToken.isExpired()) {
-            log.error("Token Expired: $verificationToken")
-            throw AccountVerificationException("Token Expired")
+        val user = currentVerificationToken.user
+        if (currentVerificationToken.isExpired()) {
+            log.error("Token Expired for user: $user")
+            val (urlParamToken, newVerificationToken) = initiateEmailVerificationToken(user)
+            verificationTokenRepository.save(newVerificationToken)
+            emailService.sendVerificationEmail(user, urlParamToken)
+            return VerificationResponse("Token expired. A new verification link has been sent to your email: ${user.email}")
         }
 
-        val user = verificationToken.user
         if (user.isVerified) {
             log.error("Account Already Verified: $user")
             throw AccountVerificationException("Account Already Verified")
@@ -80,24 +76,6 @@ class AuthenticationServiceImpl(
         user.isVerified = true
         userRepository.save(user)
         return VerificationResponse("Account Verified Successfully")
-    }
-
-
-    private fun checkForSignUpMistakes(request: RegisterRequest) {
-        userRepository.findByEmail(request.email)?.let {
-            log.error("Can't find email: $request")
-            throw SignUpException("User email already exists!")
-        }
-
-        userRepository.findBy_username(request.username)?.let {
-            log.error("Can't find username: $request")
-            throw SignUpException("Username already exists!")
-        }
-
-        if (request.password != request.passwordConfirmation) {
-            log.error("Password and password confirmation does not match: $request")
-            throw SignUpException("Password and password confirmation does not match!")
-        }
     }
 
     @Transactional
@@ -141,6 +119,33 @@ class AuthenticationServiceImpl(
                 token?.revoked = true
             }
             bearerTokenRepository.saveAll(validUserTokens)
+        }
+    }
+
+    private fun initiateEmailVerificationToken(user: User): Pair<String, VerificationToken> {
+        val token = UUID.randomUUID().toString()
+        val verificationToken = VerificationToken(
+            token = token,
+            user = user,
+            expiryDate = Instant.now().plus(15, ChronoUnit.MINUTES)
+        )
+        return Pair(token, verificationToken)
+    }
+
+    private fun checkForSignUpMistakes(request: RegisterRequest) {
+        userRepository.findByEmail(request.email)?.let {
+            log.error("Can't find email: $request")
+            throw SignUpException("User email already exists!")
+        }
+
+        userRepository.findBy_username(request.username)?.let {
+            log.error("Can't find username: $request")
+            throw SignUpException("Username already exists!")
+        }
+
+        if (request.password != request.passwordConfirmation) {
+            log.error("Password and password confirmation does not match: $request")
+            throw SignUpException("Password and password confirmation does not match!")
         }
     }
 }
