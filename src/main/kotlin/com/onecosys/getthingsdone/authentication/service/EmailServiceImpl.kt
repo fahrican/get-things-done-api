@@ -24,8 +24,8 @@ class EmailServiceImpl(private val mailSender: JavaMailSender): EmailService {
             helper.setSubject("Confirm your email for justluxurylifestyle.com")
             helper.setFrom("hello@justluxurylifestyle.com")
             mailSender.send(mimeMessage)
-        } catch (e: MessagingException) {
-            log.error("failed to send email", e)
+        } catch (me: MessagingException) {
+            log.error("failed to send email ${me.message}")
             throw SignUpException("failed to send email")
         }
     }
