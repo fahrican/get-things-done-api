@@ -52,7 +52,7 @@ class AuthenticationServiceImpl(
         val verificationToken = VerificationToken(
             token = token,
             user = savedUser,
-            expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
+            expiryDate = Instant.now().plus(15, ChronoUnit.MINUTES)
         )
         verificationTokenRepository.save(verificationToken)
 
