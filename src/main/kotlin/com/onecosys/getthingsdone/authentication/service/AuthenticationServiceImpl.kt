@@ -54,6 +54,7 @@ class AuthenticationServiceImpl(
         return VerificationResponse("Please, check your emails for ${user.email} to verify your account")
     }
 
+    @Transactional
     override fun verifyUser(token: String): VerificationResponse {
         val currentVerificationToken: VerificationToken =
             verificationTokenRepository.findByToken(token) ?: throw AccountVerificationException("Invalid Token")
