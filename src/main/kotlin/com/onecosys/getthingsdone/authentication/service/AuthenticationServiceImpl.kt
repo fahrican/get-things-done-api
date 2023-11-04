@@ -61,9 +61,9 @@ class AuthenticationServiceImpl(
         val user = currentVerificationToken.user
         if (currentVerificationToken.isExpired()) {
             log.error("Token Expired for user: $user")
-            val (newToken, newVerificationToken) = initiateEmailVerificationToken(user)
+            val (urlParamToken, newVerificationToken) = initiateEmailVerificationToken(user)
             verificationTokenRepository.save(newVerificationToken)
-            emailService.sendVerificationEmail(user, newToken)
+            emailService.sendVerificationEmail(user, urlParamToken)
             return VerificationResponse("Token expired. A new verification link has been sent to your email: ${user.email}")
         }
 
