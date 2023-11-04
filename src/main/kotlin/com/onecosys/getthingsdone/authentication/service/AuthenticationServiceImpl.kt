@@ -63,15 +63,17 @@ class AuthenticationServiceImpl(
 
 
     override fun verifyUser(token: String): VerificationResponse {
-        val verificationToken =
+        val verificationToken: VerificationToken =
             verificationTokenRepository.findByToken(token) ?: throw AccountVerificationException("Invalid Token")
 
         if (verificationToken.isExpired()) {
+            log.error("Token Expired: $verificationToken")
             throw AccountVerificationException("Token Expired")
         }
 
         val user = verificationToken.user
         if (user.isVerified) {
+            log.error("Account Already Verified: $user")
             throw AccountVerificationException("Account Already Verified")
         }
 
