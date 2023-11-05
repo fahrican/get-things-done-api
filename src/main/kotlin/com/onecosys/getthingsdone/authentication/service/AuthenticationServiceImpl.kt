@@ -11,6 +11,7 @@ import com.onecosys.getthingsdone.authorization.BearerTokenRepository
 import com.onecosys.getthingsdone.authorization.model.BearerToken
 import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
+import com.onecosys.getthingsdone.error.TokenExpiredException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
@@ -54,7 +55,6 @@ class AuthenticationServiceImpl(
         return VerificationResponse("Please, check your emails for ${user.email} to verify your account")
     }
 
-    @Transactional
     override fun verifyUser(token: String): VerificationResponse {
         val currentVerificationToken: VerificationToken =
             verificationTokenRepository.findByToken(token) ?: throw AccountVerificationException("Invalid Token")
@@ -62,10 +62,11 @@ class AuthenticationServiceImpl(
         val user = currentVerificationToken.user
         if (currentVerificationToken.isExpired()) {
             log.error("Token Expired for user: $user")
-            val (urlParamToken, newVerificationToken) = initiateEmailVerificationToken(user)
-            verificationTokenRepository.save(newVerificationToken)
-            emailService.sendVerificationEmail(user, urlParamToken)
-            return VerificationResponse("Token expired. A new verification link has been sent to your email: ${user.email}")
+            currentVerificationToken.token = UUID.randomUUID().toString()
+            currentVerificationToken.expiryDate = Instant.now().plus(15, ChronoUnit.MINUTES)
+            verificationTokenRepository.save(currentVerificationToken)
+            emailService.sendVerificationEmail(user, currentVerificationToken.token)
+            throw TokenExpiredException("Token expired. A new verification link has been sent to your email: ${user.email}")
         }
 
         if (user.isVerified) {
