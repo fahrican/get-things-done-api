@@ -5,6 +5,7 @@ import com.onecosys.getthingsdone.authorization.model.Role
 import com.onecosys.getthingsdone.authorization.model.BearerToken
 import com.onecosys.getthingsdone.task.model.entity.Task
 import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -38,9 +39,11 @@ class User(
     var lastName: String = "",
 
     @NotBlank
+    @Column(unique = true, nullable = false)
     var email: String = "",
 
     @NotBlank
+    @Column(unique = true, nullable = false)
     var _username: String = "",
 
     @NotBlank

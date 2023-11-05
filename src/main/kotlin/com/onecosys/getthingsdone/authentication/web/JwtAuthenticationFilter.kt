@@ -41,7 +41,7 @@ class JwtAuthenticationFilter(
                     val userDetails: UserDetails = userService.loadUserByUsername(userEmail)
                     val token = bearerTokenRepository.findByToken(jwt)
 
-                    if (jwtService.isTokenValid(jwt, userDetails) && token?.expired == false && !token.revoked) {
+                    if (jwtService.isTokenValid(jwt, userDetails) && token?.isExpired == false && !token.isRevoked) {
                         val authToken = UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.authorities
                         ).apply { details = WebAuthenticationDetailsSource().buildDetails(request) }

@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
+import java.time.Instant
 
 @Entity
 @Table(name = "bearer_token")
@@ -24,9 +25,12 @@ class BearerToken(
     @Column(unique = true)
     var token: String? = null,
 
-    var revoked: Boolean = false,
+    var isRevoked: Boolean = false,
 
-    var expired: Boolean = false,
+    var isExpired: Boolean = false,
+
+    @Column(nullable = false)
+    val createdAt: Instant = Instant.now(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
