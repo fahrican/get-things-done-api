@@ -18,16 +18,20 @@ class VerificationToken(
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_token_sequence")
-    @SequenceGenerator(name = "verification_token_sequence", sequenceName = "verification_token_sequence", allocationSize = 1)
+    @SequenceGenerator(
+        name = "verification_token_sequence",
+        sequenceName = "verification_token_sequence",
+        allocationSize = 1
+    )
     val id: Long = 0,
 
-    val token: String,
+    var token: String,
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     val user: User,
 
-    val expiryDate: Instant
+    var expiryDate: Instant
 ) {
     fun isExpired(): Boolean = expiryDate.isBefore(Instant.now())
 }
