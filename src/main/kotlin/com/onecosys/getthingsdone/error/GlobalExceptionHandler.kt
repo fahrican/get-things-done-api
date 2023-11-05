@@ -34,7 +34,8 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(
         JwtAuthenticationException::class,
         UsernamePasswordMismatchException::class,
-        AccountVerificationException::class
+        AccountVerificationException::class,
+        TokenExpiredException::class
     )
     fun handleUnauthorizedException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.UNAUTHORIZED, exception.message)
@@ -61,4 +62,6 @@ class PasswordMismatchException(message: String) : RuntimeException(message)
 class UsernamePasswordMismatchException(message: String) : RuntimeException(message)
 
 class AccountVerificationException(message: String) : RuntimeException(message)
+
+class TokenExpiredException(message: String) : RuntimeException(message)
 
