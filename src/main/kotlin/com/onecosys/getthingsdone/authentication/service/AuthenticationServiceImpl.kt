@@ -39,6 +39,10 @@ class AuthenticationServiceImpl(
     private val emailService: EmailService
 ) : AuthenticationService {
 
+    companion object {
+       private const val FIVE_BEARER_TOKENS_PER_USER = 5
+    }
+
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
@@ -52,7 +56,7 @@ class AuthenticationServiceImpl(
         verificationTokenRepository.save(verificationToken)
         emailService.sendVerificationEmail(savedUser, token)
 
-        return VerificationResponse("Please, check your emails for ${user.email} to verify your account")
+        return VerificationResponse("Please, check your emails and spam/junk folder for ${user.email} to verify your account")
     }
 
     override fun verifyUser(token: String): VerificationResponse {
@@ -96,31 +100,27 @@ class AuthenticationServiceImpl(
 
         val jwtToken = jwtService.generateAccessToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
-        revokeAllUserTokens(user)
-        saveUserToken(user, jwtToken)
+
+        saveNewTokenWithLimitCheck(user, jwtToken)
+
         return AuthenticationResponse(jwtToken, refreshToken)
     }
 
-    private fun saveUserToken(user: User, jwtToken: String) {
+    private fun saveNewTokenWithLimitCheck(user: User, jwtToken: String) {
+        val existingTokens = bearerTokenRepository.findAllByUserOrderByCreatedAtAsc(user)
+
+        if (existingTokens.size >= FIVE_BEARER_TOKENS_PER_USER) {
+            val tokensToRemove = existingTokens.take(existingTokens.size - 4)
+            bearerTokenRepository.deleteAll(tokensToRemove)
+        }
+
         val bearerToken = BearerToken().apply {
             this.user = user
             this.token = jwtToken
-            this.expired = false
-            this.revoked = false
+            this.isExpired = false
+            this.isRevoked = false
         }
         bearerTokenRepository.save(bearerToken)
-    }
-
-    private fun revokeAllUserTokens(user: User) {
-        val validUserTokens = bearerTokenRepository.findAllValidTokenByUser(user.id)
-        validUserTokens?.let { userTokens ->
-            if (userTokens.isEmpty()) return
-            userTokens.forEach { token ->
-                token?.expired = true
-                token?.revoked = true
-            }
-            bearerTokenRepository.saveAll(validUserTokens)
-        }
     }
 
     private fun initiateEmailVerificationToken(user: User): Pair<String, VerificationToken> {
