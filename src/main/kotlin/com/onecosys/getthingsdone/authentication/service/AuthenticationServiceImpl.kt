@@ -41,6 +41,7 @@ class AuthenticationServiceImpl(
 
     companion object {
        private const val FIVE_BEARER_TOKENS_PER_USER = 5
+       private const val FOUR_TOKENS_TO_RETAIN = 4
     }
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -110,7 +111,7 @@ class AuthenticationServiceImpl(
         val existingTokens = bearerTokenRepository.findAllByUserOrderByCreatedAtAsc(user)
 
         if (existingTokens.size >= FIVE_BEARER_TOKENS_PER_USER) {
-            val tokensToRemove = existingTokens.take(existingTokens.size - 4)
+            val tokensToRemove = existingTokens.take(existingTokens.size - FOUR_TOKENS_TO_RETAIN)
             bearerTokenRepository.deleteAll(tokensToRemove)
         }
 
