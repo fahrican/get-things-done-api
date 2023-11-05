@@ -117,6 +117,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+  /api/v1/auth/sign-out:
+    post:
+      tags:
+        - authentication
+      summary: sign-out user
+      operationId: logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+        required: true
+      responses:
+        '200':
+          description: sign-out was successful
+        '401':
+          description: Invalid sign-out
   /api/v1/user/password:
     patch:
       tags:
