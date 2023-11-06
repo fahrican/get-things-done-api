@@ -2,7 +2,6 @@ package com.onecosys.getthingsdone.user.model.entity
 
 import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authorization.model.Role
-import com.onecosys.getthingsdone.authorization.model.BearerToken
 import com.onecosys.getthingsdone.task.model.entity.Task
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -57,9 +56,6 @@ class User(
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, optional = true)
     private val verificationToken: VerificationToken? = null,
-
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    private val bearerTokens: List<BearerToken>? = null,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     private val tasks: List<Task>? = null
