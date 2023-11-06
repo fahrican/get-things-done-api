@@ -1,8 +1,8 @@
 package com.onecosys.getthingsdone.user.rest
 
-import com.onecosys.getthingsdone.user.dto.UserInfoResponse
-import com.onecosys.getthingsdone.user.dto.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.user.dto.UserPasswordUpdateRequest
+import com.onecosys.getthingsdone.user.model.dto.UserInfoResponse
+import com.onecosys.getthingsdone.user.model.dto.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.user.model.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content

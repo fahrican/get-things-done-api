@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.user.dto
+package com.onecosys.getthingsdone.user.model.dto
 
 data class UserPasswordUpdateRequest(
     val currentPassword: String,

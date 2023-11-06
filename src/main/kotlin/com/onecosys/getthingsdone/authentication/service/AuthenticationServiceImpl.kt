@@ -13,7 +13,7 @@ import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.model.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
