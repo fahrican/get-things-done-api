@@ -1,6 +1,5 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.authorization.BearerTokenRepository
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.transaction.Transactional
@@ -11,7 +10,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler
 import org.springframework.stereotype.Service
 
 @Service
-class LogoutService(private val repository: BearerTokenRepository) : LogoutHandler {
+class LogoutService : LogoutHandler {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -25,11 +24,8 @@ class LogoutService(private val repository: BearerTokenRepository) : LogoutHandl
         val authHeader: String = request?.getHeader(AUTH_HEADER) ?: return
         if (authHeader.startsWith(BEARER_TOKEN_PREFIX)) {
             val jwt: String = authHeader.substring(BEARER_TOKEN_PREFIX.length)
-            repository.findByToken(jwt)?.let { token ->
-                token.isExpired = true
-                token.isRevoked = true
-                repository.save(token)
-            } ?: run { log.info("Token not found in database: $jwt") }
+            // Log the event, perform any other necessary cleanup, etc.
+            log.info("User logged out with token: $jwt")
         }
         SecurityContextHolder.clearContext()
     }

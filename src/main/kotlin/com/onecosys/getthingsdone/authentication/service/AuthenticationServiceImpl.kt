@@ -7,13 +7,11 @@ import com.onecosys.getthingsdone.authentication.dto.VerificationResponse
 import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
-import com.onecosys.getthingsdone.authorization.BearerTokenRepository
-import com.onecosys.getthingsdone.authorization.model.BearerToken
 import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.model.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
@@ -29,7 +27,6 @@ import java.util.UUID
 
 @Service
 class AuthenticationServiceImpl(
-    private val bearerTokenRepository: BearerTokenRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
@@ -38,11 +35,6 @@ class AuthenticationServiceImpl(
     private val verificationTokenRepository: VerificationTokenRepository,
     private val emailService: EmailService
 ) : AuthenticationService {
-
-    companion object {
-       private const val FIVE_BEARER_TOKENS_PER_USER = 5
-       private const val FOUR_TOKENS_TO_RETAIN = 4
-    }
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -102,26 +94,7 @@ class AuthenticationServiceImpl(
         val jwtToken = jwtService.generateAccessToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
 
-        saveNewTokenWithLimitCheck(user, jwtToken)
-
         return AuthenticationResponse(jwtToken, refreshToken)
-    }
-
-    private fun saveNewTokenWithLimitCheck(user: User, jwtToken: String) {
-        val existingTokens = bearerTokenRepository.findAllByUserOrderByCreatedAtAsc(user)
-
-        if (existingTokens.size >= FIVE_BEARER_TOKENS_PER_USER) {
-            val tokensToRemove = existingTokens.take(existingTokens.size - FOUR_TOKENS_TO_RETAIN)
-            bearerTokenRepository.deleteAll(tokensToRemove)
-        }
-
-        val bearerToken = BearerToken().apply {
-            this.user = user
-            this.token = jwtToken
-            this.isExpired = false
-            this.isRevoked = false
-        }
-        bearerTokenRepository.save(bearerToken)
     }
 
     private fun initiateEmailVerificationToken(user: User): Pair<String, VerificationToken> {

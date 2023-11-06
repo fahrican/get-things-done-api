@@ -4,7 +4,7 @@ import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.task.model.TaskStatus
 import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.model.entity.User
 
 interface TaskService {
 
