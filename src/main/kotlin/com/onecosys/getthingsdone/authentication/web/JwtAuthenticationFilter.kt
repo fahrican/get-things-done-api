@@ -1,8 +1,6 @@
 package com.onecosys.getthingsdone.authentication.web
 
 import com.onecosys.getthingsdone.authentication.service.JwtService
-import com.onecosys.getthingsdone.authentication.service.LogoutService.Companion.AUTH_HEADER
-import com.onecosys.getthingsdone.authentication.service.LogoutService.Companion.BEARER_TOKEN_PREFIX
 import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -21,6 +19,11 @@ class JwtAuthenticationFilter(
     private val jwtService: JwtService,
     private val userService: UserDetailsService,
 ) : OncePerRequestFilter() {
+
+    companion object {
+        const val AUTH_HEADER = "Authorization"
+        const val BEARER_TOKEN_PREFIX = "Bearer "
+    }
 
     private val log = LoggerFactory.getLogger(javaClass)
 
