@@ -40,8 +40,22 @@ class UserServiceImpl(
         } ?: run { throw BadRequestException("Email can't be blank!") }
     }
 
-    override fun changeUsername(username: String, connectedUser: Principal): UserInfoResponse {
-        TODO("Not yet implemented")
+    override fun changeUsername(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
+        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+
+        request.username?.let {
+            if (request.username.contains("@")) {
+                throw BadRequestException("Username is not an email it can't contain @ symbol")
+            }
+
+            repository.findBy_username(request.username)?.let {
+                throw BadRequestException("Username is already used by another user")
+            }
+
+            user._username = request.username
+            val savedUser: User = repository.save(user)
+            return mapper.toDto(savedUser)
+        } ?: run { throw BadRequestException("Username can't be blank!") }
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
