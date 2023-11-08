@@ -7,6 +7,10 @@ import java.security.Principal
 
 interface UserService {
 
+    fun changeEmail(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse
+
+    fun changeUsername(username: String, connectedUser: Principal): UserInfoResponse
+
     fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal)
 
     fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse

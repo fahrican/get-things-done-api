@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.user.service
 
+import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
 import com.onecosys.getthingsdone.user.model.dto.UserInfoResponse
 import com.onecosys.getthingsdone.user.model.dto.UserInfoUpdateRequest
@@ -19,6 +20,29 @@ class UserServiceImpl(
     private val repository: UserRepository,
     private val mapper: UserInfoMapper
 ) : UserService {
+
+
+    override fun changeEmail(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
+        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+
+        request.email?.let {
+            if (!request.email.contains("@")) {
+                throw BadRequestException("Email does not contain @ symbol")
+            }
+
+            repository.findByEmail(request.email)?.let {
+                throw BadRequestException("Email is already used by another user")
+            }
+
+            user.email = request.email
+            val savedUser: User = repository.save(user)
+            return mapper.toDto(savedUser)
+        } ?: run { throw BadRequestException("Email can't be blank!") }
+    }
+
+    override fun changeUsername(username: String, connectedUser: Principal): UserInfoResponse {
+        TODO("Not yet implemented")
+    }
 
     override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
