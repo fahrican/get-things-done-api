@@ -1,3 +1,3 @@
 package com.onecosys.getthingsdone.authentication.dto
 
-data class VerificationResponse(val message: String)
+data class EmailConfirmedResponse(val message: String)

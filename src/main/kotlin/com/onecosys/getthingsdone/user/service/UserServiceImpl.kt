@@ -21,7 +21,6 @@ class UserServiceImpl(
     private val mapper: UserInfoMapper
 ) : UserService {
 
-
     override fun changeEmail(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 

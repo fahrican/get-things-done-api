@@ -85,7 +85,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VerificationResponse'
+                $ref: '#/components/schemas/EmailConfirmedResponse'
         '409':
           description: Invalid sign-up
           content:
@@ -117,6 +117,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+  /api/v1/auth/password-reset:
+    post:
+      tags:
+        - authentication
+      summary: reset user password
+      operationId: requestPasswordReset
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: resetting password was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConfirmedResponse'
+        '401':
+          description: Couldn't reset password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/user/username:
+    patch:
+      tags:
+        - user
+      summary: change username
+      operationId: changeUsername
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInfoUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Updating the username was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
   /api/v1/user/password:
     patch:
       tags:
@@ -150,7 +194,28 @@ paths:
         '200':
           description: Updating information was successful
           content:
-            application/json: { }
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+  /api/v1/user/email:
+    patch:
+      tags:
+        - user
+      summary: change user email
+      operationId: changeEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInfoUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Updating the E-MAIL was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
   /api/v1/tasks/{id}:
     get:
       tags:
@@ -247,7 +312,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VerificationResponse'
+                $ref: '#/components/schemas/EmailConfirmedResponse'
         '403':
           description: Verification step not complete
           content:
@@ -273,6 +338,45 @@ components:
           type: boolean
         isTaskOpen:
           type: boolean
+        startedOn:
+          type: string
+          format: date-time
+        finishedOn:
+          type: string
+          format: date-time
+        timeInterval:
+          type: string
+        timeTaken:
+          type: integer
+          format: int32
+        priority:
+          type: string
+          enum:
+            - LOW
+            - MEDIUM
+            - HIGH
+    TaskFetchResponse:
+      required:
+        - createdOn
+        - description
+        - isReminderSet
+        - isTaskOpen
+        - priority
+        - timeInterval
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        isReminderSet:
+          type: boolean
+        isTaskOpen:
+          type: boolean
+        createdOn:
+          type: string
+          format: date-time
         startedOn:
           type: string
           format: date-time
@@ -377,45 +481,6 @@ components:
         timestamp:
           type: string
           format: date-time
-    TaskFetchResponse:
-      required:
-        - createdOn
-        - description
-        - isReminderSet
-        - isTaskOpen
-        - priority
-        - timeInterval
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        description:
-          type: string
-        isReminderSet:
-          type: boolean
-        isTaskOpen:
-          type: boolean
-        createdOn:
-          type: string
-          format: date-time
-        startedOn:
-          type: string
-          format: date-time
-        finishedOn:
-          type: string
-          format: date-time
-        timeInterval:
-          type: string
-        timeTaken:
-          type: integer
-          format: int32
-        priority:
-          type: string
-          enum:
-            - LOW
-            - MEDIUM
-            - HIGH
     RegisterRequest:
       required:
         - email
@@ -438,7 +503,7 @@ components:
           type: string
         passwordConfirmation:
           type: string
-    VerificationResponse:
+    EmailConfirmedResponse:
       required:
         - message
       type: object
@@ -465,6 +530,33 @@ components:
           type: string
         refreshToken:
           type: string
+    UserInfoUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+    UserInfoResponse:
+      required:
+        - email
+        - firstName
+        - lastName
+        - username
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
     UserPasswordUpdateRequest:
       required:
         - currentPassword
@@ -477,15 +569,6 @@ components:
         newPassword:
           type: string
         newPasswordConfirmation:
-          type: string
-    UserInfoUpdateRequest:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
           type: string
     TaskUpdateRequest:
       type: object
