@@ -3,13 +3,14 @@ package com.onecosys.getthingsdone.authentication.service
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
-import com.onecosys.getthingsdone.authentication.dto.VerificationResponse
+import com.onecosys.getthingsdone.authentication.dto.EmailConfirmedResponse
 import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
+import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.user.model.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
@@ -39,7 +40,7 @@ class AuthenticationServiceImpl(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    override fun signUp(request: RegisterRequest): VerificationResponse {
+    override fun signUp(request: RegisterRequest): EmailConfirmedResponse {
         checkForSignUpMistakes(request)
 
         val user = mapper.toEntity(request, passwordEncoder)
@@ -49,10 +50,10 @@ class AuthenticationServiceImpl(
         verificationTokenRepository.save(verificationToken)
         emailService.sendVerificationEmail(savedUser, token)
 
-        return VerificationResponse("Please, check your emails and spam/junk folder for ${user.email} to verify your account")
+        return EmailConfirmedResponse("Please, check your emails and spam/junk folder for ${user.email} to verify your account")
     }
 
-    override fun verifyUser(token: String): VerificationResponse {
+    override fun verifyUser(token: String): EmailConfirmedResponse {
         val currentVerificationToken: VerificationToken =
             verificationTokenRepository.findByToken(token) ?: throw AccountVerificationException("Invalid Token")
 
@@ -73,7 +74,7 @@ class AuthenticationServiceImpl(
 
         user.isVerified = true
         userRepository.save(user)
-        return VerificationResponse("Account Verified Successfully")
+        return EmailConfirmedResponse("Account Verified Successfully")
     }
 
     @Transactional
@@ -97,6 +98,17 @@ class AuthenticationServiceImpl(
         return AuthenticationResponse(jwtToken, refreshToken)
     }
 
+    override fun requestPasswordReset(email: String): EmailConfirmedResponse {
+        val user = userRepository.findByEmail(email) ?: throw UserNotFoundException("E-Mail: $email does not exist!")
+
+        val newPassword = UUID.randomUUID().toString().take(10)
+        user._password = passwordEncoder.encode(newPassword)
+        userRepository.save(user)
+
+        emailService.sendPasswordResetEmail(user, newPassword)
+        return EmailConfirmedResponse("New password sent to $email")
+    }
+
     private fun initiateEmailVerificationToken(user: User): Pair<String, VerificationToken> {
         val token = UUID.randomUUID().toString()
         val verificationToken = VerificationToken(
@@ -109,12 +121,12 @@ class AuthenticationServiceImpl(
 
     private fun checkForSignUpMistakes(request: RegisterRequest) {
         userRepository.findByEmail(request.email)?.let {
-            log.error("Can't find email: $request")
+            log.error("User email already exists: $request")
             throw SignUpException("User email already exists!")
         }
 
         userRepository.findBy_username(request.username)?.let {
-            log.error("Can't find username: $request")
+            log.error("Username already exists: $request")
             throw SignUpException("Username already exists!")
         }
 

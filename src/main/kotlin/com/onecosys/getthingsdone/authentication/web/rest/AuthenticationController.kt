@@ -3,7 +3,7 @@ package com.onecosys.getthingsdone.authentication.web.rest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
-import com.onecosys.getthingsdone.authentication.dto.VerificationResponse
+import com.onecosys.getthingsdone.authentication.dto.EmailConfirmedResponse
 import com.onecosys.getthingsdone.authentication.service.AuthenticationService
 import com.onecosys.getthingsdone.error.ApiError
 import io.swagger.v3.oas.annotations.Operation
@@ -34,7 +34,7 @@ class AuthenticationController(
                 description = "sign-up was successful",
                 content = [Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = VerificationResponse::class)
+                    schema = Schema(implementation = EmailConfirmedResponse::class)
                 )]
             ),
             ApiResponse(
@@ -46,7 +46,7 @@ class AuthenticationController(
         ]
     )
     @PostMapping("sign-up")
-    fun signUp(@Valid @RequestBody request: RegisterRequest): ResponseEntity<VerificationResponse> =
+    fun signUp(@Valid @RequestBody request: RegisterRequest): ResponseEntity<EmailConfirmedResponse> =
         ResponseEntity.ok(service.signUp(request))
 
 
@@ -58,7 +58,7 @@ class AuthenticationController(
                 description = "email verification was successful",
                 content = [Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = VerificationResponse::class)
+                    schema = Schema(implementation = EmailConfirmedResponse::class)
                 )]
             ),
             ApiResponse(
@@ -70,7 +70,7 @@ class AuthenticationController(
         ]
     )
     @GetMapping("verify")
-    fun verifyUser(@RequestParam("token") token: String): ResponseEntity<VerificationResponse> {
+    fun verifyUser(@RequestParam("token") token: String): ResponseEntity<EmailConfirmedResponse> {
         return ResponseEntity.ok(service.verifyUser(token))
     }
 
@@ -97,4 +97,28 @@ class AuthenticationController(
     @PostMapping("sign-in")
     fun signIn(@RequestBody request: AuthenticationRequest): ResponseEntity<AuthenticationResponse> =
         ResponseEntity.ok(service.signIn(request))
+
+
+    @Operation(summary = "reset user password", tags = ["authentication"])
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "resetting password was successful",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = EmailConfirmedResponse::class)
+                )]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Couldn't reset password", content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ApiError::class)
+                )]
+            ),
+        ]
+    )
+    @PostMapping("password-reset")
+    fun requestPasswordReset(@RequestParam email: String): ResponseEntity<EmailConfirmedResponse> =
+        ResponseEntity.ok(service.requestPasswordReset(email))
 }
