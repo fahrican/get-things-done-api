@@ -80,6 +80,7 @@ internal class TaskServiceTest {
         val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(mockUser, null)
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
+        verify(exactly = 1) { mockRepository.findAllByUserOrderByIdAsc(any()) }
     }
 
     @Test
@@ -96,6 +97,7 @@ internal class TaskServiceTest {
         val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(mockUser, TaskStatus.OPEN)
 
         assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
+        verify(exactly = 1) { mockRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(any(), true) }
     }
 
     @Test

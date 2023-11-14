@@ -36,7 +36,7 @@ class UserServiceImpl(
             user.email = request.email
             val savedUser: User = repository.save(user)
             return mapper.toDto(savedUser)
-        } ?: run { throw BadRequestException("Email can't be blank!") }
+        } ?: run { throw BadRequestException("Email can't be blank/null !") }
     }
 
     override fun changeUsername(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
@@ -54,7 +54,7 @@ class UserServiceImpl(
             user._username = request.username
             val savedUser: User = repository.save(user)
             return mapper.toDto(savedUser)
-        } ?: run { throw BadRequestException("Username can't be blank!") }
+        } ?: run { throw BadRequestException("Username can't be blank/null !") }
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
