@@ -44,7 +44,7 @@ internal class UserServiceImplTest {
         username = "ahmad_hasan"
     )
     private val mockUserInfoResponse: UserInfoResponse = mockk()
-    private val user = User(email = "newemail@example.com", _password = "test")
+    private val user = User(email = "newemail@example.com", _password = "test", firstName = "Ali", lastName = "Muataz")
 
     private lateinit var objectUnderTest: UserService
     private lateinit var principal: Authentication
@@ -205,6 +205,17 @@ internal class UserServiceImplTest {
         objectUnderTest.changePassword(request, principal)
 
         assertEquals("hello", request.newPassword)
+        verify(exactly = 1) { mockRepository.save(user) }
+    }
+
+    @Test
+    fun `when change user info gets triggered then expect success response`() {
+        every { mockRepository.save(any()) } returns user
+        every { mockMapper.toDto(user) } returns mockUserInfoResponse
+
+        val response = objectUnderTest.changeInfo(userInfoUpdateRequest, principal)
+
+        assertEquals(mockUserInfoResponse, response)
         verify(exactly = 1) { mockRepository.save(user) }
     }
 }

@@ -76,7 +76,6 @@ class UserServiceImpl(
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
         user.apply {
-            email = request.email ?: email
             firstName = request.firstName ?: firstName
             lastName = request.lastName ?: lastName
         }
