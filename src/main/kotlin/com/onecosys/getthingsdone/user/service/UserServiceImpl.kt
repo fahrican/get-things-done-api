@@ -25,8 +25,8 @@ class UserServiceImpl(
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
         if (request["email"] != null || request["email"] != "") {
-            validateEmail(request["email"]!!)
-            user.email = request["email"]!!
+            validateEmail(request["email"].toString())
+            user.email = request["email"].toString()
 
             val updatedUser = repository.save(user)
             return mapper.toDto(updatedUser)
@@ -37,8 +37,8 @@ class UserServiceImpl(
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
         if (request["username"] != null || request["username"] != "") {
-            validateUsername(request["username"]!!)
-            user._username = request["username"]!!
+            validateUsername(request["username"].toString())
+            user._username = request["username"].toString()
 
             val updatedUser = repository.save(user)
             return mapper.toDto(updatedUser)
