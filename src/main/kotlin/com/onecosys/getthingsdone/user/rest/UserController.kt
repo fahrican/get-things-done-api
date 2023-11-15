@@ -5,12 +5,14 @@ import com.onecosys.getthingsdone.user.model.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.user.model.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,6 +24,7 @@ import java.security.Principal
 @RequestMapping("api/v1/user")
 class UserController(private val service: UserService) {
 
+    // How to define the request body in Swagger?
     @Operation(summary = "change user email", tags = ["user"])
     @ApiResponses(
         value = [
@@ -37,6 +40,8 @@ class UserController(private val service: UserService) {
     )
     @PatchMapping("email")
     fun changeEmail(
+        @Parameter(name = "email", description = "email to sign in")
+        @Schema(implementation = HashMap::class, example = "{\"email\": \"test@mail.com\"}")
         @Valid @RequestBody request: HashMap<String, String>,
         connectedUser: Principal
     ): ResponseEntity<UserInfoResponse> = ResponseEntity.ok(service.changeEmail(request, connectedUser))
@@ -56,6 +61,8 @@ class UserController(private val service: UserService) {
     )
     @PatchMapping("username")
     fun changeUsername(
+        @Parameter(name = "username", description = "username to sign in")
+        @Schema(implementation = HashMap::class, example = "{\"username\": \"abu-hasan\"}")
         @Valid @RequestBody request: HashMap<String, String>,
         connectedUser: Principal
     ): ResponseEntity<UserInfoResponse> = ResponseEntity.ok(service.changeUsername(request, connectedUser))
@@ -96,4 +103,22 @@ class UserController(private val service: UserService) {
         @Valid @RequestBody request: UserInfoUpdateRequest,
         connectedUser: Principal
     ): ResponseEntity<UserInfoResponse> = ResponseEntity.ok(service.changeInfo(request, connectedUser))
+
+    @Operation(summary = "fetch user information", tags = ["user"])
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Updating information was successful",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = UserInfoResponse::class)
+                )]
+            )
+        ]
+    )
+    @GetMapping
+    fun fetchInfo(
+        connectedUser: Principal
+    ): ResponseEntity<UserInfoResponse> = ResponseEntity.ok(service.fetchInfo(connectedUser))
 }

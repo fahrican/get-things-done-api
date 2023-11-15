@@ -14,4 +14,6 @@ interface UserService {
     fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal)
 
     fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse
+
+    fun fetchInfo(connectedUser: Principal): UserInfoResponse
 }

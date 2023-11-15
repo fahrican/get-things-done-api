@@ -72,6 +72,11 @@ class UserServiceImpl(
         return mapper.toDto(savedUser)
     }
 
+    override fun fetchInfo(connectedUser: Principal): UserInfoResponse {
+        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+        return mapper.toDto(user)
+    }
+
     fun validateEmail(email: String) {
         if (!email.contains("@")) {
             throw BadRequestException("Email must contain '@' symbol")
