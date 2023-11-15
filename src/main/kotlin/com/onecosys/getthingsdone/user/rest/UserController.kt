@@ -24,7 +24,6 @@ import java.security.Principal
 @RequestMapping("api/v1/user")
 class UserController(private val service: UserService) {
 
-    // How to define the request body in Swagger?
     @Operation(summary = "change user email", tags = ["user"])
     @ApiResponses(
         value = [

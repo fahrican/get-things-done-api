@@ -173,4 +173,13 @@ internal class UserServiceImplTest {
         assertEquals(mockUserInfoResponse, response)
         verify(exactly = 1) { mockRepository.save(user) }
     }
+
+    @Test
+    fun `when fetch user info gets triggered then expect success response`() {
+        every { mockMapper.toDto(user) } returns mockUserInfoResponse
+
+        val response = objectUnderTest.fetchInfo(principal)
+
+        assertEquals(mockUserInfoResponse, response)
+    }
 }
