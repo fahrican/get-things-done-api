@@ -21,40 +21,28 @@ class UserServiceImpl(
     private val mapper: UserInfoMapper
 ) : UserService {
 
-    override fun changeEmail(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
+    override fun changeEmail(request: HashMap<String, String>, connectedUser: Principal): UserInfoResponse {
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
-        request.email?.let {
-            if (!request.email.contains("@")) {
-                throw BadRequestException("Email does not contain @ symbol")
-            }
+        if (request["email"] != null || request["email"] != "") {
+            validateEmail(request["email"]!!)
+            user.email = request["email"]!!
 
-            repository.findByEmail(request.email)?.let {
-                throw BadRequestException("Email is already used by another user")
-            }
-
-            user.email = request.email
-            val savedUser: User = repository.save(user)
-            return mapper.toDto(savedUser)
-        } ?: run { throw BadRequestException("Email can't be blank/null !") }
+            val updatedUser = repository.save(user)
+            return mapper.toDto(updatedUser)
+        } else throw BadRequestException("Email can't be blank/null !")
     }
 
-    override fun changeUsername(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
+    override fun changeUsername(request: HashMap<String, String>, connectedUser: Principal): UserInfoResponse {
         val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
 
-        request.username?.let {
-            if (request.username.contains("@")) {
-                throw BadRequestException("Username is not an email it can't contain @ symbol")
-            }
+        if (request["username"] != null || request["username"] != "") {
+            validateUsername(request["username"]!!)
+            user._username = request["username"]!!
 
-            repository.findBy_username(request.username)?.let {
-                throw BadRequestException("Username is already used by another user")
-            }
-
-            user._username = request.username
-            val savedUser: User = repository.save(user)
-            return mapper.toDto(savedUser)
-        } ?: run { throw BadRequestException("Username can't be blank/null !") }
+            val updatedUser = repository.save(user)
+            return mapper.toDto(updatedUser)
+        } else throw BadRequestException("Username can't be blank/null !")
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
@@ -82,5 +70,25 @@ class UserServiceImpl(
 
         val savedUser: User = repository.save(user)
         return mapper.toDto(savedUser)
+    }
+
+    fun validateEmail(email: String) {
+        if (!email.contains("@")) {
+            throw BadRequestException("Email must contain '@' symbol")
+        }
+
+        if (repository.findByEmail(email) != null) {
+            throw BadRequestException("Email is already used by another user")
+        }
+    }
+
+    fun validateUsername(username: String) {
+        if (username.contains("@")) {
+            throw BadRequestException("Username cannot contain '@' symbol")
+        }
+
+        if (repository.findBy_username(username) != null) {
+            throw BadRequestException("Username is already used by another user")
+        }
     }
 }

@@ -37,7 +37,7 @@ class UserController(private val service: UserService) {
     )
     @PatchMapping("email")
     fun changeEmail(
-        @Valid @RequestBody request: UserInfoUpdateRequest,
+        @Valid @RequestBody request: HashMap<String, String>,
         connectedUser: Principal
     ): ResponseEntity<UserInfoResponse> = ResponseEntity.ok(service.changeEmail(request, connectedUser))
 
@@ -56,7 +56,7 @@ class UserController(private val service: UserService) {
     )
     @PatchMapping("username")
     fun changeUsername(
-        @Valid @RequestBody request: UserInfoUpdateRequest,
+        @Valid @RequestBody request: HashMap<String, String>,
         connectedUser: Principal
     ): ResponseEntity<UserInfoResponse> = ResponseEntity.ok(service.changeUsername(request, connectedUser))
 

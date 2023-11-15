@@ -37,14 +37,10 @@ internal class UserServiceImplTest {
     @RelaxedMockK
     private lateinit var mockMapper: UserInfoMapper
 
-    private val userInfoUpdateRequest = UserInfoUpdateRequest(
-        email = "newemail@example.com",
-        firstName = "Ahmad",
-        lastName = "Hasan",
-        username = "ahmad_hasan"
-    )
+    private val userInfoUpdateRequest = UserInfoUpdateRequest(firstName = "Ahmad", lastName = "Hasan")
     private val mockUserInfoResponse: UserInfoResponse = mockk()
     private val user = User(email = "newemail@example.com", _password = "test", firstName = "Ali", lastName = "Muataz")
+    private val request = HashMap<String, String>()
 
     private lateinit var objectUnderTest: UserService
     private lateinit var principal: Authentication
@@ -58,11 +54,13 @@ internal class UserServiceImplTest {
 
     @Test
     fun `when change user email gets triggered then expect success response`() {
-        every { mockRepository.findByEmail(userInfoUpdateRequest.email!!) } returns null
+        val email = HashMap<String, String>()
+        email["email"] = "info@test.com"
+        every { mockRepository.findByEmail(email["email"]!!) } returns null
         every { mockRepository.save(any()) } returns user
         every { mockMapper.toDto(user) } returns mockUserInfoResponse
 
-        val result = objectUnderTest.changeEmail(userInfoUpdateRequest, principal)
+        val result = objectUnderTest.changeEmail(email, principal)
 
         assertNotNull(result)
         assertEquals(mockUserInfoResponse, result)
@@ -72,74 +70,43 @@ internal class UserServiceImplTest {
 
     @Test
     fun `when change user email gets triggered then expect invalid email exception`() {
-        val request = UserInfoUpdateRequest(
-            email = "invalidemail.com",
-            firstName = "Ahmad",
-            lastName = "Hasan",
-            username = "ahmad_hasan"
-        )
+        val email = HashMap<String, String>()
+        email["email"] = "invalidemail.com"
 
-        val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(request, principal) }
+        val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(email, principal) }
 
-        assertEquals("Email does not contain @ symbol", exception.message)
+        assertEquals("Email must contain '@' symbol", exception.message)
         verify { mockRepository.save(user) wasNot called }
     }
 
     @Test
     fun `when change user email gets triggered then expect email is taken by another user exception`() {
-        val request = UserInfoUpdateRequest(
-            email = "test@email.com",
-            firstName = null,
-            lastName = null,
-            username = null
-        )
+        val email = "test@email.com"
+        request["email"] = email
         val exceptionMessage = "Email is already used by another user"
-        every { mockRepository.findByEmail(request.email!!) } returns user
+        every { mockRepository.findByEmail(email) } returns user
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(request, principal) }
 
         assertEquals(exceptionMessage, exception.message)
-        verify(exactly = 1) { mockRepository.findByEmail(request.email!!) }
-    }
-
-    @Test
-    fun `when change user email gets triggered then expect email can't be blank exception`() {
-        val request = UserInfoUpdateRequest(
-            email = null,
-            firstName = "Ahmad",
-            lastName = "Hasan",
-            username = "ahmad_hasan"
-        )
-
-        val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(request, principal) }
-
-        assertEquals("Email can't be blank/null !", exception.message)
+        verify(exactly = 1) { mockRepository.findByEmail(email) }
     }
 
     @Test
     fun `when change username gets triggered then expect invalid username exception`() {
-        val request = UserInfoUpdateRequest(
-            email = "valid@email.com",
-            firstName = "Ahmad",
-            lastName = "Hasan",
-            username = "ahmad@hasan"
-        )
+        request["username"] = "test@"
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeUsername(request, principal) }
 
-        assertEquals("Username is not an email it can't contain @ symbol", exception.message)
+        assertEquals("Username cannot contain '@' symbol", exception.message)
         verify { mockRepository.save(user) wasNot called }
     }
 
     @Test
     fun `when change username gets triggered then expect username already taken exception`() {
-        val request = UserInfoUpdateRequest(
-            email = "valid@email.com",
-            firstName = "Ahmad",
-            lastName = "Hasan",
-            username = "ahmad-hasan"
-        )
-        every { mockRepository.findBy_username(request.username!!) } returns user
+        request["username"] = "ahmad-hasan"
+
+        every { mockRepository.findBy_username(request["username"]!!) } returns user
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeUsername(request, principal) }
         assertEquals("Username is already used by another user", exception.message)
@@ -148,30 +115,18 @@ internal class UserServiceImplTest {
 
     @Test
     fun `when change username gets triggered then expect username changed success response`() {
-        every { mockRepository.findBy_username(userInfoUpdateRequest.username!!) } returns null
+        request["username"] = "ahmad-hasan"
+
+        every { mockRepository.findBy_username(request["username"]!!) } returns null
         every { mockRepository.save(any()) } returns user
         every { mockMapper.toDto(user) } returns mockUserInfoResponse
 
-        val response = objectUnderTest.changeUsername(userInfoUpdateRequest, principal)
+        val response = objectUnderTest.changeUsername(request, principal)
 
         assertNotNull(response)
         assertEquals(mockUserInfoResponse, response)
         verify(exactly = 1) { mockRepository.save(any()) }
         verify(exactly = 1) { mockMapper.toDto(user) }
-    }
-
-    @Test
-    fun `when change username gets triggered then expect username can't be blank exception`() {
-        val request = UserInfoUpdateRequest(
-            email = "ahmad.hasan@test.com",
-            firstName = "Ahmad",
-            lastName = "Hasan",
-            username = null
-        )
-
-        val exception = assertThrows<BadRequestException> { objectUnderTest.changeUsername(request, principal) }
-
-        assertEquals("Username can't be blank/null !", exception.message)
     }
 
     @Test
