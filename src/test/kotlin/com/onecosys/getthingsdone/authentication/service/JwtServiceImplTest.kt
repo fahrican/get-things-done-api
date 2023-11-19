@@ -2,8 +2,6 @@ package com.onecosys.getthingsdone.authentication.service
 
 import com.onecosys.getthingsdone.authentication.util.JwtKey
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -18,35 +16,33 @@ import javax.crypto.SecretKey
 internal class JwtServiceImplTest {
 
     @RelaxedMockK
-    private lateinit var jwtKey: JwtKey
+    private lateinit var mockJwtKey: JwtKey
 
     private lateinit var secretKey: SecretKey
+
     private val username = "testUser"
 
-    private lateinit var jwtService: JwtService
+    private lateinit var objectUnderTest: JwtService
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
-        secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512) // or load from a secure location
+        secretKey = Jwts.SIG.HS256.key().build()
 
-        jwtService = JwtServiceImpl(jwtKey)
+        objectUnderTest = JwtServiceImpl(mockJwtKey)
 
-        every { jwtKey.secretKey } returns secretKey
+        every { mockJwtKey.secretKey } returns secretKey
     }
 
     @Test
-    fun `extractUsername should return the correct username from token`() {
-        // Create a token with the subject claim set to the username
+    fun `when extract username is triggered then expect correct username`() {
         val token = Jwts.builder()
-            .setSubject(username)
+            .claim("sub", username)
             .signWith(secretKey)
             .compact()
 
-        // Call the method under test
-        val extractedUsername = jwtService.extractUsername(token)
+        val actualUsername = objectUnderTest.extractUsername(token)
 
-        // Assert the extracted username is as expected
-        assertEquals(username, extractedUsername)
+        assertEquals(username, actualUsername)
     }
 }
