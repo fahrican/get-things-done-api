@@ -27,7 +27,7 @@ internal class JwtServiceImplTest {
 
     private lateinit var secretKey: SecretKey
 
-    private val username = "testUser"
+    private val username = "abu-ali"
 
     private lateinit var objectUnderTest: JwtService
 
@@ -87,18 +87,33 @@ internal class JwtServiceImplTest {
     @Test
     fun `when generate access token is triggered then expect new token`() {
         val userDetails = mockk<UserDetails>()
-        every { userDetails.username } returns "testuser"
+        every { userDetails.username } returns username
 
-        val token = objectUnderTest.generateAccessToken(userDetails)
-        val claims = Jwts.parser()
+        val accessToken = objectUnderTest.generateAccessToken(userDetails)
+        val actualClaims = Jwts.parser()
             .verifyWith(secretKey)
             .build()
-            .parseClaimsJws(token)
-            .body
+            .parseSignedClaims(accessToken)
+            .payload
 
+        assertEquals(username, actualClaims.subject)
+        assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_ONE_DAY)
 
-        assertEquals("testuser", claims.subject)
-        assertTrue(claims.expiration.time <= System.currentTimeMillis() + EXPIRATION_ONE_DAY)
+    }
 
+    @Test
+    fun `when generate refresh token is triggered then expect new token`() {
+        val userDetails = mockk<UserDetails>()
+        every { userDetails.username } returns username
+
+        val refreshToken = objectUnderTest.generateRefreshToken(userDetails)
+        val actualClaims = Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(refreshToken)
+            .payload
+
+        assertEquals(username, actualClaims.subject)
+        assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_SEVEN_DAYS)
     }
 }
