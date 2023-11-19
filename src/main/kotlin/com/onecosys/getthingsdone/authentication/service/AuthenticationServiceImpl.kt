@@ -37,6 +37,10 @@ class AuthenticationServiceImpl(
     private val emailService: EmailService
 ) : AuthenticationService {
 
+    companion object  {
+        private const val TEN_CHARACTERS = 10
+    }
+
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
@@ -87,8 +91,8 @@ class AuthenticationServiceImpl(
 
         try {
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
-        } catch (e: BadCredentialsException) {
-            log.error("Username or password is incorrect: $user")
+        } catch (bce: BadCredentialsException) {
+            log.error("Username or password is incorrect: ${bce.message}")
             throw UsernamePasswordMismatchException("Username or password is incorrect")
         }
 
@@ -101,7 +105,7 @@ class AuthenticationServiceImpl(
     override fun requestPasswordReset(email: String): EmailConfirmedResponse {
         val user = userRepository.findByEmail(email) ?: throw UserNotFoundException("E-Mail: $email does not exist!")
 
-        val newPassword = UUID.randomUUID().toString().take(10)
+        val newPassword = UUID.randomUUID().toString().take(TEN_CHARACTERS)
         user._password = passwordEncoder.encode(newPassword)
         userRepository.save(user)
 
