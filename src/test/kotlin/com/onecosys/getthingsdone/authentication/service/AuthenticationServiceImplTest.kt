@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.authentication.service
 
+import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
@@ -7,6 +8,7 @@ import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
+import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.user.model.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import io.mockk.MockKAnnotations
@@ -14,6 +16,7 @@ import io.mockk.called
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -22,6 +25,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -50,7 +55,7 @@ internal class AuthenticationServiceImplTest {
     @RelaxedMockK
     private lateinit var mockEmailService: EmailService
 
-    private val request = RegisterRequest(
+    private val registerRequest = RegisterRequest(
         "John",
         "Doe", "john@example.com",
         "john-doe",
@@ -59,11 +64,11 @@ internal class AuthenticationServiceImplTest {
     )
 
     private val user = User(
-        firstName = request.firstName,
-        lastName = request.lastName,
-        email = request.email,
-        _username = request.username,
-        _password = request.password
+        firstName = registerRequest.firstName,
+        lastName = registerRequest.lastName,
+        email = registerRequest.email,
+        _username = registerRequest.username,
+        _password = registerRequest.password
     )
 
     private val verificationToken = VerificationToken(
@@ -71,6 +76,8 @@ internal class AuthenticationServiceImplTest {
         user = user,
         expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
     )
+
+    private val authenticationRequest = AuthenticationRequest("abu-ali", "password")
 
     private lateinit var objectUnderTest: AuthenticationService
 
@@ -98,7 +105,7 @@ internal class AuthenticationServiceImplTest {
         every { mockUserRepository.save(any()) } returns user
         every { mockVerificationTokenRepository.save(any()) } returns verificationToken
 
-        val actualResult = objectUnderTest.signUp(request)
+        val actualResult = objectUnderTest.signUp(registerRequest)
 
         assertEquals(
             "Please, check your emails and spam/junk folder for ${user.email} to verify your account",
@@ -112,7 +119,7 @@ internal class AuthenticationServiceImplTest {
     fun `when user sign up is triggerred then expect sign up exception for email `() {
         every { mockUserRepository.findByEmail(any()) } returns user
 
-        val actualResult = assertThrows<SignUpException> { objectUnderTest.signUp(request) }
+        val actualResult = assertThrows<SignUpException> { objectUnderTest.signUp(registerRequest) }
 
         assertEquals("User email already exists!", actualResult.message)
         verify { mockUserRepository.save(user) wasNot called }
@@ -124,7 +131,7 @@ internal class AuthenticationServiceImplTest {
         every { mockUserRepository.findByEmail(any()) } returns null
         every { mockUserRepository.findBy_username(any()) } returns user
 
-        val actualResult = assertThrows<SignUpException> { objectUnderTest.signUp(request) }
+        val actualResult = assertThrows<SignUpException> { objectUnderTest.signUp(registerRequest) }
 
         assertEquals("Username already exists!", actualResult.message)
         verify { mockUserRepository.save(user) wasNot called }
@@ -193,5 +200,67 @@ internal class AuthenticationServiceImplTest {
             actualResult.message
         )
         verify(exactly = 1) { mockUserRepository.save(user) wasNot called }
+    }
+
+    @Test
+    fun `when sign in user is triggerred then expect authentication response`() {
+        val jwtToken = "jwt-token"
+        val refreshToken = "refresh-token"
+        val mockAuthentication: Authentication = mockk(relaxed = true)
+        every { mockUserRepository.findBy_username(any()) } returns user
+        user.isVerified = true
+        every { mockAuthenticationManager.authenticate(any()) } returns mockAuthentication
+        every { mockJwtService.generateAccessToken(user) } returns jwtToken
+        every { mockJwtService.generateRefreshToken(user) } returns refreshToken
+
+        val result = objectUnderTest.signIn(authenticationRequest)
+
+        assertEquals(jwtToken, result.accessToken)
+        assertEquals(refreshToken, result.refreshToken)
+    }
+
+    @Test
+    fun `when sign in user is triggerred then expect sign up exception`() {
+        user.isVerified = false
+        every { mockUserRepository.findBy_username(any()) } returns user
+
+        val actualResult = assertThrows<SignUpException> { objectUnderTest.signIn(authenticationRequest) }
+
+        assertEquals(
+            "You didn't clicked yet on the verification link, check your email: ${user.email}",
+            actualResult.message
+        )
+        verify { mockAuthenticationManager.authenticate(any()) wasNot called }
+    }
+
+    @Test
+    fun `when sign in user is triggerred then expect username password mismatch exception`() {
+        user.isVerified = true
+        val bce = BadCredentialsException("Username or password is incorrect")
+        every { mockUserRepository.findBy_username(any()) } returns user
+        every { mockAuthenticationManager.authenticate(any()) } throws bce
+
+
+        val actualResult =
+            assertThrows<UsernamePasswordMismatchException> { objectUnderTest.signIn(authenticationRequest) }
+
+        assertEquals(bce.message, actualResult.message)
+    }
+
+    @Test
+    fun `when request password reset is triggered then expect email confirmed response`() {
+        val password = "test123"
+        every { mockUserRepository.findByEmail(user.email) } returns user
+        every { mockPasswordEncoder.encode(any()) } returns password
+        every { mockUserRepository.save(user) } returns user
+        every { mockEmailService.sendPasswordResetEmail(user, password) } returns Unit
+
+        val actualResult = objectUnderTest.requestPasswordReset(user.email)
+
+        assertEquals("New password sent to ${user.email}", actualResult.message)
+        verify(exactly = 1) { mockUserRepository.findByEmail(user.email) }
+        verify(exactly = 1) { mockPasswordEncoder.encode(any()) }
+        verify(exactly = 1) { mockUserRepository.save(user) }
+        verify(exactly = 1) { mockEmailService.sendPasswordResetEmail(any(), any()) }
     }
 }
