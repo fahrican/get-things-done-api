@@ -1,27 +1,17 @@
 package com.onecosys.getthingsdone.authentication.service
 
+import com.onecosys.getthingsdone.authentication.util.JwtKey
 import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import javax.crypto.SecretKey
 
 @Service
-class JwtServiceImpl : JwtService {
-
-    @Value("\${jwt.secret-key}")
-    private lateinit var secretKeyString: String
-
-    private val secretKey: SecretKey by lazy {
-        Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString))
-    }
+class JwtServiceImpl(private val jwtKey: JwtKey) : JwtService {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -44,7 +34,7 @@ class JwtServiceImpl : JwtService {
     private fun extractAllClaims(token: String): Claims =
         try {
             Jwts.parser()
-                .verifyWith(secretKey)
+                .verifyWith(jwtKey.secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .payload
@@ -61,6 +51,6 @@ class JwtServiceImpl : JwtService {
             .subject(userDetails.username)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + expirationTime))
-            .signWith(secretKey)
+            .signWith(jwtKey.secretKey)
             .compact()
 }
