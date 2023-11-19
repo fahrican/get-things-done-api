@@ -4,7 +4,9 @@ import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 import com.onecosys.getthingsdone.authentication.dto.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
+import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
+import com.onecosys.getthingsdone.error.TokenExpiredException
 import com.onecosys.getthingsdone.user.model.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import io.mockk.MockKAnnotations
@@ -14,6 +16,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -63,6 +66,12 @@ internal class AuthenticationServiceImplTest {
         _password = request.password
     )
 
+    private val verificationToken = VerificationToken(
+        token = "some-token",
+        user = user,
+        expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
+    )
+
     private lateinit var objectUnderTest: AuthenticationService
 
     @BeforeEach
@@ -83,12 +92,6 @@ internal class AuthenticationServiceImplTest {
 
     @Test
     fun `when user sign up is triggerred then expect success message `() {
-        val token = "some-token"
-        val verificationToken = VerificationToken(
-            token = token,
-            user = user,
-            expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
-        )
         every { mockUserRepository.findBy_username(any()) } returns null
         every { mockUserRepository.findByEmail(any()) } returns null
         every { mockMapper.toEntity(any(), any()) } returns user
@@ -145,5 +148,50 @@ internal class AuthenticationServiceImplTest {
         assertEquals("Password and password confirmation does not match!", actualResult.message)
         verify { mockUserRepository.save(user) wasNot called }
         verify { mockVerificationTokenRepository.save(any()) wasNot called }
+    }
+
+    @Test
+    fun `when verify user is triggerred then expect account verified successfully response`() {
+        val token = "some-token"
+        every { mockVerificationTokenRepository.findByToken(token) } returns verificationToken
+        every { mockUserRepository.save(user) } returns user
+
+        val result = objectUnderTest.verifyUser(token)
+
+        verify(exactly = 1) { mockUserRepository.save(user) }
+        assertEquals("Account Verified Successfully", result.message)
+        assertTrue(user.isVerified)
+    }
+
+    @Test
+    fun `when verify user is triggerred then expect token is expired`() {
+        val token = "expired-token"
+        verificationToken.expiryDate = Instant.now().minus(1, ChronoUnit.DAYS)
+        every { mockVerificationTokenRepository.findByToken(token) } returns verificationToken
+        every { mockVerificationTokenRepository.save(verificationToken) } returns verificationToken
+        every { mockEmailService.sendVerificationEmail(user, verificationToken.token) } returns Unit
+
+        val actualResult = assertThrows<TokenExpiredException> { objectUnderTest.verifyUser(token) }
+
+        assertEquals(
+            "Token expired. A new verification link has been sent to your email: ${user.email}",
+            actualResult.message
+        )
+        verify { mockEmailService.sendVerificationEmail(user, any()) }
+    }
+
+    @Test
+    fun `when verify user is triggerred then expect account verification exception`() {
+        val token = "some-token"
+        every { mockVerificationTokenRepository.findByToken(token) } returns verificationToken
+        user.isVerified = true
+
+        val actualResult = assertThrows<AccountVerificationException> { objectUnderTest.verifyUser(token) }
+
+        assertEquals(
+            "Account Already Verified",
+            actualResult.message
+        )
+        verify(exactly = 1) { mockUserRepository.save(user) wasNot called }
     }
 }
