@@ -98,7 +98,6 @@ internal class JwtServiceImplTest {
 
         assertEquals(username, actualClaims.subject)
         assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_ONE_DAY)
-
     }
 
     @Test
