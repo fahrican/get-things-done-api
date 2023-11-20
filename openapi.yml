@@ -152,7 +152,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInfoUpdateRequest'
+              type: object
+              additionalProperties:
+                type: object
+                example:
+                  username: abu-hasan
+              description: username to sign in
+              example:
+                username: abu-hasan
         required: true
       responses:
         '200':
@@ -207,7 +214,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInfoUpdateRequest'
+              type: object
+              additionalProperties:
+                type: object
+                example:
+                  email: test@mail.com
+              description: email to sign in
+              example:
+                email: test@mail.com
         required: true
       responses:
         '200':
@@ -294,6 +308,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+  /api/v1/user:
+    get:
+      tags:
+        - user
+      summary: fetch user information
+      operationId: fetchInfo
+      responses:
+        '200':
+          description: Updating information was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
   /api/v1/auth/verify:
     get:
       tags:
@@ -530,17 +557,6 @@ components:
           type: string
         refreshToken:
           type: string
-    UserInfoUpdateRequest:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        username:
-          type: string
     UserInfoResponse:
       required:
         - email
@@ -569,6 +585,13 @@ components:
         newPassword:
           type: string
         newPasswordConfirmation:
+          type: string
+    UserInfoUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
           type: string
     TaskUpdateRequest:
       type: object
