@@ -3,9 +3,12 @@ package com.onecosys.getthingsdone.user.rest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.task.util.AuthenticatedUserProvider
 import com.onecosys.getthingsdone.user.model.dto.UserInfoResponse
+import com.onecosys.getthingsdone.user.model.dto.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.user.model.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.service.UserService
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -82,6 +85,66 @@ internal class UserControllerIntegrationTest {
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.get("/api/v1/user")
                 .contentType(MediaType.APPLICATION_JSON)
+        )
+        resultActions.andExpect((MockMvcResultMatchers.status().isOk))
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
+    fun `when change user email is triggered then return success response`() {
+        val email = "hello@aon.at"
+        val request = HashMap<String, String>()
+        request["email"] = email
+        `when`(mockService.changeEmail(request, mockPrincipal)).thenReturn(userResponse)
+
+        val resultActions: ResultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch("/api/v1/user/email")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+        )
+        resultActions.andExpect((MockMvcResultMatchers.status().isOk))
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
+    fun `when change username is triggered then return success response`() {
+        val email = "ali-aziz"
+        val request = HashMap<String, String>()
+        request["username"] = email
+        `when`(mockService.changeEmail(request, mockPrincipal)).thenReturn(userResponse)
+
+        val resultActions: ResultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch("/api/v1/user/username")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+        )
+        resultActions.andExpect((MockMvcResultMatchers.status().isOk))
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
+    fun `when change user password is triggered then return success response`() {
+        val passwordRequest = UserPasswordUpdateRequest("oldPassword", "newPassword", "newPassword")
+        doNothing().`when`(mockService).changePassword(passwordRequest, mockPrincipal)
+
+        val resultActions: ResultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch("/api/v1/user/password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(passwordRequest))
+        )
+        resultActions.andExpect((MockMvcResultMatchers.status().isOk))
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
+    fun `when change user info is triggered then return success response`() {
+        val updateRequest = UserInfoUpdateRequest(firstName = "Omar", lastName = "Ramadan")
+        `when`(mockService.changeInfo(updateRequest, mockPrincipal)).thenReturn(userResponse)
+
+        val resultActions: ResultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch("/api/v1/user/info")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updateRequest))
         )
         resultActions.andExpect((MockMvcResultMatchers.status().isOk))
     }
