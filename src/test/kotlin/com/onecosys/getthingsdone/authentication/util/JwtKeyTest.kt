@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertThrows
 internal class JwtKeyTest {
 
     @Test
-    fun `JwtKey should correctly decode a valid secret key`() {
+    fun `when JWT key gets created expect decode a valid secret key`() {
         val mockJwtConfig = mockk<JwtConfig>()
         val validBase64Key = "c29tZSBzZWNyZXQga2V5IGVuY29kZWQgaW4gYmFzZTY0" // This should be a valid base64 string
         every { mockJwtConfig.secretKey } returns validBase64Key
@@ -22,12 +22,13 @@ internal class JwtKeyTest {
     }
 
     @Test
-    fun `JwtKey should throw an exception for an invalid secret key`() {
+    fun `when JWT key gets created expect an exception`() {
         val mockJwtKey = mockk<JwtKey>()
-        every { mockJwtKey.secretKey } throws IllegalStateException("Invalid JWT secret key")
+        val ise = IllegalStateException("Invalid JWT secret key")
+        every { mockJwtKey.secretKey } throws ise
 
         val exception = assertThrows<IllegalStateException> { mockJwtKey.secretKey }
 
-        assertEquals(exception.message, "Invalid JWT secret key")
+        assertEquals(exception.message, ise.message)
     }
 }

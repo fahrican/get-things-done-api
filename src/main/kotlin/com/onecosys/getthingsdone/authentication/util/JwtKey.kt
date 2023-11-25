@@ -24,7 +24,7 @@ class JwtKey(jwtConfig: JwtConfig) {
             Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.secretKey))
         } catch (ise: IllegalStateException) {
             log.error("Error decoding JWT secret key: ${ise.message}")
-            throw IllegalStateException("Invalid JWT secret key", ise)
+            throw IllegalStateException("Invalid JWT secret key")
         }
     }
 }
