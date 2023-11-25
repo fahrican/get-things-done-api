@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -30,7 +31,7 @@ class AuthenticationController(
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
+                responseCode = "201",
                 description = "sign-up was successful",
                 content = [Content(
                     mediaType = "application/json",
@@ -46,8 +47,10 @@ class AuthenticationController(
         ]
     )
     @PostMapping("sign-up")
-    fun signUp(@Valid @RequestBody request: RegisterRequest): ResponseEntity<EmailConfirmedResponse> =
-        ResponseEntity.ok(service.signUp(request))
+    fun signUp(@Valid @RequestBody request: RegisterRequest): ResponseEntity<EmailConfirmedResponse> {
+        val response = service.signUp(request)
+        return ResponseEntity(response, HttpStatus.CREATED)
+    }
 
 
     @Operation(summary = "verify user", tags = ["authentication"])
