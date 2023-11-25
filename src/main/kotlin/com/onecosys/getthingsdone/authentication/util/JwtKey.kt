@@ -22,9 +22,9 @@ class JwtKey(jwtConfig: JwtConfig) {
     val secretKey: SecretKey by lazy {
         try {
             Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.secretKey))
-        } catch (e: IllegalArgumentException) {
-            log.error("Error decoding JWT secret key: ${e.message}")
-            throw IllegalStateException("Invalid JWT secret key", e)
+        } catch (ise: IllegalStateException) {
+            log.error("Error decoding JWT secret key: ${ise.message}")
+            throw IllegalStateException("Invalid JWT secret key", ise)
         }
     }
 }
