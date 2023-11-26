@@ -16,7 +16,8 @@ class JwtConfig {
 }
 
 @Component
-class JwtKey(jwtConfig: JwtConfig) {
+class JwtKey(private val jwtConfig: JwtConfig) {
+
     private val log = LoggerFactory.getLogger(JwtKey::class.java)
 
     val secretKey: SecretKey by lazy {
