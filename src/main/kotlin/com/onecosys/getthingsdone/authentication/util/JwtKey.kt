@@ -16,15 +16,16 @@ class JwtConfig {
 }
 
 @Component
-class JwtKey(jwtConfig: JwtConfig) {
+class JwtKey(private val jwtConfig: JwtConfig) {
+
     private val log = LoggerFactory.getLogger(JwtKey::class.java)
 
     val secretKey: SecretKey by lazy {
         try {
             Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.secretKey))
-        } catch (e: IllegalArgumentException) {
-            log.error("Error decoding JWT secret key: ${e.message}")
-            throw IllegalStateException("Invalid JWT secret key", e)
+        } catch (ise: IllegalStateException) {
+            log.error("Error decoding JWT secret key: ${ise.message}")
+            throw IllegalStateException("Invalid JWT secret key")
         }
     }
 }

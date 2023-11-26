@@ -8,6 +8,7 @@ import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
+import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.user.model.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
@@ -262,5 +263,19 @@ internal class AuthenticationServiceImplTest {
         verify(exactly = 1) { mockPasswordEncoder.encode(any()) }
         verify(exactly = 1) { mockUserRepository.save(user) }
         verify(exactly = 1) { mockEmailService.sendPasswordResetEmail(any(), any()) }
+    }
+
+    @Test
+    fun `when request password reset is triggered then expect user not found exception`() {
+        val unfe = UserNotFoundException("E-Mail: ${user.email} does not exist!")
+        every { mockUserRepository.findByEmail(user.email) } throws unfe
+
+        val actualResult = assertThrows<UserNotFoundException> { objectUnderTest.requestPasswordReset(user.email) }
+
+        assertEquals("E-Mail: ${user.email} does not exist!", actualResult.message)
+        verify(exactly = 1) { mockUserRepository.findByEmail(user.email) }
+        verify(exactly = 0) { mockPasswordEncoder.encode(any()) }
+        verify(exactly = 0) { mockUserRepository.save(user) }
+        verify(exactly = 0) { mockEmailService.sendPasswordResetEmail(any(), any()) }
     }
 }

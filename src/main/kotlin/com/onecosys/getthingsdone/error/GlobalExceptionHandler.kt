@@ -25,7 +25,6 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(
         SignUpException::class,
-        UserMismatchException::class,
         PasswordMismatchException::class
     )
     fun handleConflictException(exception: RuntimeException): ResponseEntity<ApiError> =
@@ -52,8 +51,6 @@ class BadRequestException(message: String) : RuntimeException(message)
 class SignUpException(message: String) : RuntimeException(message)
 
 class JwtAuthenticationException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
-
-class UserMismatchException(message: String) : RuntimeException(message)
 
 class UserNotFoundException(message: String) : RuntimeException(message)
 
