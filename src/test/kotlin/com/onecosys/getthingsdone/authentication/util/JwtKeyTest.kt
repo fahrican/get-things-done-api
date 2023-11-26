@@ -24,18 +24,7 @@ internal class JwtKeyTest {
     }
 
     @Test
-    fun `when JWT key gets created expect an exception`() {
-        val mockJwtKey = mockk<JwtKey>()
-        val ise = IllegalStateException("Invalid JWT secret key")
-        every { mockJwtKey.secretKey } throws ise
-
-        val exception = assertThrows<IllegalStateException> { mockJwtKey.secretKey }
-
-        assertEquals(exception.message, ise.message)
-    }
-
-    @Test
-    fun `should throw exception with invalid config2`() {
+    fun `when JWT key gets created expect illegal state exception`() {
         val mockConfig = mockk<JwtConfig>()
         val mockJwtKey = JwtKey(mockConfig)
         every { mockConfig.secretKey } throws IllegalStateException("Invalid JWT secret key")
@@ -46,7 +35,7 @@ internal class JwtKeyTest {
     }
 
     @Test
-    fun `should throw exception with invalid config`() {
+    fun `when JWT key gets created expect decode exception`() {
         val mockConfig = mockk<JwtConfig>()
         every { mockConfig.secretKey } returns "this is not base64"
 
