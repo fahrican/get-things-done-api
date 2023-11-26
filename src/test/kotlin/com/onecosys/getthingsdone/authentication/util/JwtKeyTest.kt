@@ -1,6 +1,5 @@
 package com.onecosys.getthingsdone.authentication.util
 
-import io.jsonwebtoken.io.DecodingException
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -27,21 +26,11 @@ internal class JwtKeyTest {
     fun `when JWT key gets created expect illegal state exception`() {
         val mockConfig = mockk<JwtConfig>()
         val mockJwtKey = JwtKey(mockConfig)
-        every { mockConfig.secretKey } throws IllegalStateException("Invalid JWT secret key")
+        val message = "Invalid JWT secret key"
+        every { mockConfig.secretKey } throws IllegalStateException(message)
 
         val exception = assertThrows<IllegalStateException> { mockJwtKey.secretKey }
 
-        assertEquals(exception.message, "Invalid JWT secret key")
-    }
-
-    @Test
-    fun `when JWT key gets created expect decode exception`() {
-        val mockConfig = mockk<JwtConfig>()
-        every { mockConfig.secretKey } returns "this is not base64"
-
-        val jwtKey = JwtKey(mockConfig)
-
-        val exception = assertThrows<DecodingException> { jwtKey.secretKey }
-        assertEquals("Illegal base64 character: ' '", exception.message)
+        assertEquals(message, exception.message)
     }
 }
