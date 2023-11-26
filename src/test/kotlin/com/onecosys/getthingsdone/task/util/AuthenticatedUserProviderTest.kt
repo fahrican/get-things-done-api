@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication
 internal class AuthenticatedUserProviderTest {
 
     @Test
-    fun `getUser should return the current authenticated user`() {
+    fun `when get user is triggered the expect current authenticated user`() {
         val mockSecurityContextProvider = mockk<SecurityContextProvider>()
         val mockAuthentication = mockk<Authentication>()
         val expectedUser = mockk<User>()
