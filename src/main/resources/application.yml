@@ -10,9 +10,7 @@ spring:
     username: ${DATASOURCE_USERNAME:sa}
     password: ${DATASOURCE_PASSWORD:''}
     url: ${DATASOURCE_URL:jdbc:h2:mem:testdb}
-    driver-class-name: ${DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
   jpa:
-    database: ${JPA_DATABASE:h2}
     hibernate:
       ddl-auto: update
     properties:
