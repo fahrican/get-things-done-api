@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/amigoscode
+    url: jdbc:postgresql://localhost:5432/task_db
     username: postgres
-    password: password
+    password: postgres
   jpa:
     hibernate:
       ddl-auto: update
