@@ -22,7 +22,7 @@ jobs:
           VALIDATE_SQLFLUFF: false
 
       - name: Super Linter Slack Notification
-        uses: 8398a7/action-slack@v3.15.1
+        uses: 8398a7/action-slack@v3.16.2
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
@@ -55,7 +55,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Sonar Cloud Slack Notification
-        uses: 8398a7/action-slack@v3.15.1
+        uses: 8398a7/action-slack@v3.16.2
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
@@ -79,7 +79,7 @@ jobs:
         run: ./gradlew build sonarqube --info
 
       - name: Slack Notification Ci/Cd started
-        uses: 8398a7/action-slack@v3.15.1
+        uses: 8398a7/action-slack@v3.16.2
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
