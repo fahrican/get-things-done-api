@@ -16,6 +16,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 val testcontainersVersion = "1.19.0"
 val jwtVersion = "0.12.2"
+val springFrameworkVersion = "3.1.5"
 
 repositories {
     mavenCentral()
@@ -35,8 +36,8 @@ jacoco {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.1.5")
-    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-web:$springFrameworkVersion")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springFrameworkVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
