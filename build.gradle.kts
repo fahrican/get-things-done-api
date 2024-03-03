@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.1.5"
-    id("io.spring.dependency-management") version "1.1.3"
+    id("org.springframework.boot") version "3.2.3"
+    id("io.spring.dependency-management") version "1.1.4"
     id("org.sonarqube") version "3.5.0.2730"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.spring") version "1.8.22"
-    kotlin("plugin.jpa") version "1.8.22"
+    kotlin("jvm") version "1.9.22"
+    kotlin("plugin.spring") version "1.9.22"
+    kotlin("plugin.jpa") version "1.9.22"
     jacoco
 }
 
@@ -16,7 +16,6 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 val testcontainersVersion = "1.19.0"
 val jwtVersion = "0.12.2"
-val springFrameworkVersion = "3.1.5"
 
 repositories {
     mavenCentral()
@@ -36,8 +35,8 @@ jacoco {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web:$springFrameworkVersion")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springFrameworkVersion")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
