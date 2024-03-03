@@ -1,0 +1,35 @@
+openapi: 3.0.1
+info:
+  title: Task Management API v1
+  version: 1.0.0
+  description: |-
+    This API exposes RESTful CRUD operations for tracking tasks.
+
+    Some useful links:
+    - [Web UI](https://justluxurylifestyle.com/app/open-tasks)
+    - [GitHUb source code](https://github.com/fahrican/get-things-done-api)
+
+servers:
+  - url: http://localhost:9000/api
+    description: base url for dev env
+  - url: https://task-manager.justluxurylifestyle.com/api
+    description: base url for prod env
+
+tags:
+  - name: task
+    description: Operations about task
+
+paths:
+  /v1/tasks:
+    get:
+      tags:
+        - post
+      summary: Get All Posts
+      operationId: getAllPosts
+      responses:
+        200:
+          description: Successful operation and get all posts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPostsResponse'
