@@ -12,7 +12,7 @@ plugins {
 
 group = "com.onecosys"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_19
 
 val testcontainersVersion = "1.19.0"
 val jwtVersion = "0.12.2"
@@ -69,7 +69,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
+        jvmTarget = "19"
     }
 }
 
