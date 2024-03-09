@@ -11,6 +11,11 @@ Before starting the project run the following command in the terminal:
 ./gradlew clean build openApiGenerate
 ```
 
+Or just run:
+```
+./gradlew openApiGenerate
+```
+
 ## Endpoints
 
 The endpoint for all tasks can be found at: "https://task-manager.justluxurylifestyle.com/api/v1/tasks"
