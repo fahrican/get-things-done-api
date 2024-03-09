@@ -19,77 +19,75 @@ import org.springframework.mail.javamail.JavaMailSender
 
 @ExtendWith(MockKExtension::class)
 internal class EmailServiceImplTest {
-    /*
-        @RelaxedMockK
-        private lateinit var mockMailSender: JavaMailSender
 
-        @RelaxedMockK
-        private lateinit var mockMimeMessage: MimeMessage
+    @RelaxedMockK
+    private lateinit var mockMailSender: JavaMailSender
 
-        private lateinit var objectUnderTest: EmailServiceImpl
+    @RelaxedMockK
+    private lateinit var mockMimeMessage: MimeMessage
 
-        private val dummyToken = "a12b34c56"
+    private lateinit var objectUnderTest: EmailServiceImpl
 
-        private val user = User(
-            email = "test@aon.at",
-            _password = "password",
-            firstName = "Hamad",
-            lastName = "Al Khoury",
-            _username = "abu-ali"
-        )
+    private val dummyToken = "a12b34c56"
+
+    private val user = User(
+        email = "test@aon.at",
+        _password = "password",
+        firstName = "Hamad",
+        lastName = "Al Khoury",
+        _username = "abu-ali"
+    )
 
 
-        @BeforeEach
-        fun setUp() {
-            MockKAnnotations.init(this)
-            objectUnderTest = EmailServiceImpl(mockMailSender)
-        }
+    @BeforeEach
+    fun setUp() {
+        MockKAnnotations.init(this)
+        objectUnderTest = EmailServiceImpl(mockMailSender)
+    }
 
-        @Test
-        fun `when send email verification is triggered then expect email successfully send`() {
-            every { mockMailSender.createMimeMessage() } returns mockMimeMessage
+    @Test
+    fun `when send email verification is triggered then expect email successfully send`() {
+        every { mockMailSender.createMimeMessage() } returns mockMimeMessage
 
-            objectUnderTest.sendVerificationEmail(user, dummyToken)
+        objectUnderTest.sendVerificationEmail(user, dummyToken)
 
-            verify(exactly = 1) { mockMailSender.createMimeMessage() }
-            verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
-        }
+        verify(exactly = 1) { mockMailSender.createMimeMessage() }
+        verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
+    }
 
-        @Test
-        fun `when send email verification is triggered then expect messaging exception`() {
-            every { mockMailSender.send(any<MimeMessage>()) } throws MessagingException("Simulated error")
+    @Test
+    fun `when send email verification is triggered then expect messaging exception`() {
+        every { mockMailSender.send(any<MimeMessage>()) } throws MessagingException("Simulated error")
 
-            val actualException = assertThrows<SignUpException> { objectUnderTest.sendVerificationEmail(user, dummyToken) }
+        val actualException = assertThrows<SignUpException> { objectUnderTest.sendVerificationEmail(user, dummyToken) }
 
-            assertEquals("failed to send email", actualException.message)
-            verify(exactly = 1) { mockMailSender.createMimeMessage() }
-            verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
-        }
+        assertEquals("failed to send email", actualException.message)
+        verify(exactly = 1) { mockMailSender.createMimeMessage() }
+        verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
+    }
 
-        @Test
-        fun `when send password reset email is triggered then expect password successfully reset`() {
-            val password = "test-password"
-            every { mockMailSender.createMimeMessage() } returns mockMimeMessage
+    @Test
+    fun `when send password reset email is triggered then expect password successfully reset`() {
+        val password = "test-password"
+        every { mockMailSender.createMimeMessage() } returns mockMimeMessage
 
+        objectUnderTest.sendPasswordResetEmail(user, password)
+
+        verify(exactly = 1) { mockMailSender.createMimeMessage() }
+        verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
+    }
+
+    @Test
+    fun `when send password reset email is triggered then expect messaging exception`() {
+        val password = "test-password"
+        every { mockMailSender.send(any<MimeMessage>()) } throws MessagingException("Simulated error")
+
+        val actualException = assertThrows<SignUpException> {
             objectUnderTest.sendPasswordResetEmail(user, password)
-
-            verify(exactly = 1) { mockMailSender.createMimeMessage() }
-            verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
         }
 
-        @Test
-        fun `when send password reset email is triggered then expect messaging exception`() {
-            val password = "test-password"
-            every { mockMailSender.send(any<MimeMessage>()) } throws MessagingException("Simulated error")
-
-            val actualException = assertThrows<SignUpException> {
-                objectUnderTest.sendPasswordResetEmail(user, password)
-            }
-
-            assertEquals("failed to send email", actualException.message)
-            verify(exactly = 1) { mockMailSender.createMimeMessage() }
-            verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
-        }
-
-     */
+        assertEquals("failed to send email", actualException.message)
+        verify(exactly = 1) { mockMailSender.createMimeMessage() }
+        verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
+    }
 }
