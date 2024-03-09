@@ -8,11 +8,9 @@ import com.onecosys.getthingsdone.models.EmailConfirmedResponse
 import com.onecosys.getthingsdone.models.RegisterRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("api/v1/auth")
 class AuthenticationController(
     private val service: AuthenticationService
 ) : AuthenticationResource {
