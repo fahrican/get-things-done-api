@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Run Super-Linter
-        uses: super-linter/super-linter@v5.2.1
+        uses: super-linter/super-linter@v5.7.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_MARKDOWN: false
@@ -37,18 +37,18 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3.12.0
+      - name: Set up JDK 19
+        uses: actions/setup-java@v4.0.0
         with:
-          java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available
+          distribution: 'corretto'
+          java-version: 19
 
       - name: Cache SonarCloud packages
-        uses: actions/cache@v3.3.2
+        uses: actions/cache@v4.0.0
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
@@ -64,7 +64,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Cache Gradle packages
-        uses: actions/cache@v3.3.2
+        uses: actions/cache@v4.0.0
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.1
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v2.1.1
@@ -153,8 +153,8 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.DROPLET_PORT }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "\
             export BUILD_VERSION=${{ github.sha }} && \
-            docker-compose pull && \
-            docker-compose up -d && \
+            docker compose pull && \
+            docker compose up -d && \
             docker system prune -af"
 
       - name: Notify deployment results
