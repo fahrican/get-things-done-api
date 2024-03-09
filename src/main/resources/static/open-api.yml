@@ -22,7 +22,7 @@ paths:
   /api/v1/auth/sign-up:
     post:
       tags:
-        - authentication
+        - authentication-resource
       summary: sign-up user
       operationId: signUp
       description: methods to sign-up user or inform about sign-up problems
@@ -48,7 +48,7 @@ paths:
   /api/v1/auth/sign-in:
     post:
       tags:
-        - authentication
+        - authentication-resource
       summary: sign-in user
       operationId: signIn
       description: methods to sign-in user or inform about sign-in problems
@@ -74,7 +74,7 @@ paths:
   /api/v1/auth/password-reset:
     post:
       tags:
-        - authentication
+        - authentication-resource
       summary: reset user password
       operationId: requestPasswordReset
       description: methods to reset user password or inform about reset problems
@@ -100,7 +100,7 @@ paths:
   /api/v1/auth/verify:
     get:
       tags:
-        - authentication
+        - authentication-resource
       summary: verify user
       operationId: verifyUser
       description: methods to verify user or inform about verification problem
@@ -127,7 +127,7 @@ paths:
   /api/v1/user/username:
     patch:
       tags:
-        - user
+        - user-resource
       summary: change username
       operationId: changeUsername
       description: method to change the current username
@@ -154,7 +154,7 @@ paths:
   /api/v1/user/password:
     patch:
       tags:
-        - user
+        - user-resource
       summary: change user password
       operationId: changePassword
       description: method to change user password
@@ -172,7 +172,7 @@ paths:
   /api/v1/user/info:
     patch:
       tags:
-        - user
+        - user-resource
       summary: update user information
       operationId: updateInfo
       description: method to update user information like name, surname ect.
@@ -192,7 +192,7 @@ paths:
   /api/v1/user/email:
     patch:
       tags:
-        - user
+        - user-resource
       summary: change user email
       operationId: changeEmail
       description: method to change user email
@@ -219,7 +219,7 @@ paths:
   /api/v1/user:
     get:
       tags:
-        - user
+        - user-resource
       summary: fetch user information
       operationId: fetchInfo
       description: method to get all entered information from the current logged in user
@@ -234,7 +234,7 @@ paths:
   /api/v1/tasks:
     get:
       tags:
-        - task
+        - task-resource
       summary: Get all tasks
       operationId: getTasks
       description: methods to get open and closed tasks
@@ -258,7 +258,7 @@ paths:
                   $ref: '#/components/schemas/TaskFetchResponse'
     post:
       tags:
-        - task
+        - task-resource
       summary: Create a new task
       operationId: createTask
       description: methods to create a new task or inform about invalid input
@@ -286,7 +286,7 @@ paths:
   /api/v1/tasks/{id}:
     get:
       tags:
-        - task
+        - task-resource
       summary: Get task by its ID
       operationId: getTaskById
       description: methods to get a task by its ID or inform about not found
@@ -312,7 +312,7 @@ paths:
                 $ref: '#/components/schemas/ApiError'
     delete:
       tags:
-        - task
+        - task-resource
       summary: Delete a task by its ID
       operationId: deleteTask
       description: methods to delete a task by its ID or inform task does not exist
@@ -334,7 +334,7 @@ paths:
                 $ref: '#/components/schemas/ApiError'
     patch:
       tags:
-        - task
+        - task-resource
       summary: Update an existing task
       operationId: updateTask
       description: methods to update an existing task or inform task does not exist
