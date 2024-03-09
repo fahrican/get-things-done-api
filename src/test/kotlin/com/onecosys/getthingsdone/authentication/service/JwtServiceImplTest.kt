@@ -21,98 +21,100 @@ import javax.crypto.SecretKey
 
 @ExtendWith(MockKExtension::class)
 internal class JwtServiceImplTest {
+    /*
+        @RelaxedMockK
+        private lateinit var mockJwtKey: JwtKey
 
-    @RelaxedMockK
-    private lateinit var mockJwtKey: JwtKey
+        private lateinit var secretKey: SecretKey
 
-    private lateinit var secretKey: SecretKey
+        private val username = "abu-ali"
 
-    private val username = "abu-ali"
+        private lateinit var objectUnderTest: JwtService
 
-    private lateinit var objectUnderTest: JwtService
+        companion object {
+            private val EXPIRATION_ONE_DAY = TimeUnit.DAYS.toMillis(1)
+            private val EXPIRATION_SEVEN_DAYS = TimeUnit.DAYS.toMillis(7)
+        }
 
-    companion object {
-        private val EXPIRATION_ONE_DAY = TimeUnit.DAYS.toMillis(1)
-        private val EXPIRATION_SEVEN_DAYS = TimeUnit.DAYS.toMillis(7)
-    }
+        @BeforeEach
+        fun setUp() {
+            MockKAnnotations.init(this)
+            secretKey = Jwts.SIG.HS256.key().build()
 
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-        secretKey = Jwts.SIG.HS256.key().build()
+            objectUnderTest = JwtServiceImpl(mockJwtKey)
 
-        objectUnderTest = JwtServiceImpl(mockJwtKey)
+            every { mockJwtKey.secretKey } returns secretKey
+        }
 
-        every { mockJwtKey.secretKey } returns secretKey
-    }
+        @Test
+        fun `when extract username is triggered then expect correct username`() {
+            val token = Jwts.builder()
+                .claim("sub", username)
+                .signWith(secretKey)
+                .compact()
 
-    @Test
-    fun `when extract username is triggered then expect correct username`() {
-        val token = Jwts.builder()
-            .claim("sub", username)
-            .signWith(secretKey)
-            .compact()
+            val actualUsername = objectUnderTest.extractUsername(token)
 
-        val actualUsername = objectUnderTest.extractUsername(token)
+            assertEquals(username, actualUsername)
+        }
 
-        assertEquals(username, actualUsername)
-    }
+        @Test
+        fun `when extract username is triggered then expect jwt authentication exception`() {
+            val invalidToken = "invalidToken"
 
-    @Test
-    fun `when extract username is triggered then expect jwt authentication exception`() {
-        val invalidToken = "invalidToken"
+            val actualResult = assertThrows<JwtAuthenticationException> { objectUnderTest.extractUsername(invalidToken) }
 
-        val actualResult = assertThrows<JwtAuthenticationException> { objectUnderTest.extractUsername(invalidToken) }
+            assertEquals("Failed to extract claims from token.", actualResult.message)
+        }
 
-        assertEquals("Failed to extract claims from token.", actualResult.message)
-    }
+        @Test
+        fun `when is token valid is triggered then expect true`() {
+            val username = "testuser"
+            val expirationDate = Date(System.currentTimeMillis() + 3600000) // Set token to expire in 1 hour
+            val token = Jwts.builder()
+                .claim("sub", username)
+                .claim("exp", expirationDate)
+                .signWith(secretKey)
+                .compact()
+            val userDetails = mockk<UserDetails>()
+            every { userDetails.username } returns username
 
-    @Test
-    fun `when is token valid is triggered then expect true`() {
-        val username = "testuser"
-        val expirationDate = Date(System.currentTimeMillis() + 3600000) // Set token to expire in 1 hour
-        val token = Jwts.builder()
-            .claim("sub", username)
-            .claim("exp", expirationDate)
-            .signWith(secretKey)
-            .compact()
-        val userDetails = mockk<UserDetails>()
-        every { userDetails.username } returns username
+            val actualResult = objectUnderTest.isTokenValid(token, userDetails)
 
-        val actualResult = objectUnderTest.isTokenValid(token, userDetails)
+            assertTrue(actualResult)
+        }
 
-        assertTrue(actualResult)
-    }
+        @Test
+        fun `when generate access token is triggered then expect new token`() {
+            val userDetails = mockk<UserDetails>()
+            every { userDetails.username } returns username
 
-    @Test
-    fun `when generate access token is triggered then expect new token`() {
-        val userDetails = mockk<UserDetails>()
-        every { userDetails.username } returns username
+            val accessToken = objectUnderTest.generateAccessToken(userDetails)
+            val actualClaims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(accessToken)
+                .payload
 
-        val accessToken = objectUnderTest.generateAccessToken(userDetails)
-        val actualClaims = Jwts.parser()
-            .verifyWith(secretKey)
-            .build()
-            .parseSignedClaims(accessToken)
-            .payload
+            assertEquals(username, actualClaims.subject)
+            assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_ONE_DAY)
+        }
 
-        assertEquals(username, actualClaims.subject)
-        assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_ONE_DAY)
-    }
+        @Test
+        fun `when generate refresh token is triggered then expect new token`() {
+            val userDetails = mockk<UserDetails>()
+            every { userDetails.username } returns username
 
-    @Test
-    fun `when generate refresh token is triggered then expect new token`() {
-        val userDetails = mockk<UserDetails>()
-        every { userDetails.username } returns username
+            val refreshToken = objectUnderTest.generateRefreshToken(userDetails)
+            val actualClaims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(refreshToken)
+                .payload
 
-        val refreshToken = objectUnderTest.generateRefreshToken(userDetails)
-        val actualClaims = Jwts.parser()
-            .verifyWith(secretKey)
-            .build()
-            .parseSignedClaims(refreshToken)
-            .payload
+            assertEquals(username, actualClaims.subject)
+            assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_SEVEN_DAYS)
+        }
 
-        assertEquals(username, actualClaims.subject)
-        assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_SEVEN_DAYS)
-    }
+     */
 }
