@@ -34,12 +34,13 @@ spring:
 
 springdoc:
   api-docs:
+    enabled: true
     path: '/api/v3/api-docs'
   swagger-ui:
     path: '/api/swagger-ui.html'
     configUrl: '/api/v3/api-docs/swagger-config'
     disable-swagger-default-url: true
-    url: '/api/v3/api-docs'
+    url: /open-api.yml
 
 jwt:
   secret-key: ${JWT_SECRET_KEY:jwtkey}
