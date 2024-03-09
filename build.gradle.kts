@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("org.openapi.generator") version "7.1.0"
     id("org.sonarqube") version "3.5.0.2730"
     id("org.springframework.boot") version "3.1.9"
     id("io.spring.dependency-management") version "1.1.4"
@@ -16,6 +17,7 @@ java.sourceCompatibility = JavaVersion.VERSION_19
 
 val testcontainersVersion = "1.19.0"
 val jwtVersion = "0.12.2"
+val openApiWebMvc = "2.3.0"
 
 repositories {
     mavenCentral()
@@ -50,7 +52,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
 
     // Swagger / Open API
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiWebMvc")
 
     // Unit Testing stuff
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
@@ -66,7 +68,24 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core-jvm:5.7.2")
 }
 
+openApiGenerate {
+    generatorName.set("kotlin-spring")
+    inputSpec.set("$rootDir/src/main/resources/static/open-api.yml")
+    outputDir.set("$buildDir/generated/")
+    configFile.set("$rootDir/src/main/resources/static/api-config.json")
+    apiPackage.set("com.onecosys.getthingsdone.apis")
+    modelPackage.set("com.onecosys.getthingsdone.models")
+    configOptions.set(mapOf("useSpringBoot3" to "true"))
+}
+
+configure<SourceSetContainer> {
+    named("main") {
+        java.srcDir("$buildDir/generated/src/main/kotlin")
+    }
+}
+
 tasks.withType<KotlinCompile> {
+    dependsOn("openApiGenerate")
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "19"
