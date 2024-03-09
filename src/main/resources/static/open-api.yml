@@ -19,54 +19,6 @@ servers:
 security:
   - BearerAuth: [ ]
 paths:
-  /api/v1/tasks:
-    get:
-      tags:
-        - task
-      summary: Get all tasks
-      operationId: getTasks
-      parameters:
-        - name: status
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - OPEN
-              - CLOSED
-      responses:
-        '200':
-          description: all open & closed tasks
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TaskFetchResponse'
-    post:
-      tags:
-        - task
-      summary: Create a new task
-      operationId: createTask
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TaskCreateRequest'
-        required: true
-      responses:
-        '201':
-          description: Task successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskFetchResponse'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
   /api/v1/auth/sign-up:
     post:
       tags:
@@ -142,6 +94,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+  /api/v1/auth/verify:
+    get:
+      tags:
+        - authentication
+      summary: verify user
+      operationId: verifyUser
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: email verification was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConfirmedResponse'
+        '403':
+          description: Verification step not complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
   /api/v1/user/username:
     patch:
       tags:
@@ -230,6 +208,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfoResponse'
+  /api/v1/user:
+    get:
+      tags:
+        - user
+      summary: fetch user information
+      operationId: fetchInfo
+      responses:
+        '200':
+          description: Updating information was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+
+  /api/v1/tasks:
+    get:
+      tags:
+        - task
+      summary: Get all tasks
+      operationId: getTasks
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - OPEN
+              - CLOSED
+      responses:
+        '200':
+          description: all open & closed tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskFetchResponse'
+    post:
+      tags:
+        - task
+      summary: Create a new task
+      operationId: createTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Task successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskFetchResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+
   /api/v1/tasks/{id}:
     get:
       tags:
@@ -308,44 +350,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
-  /api/v1/user:
-    get:
-      tags:
-        - user
-      summary: fetch user information
-      operationId: fetchInfo
-      responses:
-        '200':
-          description: Updating information was successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserInfoResponse'
-  /api/v1/auth/verify:
-    get:
-      tags:
-        - authentication
-      summary: verify user
-      operationId: verifyUser
-      parameters:
-        - name: token
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: email verification was successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailConfirmedResponse'
-        '403':
-          description: Verification step not complete
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
+
 components:
   schemas:
     TaskCreateRequest:
