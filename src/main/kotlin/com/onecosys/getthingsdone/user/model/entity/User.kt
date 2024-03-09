@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.user.model.entity
 
-import com.onecosys.getthingsdone.authentication.dto.VerificationToken
+import com.onecosys.getthingsdone.authentication.entity.VerificationToken
 import com.onecosys.getthingsdone.authorization.Role
 import com.onecosys.getthingsdone.task.model.entity.Task
 import jakarta.persistence.CascadeType

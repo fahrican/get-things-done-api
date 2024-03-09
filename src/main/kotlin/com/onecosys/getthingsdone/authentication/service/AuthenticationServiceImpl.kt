@@ -1,10 +1,6 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
-import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
-import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
-import com.onecosys.getthingsdone.authentication.dto.EmailConfirmedResponse
-import com.onecosys.getthingsdone.authentication.dto.VerificationToken
+import com.onecosys.getthingsdone.authentication.entity.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.error.AccountVerificationException
@@ -12,6 +8,10 @@ import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
 import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
+import com.onecosys.getthingsdone.models.AuthenticationRequest
+import com.onecosys.getthingsdone.models.AuthenticationResponse
+import com.onecosys.getthingsdone.models.EmailConfirmedResponse
+import com.onecosys.getthingsdone.models.RegisterRequest
 import com.onecosys.getthingsdone.user.model.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import jakarta.transaction.Transactional
