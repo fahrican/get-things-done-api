@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.util
 
-import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
+import com.onecosys.getthingsdone.models.RegisterRequest
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*

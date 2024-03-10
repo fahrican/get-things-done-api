@@ -1,12 +1,12 @@
 package com.onecosys.getthingsdone.authentication.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
-import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
-import com.onecosys.getthingsdone.authentication.dto.EmailConfirmedResponse
-import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
 import com.onecosys.getthingsdone.authentication.service.AuthenticationService
 import com.onecosys.getthingsdone.authentication.service.JwtService
+import com.onecosys.getthingsdone.models.AuthenticationRequest
+import com.onecosys.getthingsdone.models.AuthenticationResponse
+import com.onecosys.getthingsdone.models.EmailConfirmedResponse
+import com.onecosys.getthingsdone.models.RegisterRequest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
