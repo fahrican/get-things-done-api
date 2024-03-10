@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.entity
 
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.user.entity.User
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue

@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.task.util
 
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.user.entity.User
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertNotNull

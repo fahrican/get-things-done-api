@@ -5,7 +5,7 @@ import com.onecosys.getthingsdone.error.PasswordMismatchException
 import com.onecosys.getthingsdone.user.model.dto.UserInfoResponse
 import com.onecosys.getthingsdone.user.model.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.user.model.dto.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import com.onecosys.getthingsdone.user.util.UserInfoMapper
 import io.mockk.MockKAnnotations

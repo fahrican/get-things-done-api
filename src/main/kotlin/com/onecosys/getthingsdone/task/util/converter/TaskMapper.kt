@@ -3,7 +3,7 @@ package com.onecosys.getthingsdone.task.util.converter
 import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.task.model.entity.Task
 import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.user.entity.User
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime

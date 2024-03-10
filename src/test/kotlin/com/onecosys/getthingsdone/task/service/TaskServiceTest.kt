@@ -13,7 +13,7 @@ import com.onecosys.getthingsdone.task.model.entity.Task
 import com.onecosys.getthingsdone.task.repository.TaskRepository
 import com.onecosys.getthingsdone.task.util.TaskTimestamp
 import com.onecosys.getthingsdone.task.util.converter.TaskMapper
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.user.entity.User
 import io.mockk.MockKAnnotations
 import io.mockk.called
 import io.mockk.every

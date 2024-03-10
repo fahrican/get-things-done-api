@@ -10,7 +10,7 @@ import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.models.AuthenticationRequest
 import com.onecosys.getthingsdone.models.RegisterRequest
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import io.mockk.MockKAnnotations
 import io.mockk.called

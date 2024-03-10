@@ -202,16 +202,14 @@ paths:
             schema:
               type: object
               additionalProperties:
-                type: object
-                example:
-                  email: hello@gmail.com
-              description: email to sign in
+                type: string
+              description: Email to sign in
               example:
-                email: hello@gmail.com
+                email: "hello@gmail.com"
         required: true
       responses:
         '200':
-          description: Updating the E-MAIL was successful
+          description: Updating the EMAIL was successful
           content:
             application/json:
               schema:

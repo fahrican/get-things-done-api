@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.user.model.entity
+package com.onecosys.getthingsdone.user.entity
 
 import com.onecosys.getthingsdone.authentication.entity.VerificationToken
 import com.onecosys.getthingsdone.authorization.Role

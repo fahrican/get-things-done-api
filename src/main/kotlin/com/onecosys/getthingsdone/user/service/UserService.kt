@@ -1,19 +1,18 @@
 package com.onecosys.getthingsdone.user.service
 
-import com.onecosys.getthingsdone.user.model.dto.UserInfoResponse
-import com.onecosys.getthingsdone.user.model.dto.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.user.model.dto.UserPasswordUpdateRequest
-import java.security.Principal
+import com.onecosys.getthingsdone.models.UserInfoResponse
+import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
 
 interface UserService {
 
-    fun changeEmail(request: HashMap<String, String>, connectedUser: Principal): UserInfoResponse
+    fun changeEmail(request: Map<String, String>): UserInfoResponse
 
-    fun changeUsername(request: HashMap<String, String>, connectedUser: Principal): UserInfoResponse
+    fun changeUsername(request: Map<String, String>): UserInfoResponse
 
-    fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal)
+    fun changePassword(request: UserPasswordUpdateRequest)
 
-    fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse
+    fun changeInfo(request: UserInfoUpdateRequest): UserInfoResponse
 
-    fun fetchInfo(connectedUser: Principal): UserInfoResponse
+    fun fetchInfo(): UserInfoResponse
 }

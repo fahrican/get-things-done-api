@@ -12,7 +12,7 @@ import com.onecosys.getthingsdone.models.AuthenticationRequest
 import com.onecosys.getthingsdone.models.AuthenticationResponse
 import com.onecosys.getthingsdone.models.EmailConfirmedResponse
 import com.onecosys.getthingsdone.models.RegisterRequest
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
