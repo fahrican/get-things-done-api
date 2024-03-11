@@ -137,7 +137,7 @@ paths:
             schema:
               type: object
               additionalProperties:
-                type: object
+                type: string
                 example:
                   username: abu-hasan
               description: username to sign in

@@ -2,14 +2,12 @@ package com.onecosys.getthingsdone.user.service
 
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
-import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.models.UserInfoResponse
 import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import com.onecosys.getthingsdone.user.util.UserInfoMapper
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -18,11 +16,12 @@ import org.springframework.stereotype.Service
 class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val repository: UserRepository,
-    private val mapper: UserInfoMapper
+    private val mapper: UserInfoMapper,
+    private val authenticationService: AuthenticationService
 ) : UserService {
 
     override fun changeEmail(request: Map<String, String>): UserInfoResponse {
-        val currentUser = getCurrentUser()
+        val currentUser = authenticationService.getCurrentAuthenticatedUser()
 
         val newEmail = request["email"] ?: throw BadRequestException("Email is missing in request")
         validateEmail(newEmail)
@@ -34,7 +33,7 @@ class UserServiceImpl(
     }
 
     override fun changeUsername(request: Map<String, String>): UserInfoResponse {
-        val user = getCurrentUser()
+        val user = authenticationService.getCurrentAuthenticatedUser()
 
         if (request["username"] != null || request["username"] != "") {
             validateUsername(request["username"].toString())
@@ -46,7 +45,7 @@ class UserServiceImpl(
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest) {
-        val user = getCurrentUser()
+        val user = authenticationService.getCurrentAuthenticatedUser()
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw PasswordMismatchException("The current password is wrong!")
@@ -61,7 +60,7 @@ class UserServiceImpl(
     }
 
     override fun changeInfo(request: UserInfoUpdateRequest): UserInfoResponse {
-        val user = getCurrentUser()
+        val user = authenticationService.getCurrentAuthenticatedUser()
 
         user.apply {
             firstName = request.firstName ?: firstName
@@ -73,17 +72,19 @@ class UserServiceImpl(
     }
 
     override fun fetchInfo(): UserInfoResponse {
-        val user = getCurrentUser()
+        val user = authenticationService.getCurrentAuthenticatedUser()
         return mapper.toDto(user)
     }
 
-    fun validateEmail(email: String) {
+    fun validateEmail(email: String, currentUserId: Long? = null) {
         if (!email.contains("@")) {
             throw BadRequestException("Email must contain '@' symbol")
         }
 
-        if (repository.findByEmail(email) != null) {
-            throw BadRequestException("Email is already used by another user")
+        repository.findByEmail(email)?.let {
+            if (currentUserId == null || it.id != currentUserId) {
+                throw BadRequestException("Email is already used by another user")
+            }
         }
     }
 
@@ -95,15 +96,5 @@ class UserServiceImpl(
         if (repository.findBy_username(username) != null) {
             throw BadRequestException("Username is already used by another user")
         }
-    }
-
-    private fun getCurrentUser(): User {
-        val authentication = SecurityContextHolder.getContext().authentication
-            ?: throw UserNotFoundException("Authenticated user not found")
-
-        val principal = authentication.principal as? User
-            ?: throw IllegalStateException("Authentication principal is not a User object")
-
-        return principal
     }
 }
