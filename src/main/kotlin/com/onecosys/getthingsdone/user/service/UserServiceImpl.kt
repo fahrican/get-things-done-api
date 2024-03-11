@@ -35,13 +35,12 @@ class UserServiceImpl(
     override fun changeUsername(request: Map<String, String>): UserInfoResponse {
         val user = authenticationService.getCurrentAuthenticatedUser()
 
-        if (request["username"] != null || request["username"] != "") {
-            validateUsername(request["username"].toString())
-            user._username = request["username"].toString()
+        val newUsername = request["username"] ?: throw BadRequestException("Username can't be blank/null !")
+        validateUsername(newUsername)
+        user._username = newUsername
 
-            val updatedUser = repository.save(user)
-            return mapper.toDto(updatedUser)
-        } else throw BadRequestException("Username can't be blank/null !")
+        val updatedUser = repository.save(user)
+        return mapper.toDto(updatedUser)
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest) {
