@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 
 @Service
-class AuthenticationServiceImpl(private val repository: UserRepository) : AuthenticationService {
+class AuthUserServiceImpl(private val repository: UserRepository) : AuthUserService {
     override fun getCurrentAuthenticatedUser(): User {
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw UserNotFoundException("Authenticated user not found")

@@ -17,11 +17,11 @@ class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val repository: UserRepository,
     private val mapper: UserInfoMapper,
-    private val authenticationService: AuthenticationService
+    private val authUserService: AuthUserService
 ) : UserService {
 
     override fun changeEmail(request: Map<String, String>): UserInfoResponse {
-        val currentUser = authenticationService.getCurrentAuthenticatedUser()
+        val currentUser = authUserService.getCurrentAuthenticatedUser()
 
         val newEmail = request["email"] ?: throw BadRequestException("Email is missing in request")
         validateEmail(newEmail)
@@ -33,7 +33,7 @@ class UserServiceImpl(
     }
 
     override fun changeUsername(request: Map<String, String>): UserInfoResponse {
-        val user = authenticationService.getCurrentAuthenticatedUser()
+        val user = authUserService.getCurrentAuthenticatedUser()
 
         val newUsername = request["username"] ?: throw BadRequestException("Username can't be blank/null !")
         validateUsername(newUsername)
@@ -44,7 +44,7 @@ class UserServiceImpl(
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest) {
-        val user = authenticationService.getCurrentAuthenticatedUser()
+        val user = authUserService.getCurrentAuthenticatedUser()
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw PasswordMismatchException("The current password is wrong!")
@@ -59,7 +59,7 @@ class UserServiceImpl(
     }
 
     override fun changeInfo(request: UserInfoUpdateRequest): UserInfoResponse {
-        val user = authenticationService.getCurrentAuthenticatedUser()
+        val user = authUserService.getCurrentAuthenticatedUser()
 
         user.apply {
             firstName = request.firstName ?: firstName
@@ -71,7 +71,7 @@ class UserServiceImpl(
     }
 
     override fun fetchInfo(): UserInfoResponse {
-        val user = authenticationService.getCurrentAuthenticatedUser()
+        val user = authUserService.getCurrentAuthenticatedUser()
         return mapper.toDto(user)
     }
 

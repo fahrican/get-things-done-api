@@ -33,7 +33,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @ExtendWith(MockKExtension::class)
-internal class AuthenticationServiceImplTest {
+internal class AuthUserServiceImplTest {
     @RelaxedMockK
     private lateinit var mockPasswordEncoder: PasswordEncoder
 
