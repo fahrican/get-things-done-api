@@ -6,8 +6,9 @@ import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.service.UserService
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RestController
 
-
+@RestController
 class UserController(private val service: UserService) : UserResource {
 
     override fun changeEmail(
