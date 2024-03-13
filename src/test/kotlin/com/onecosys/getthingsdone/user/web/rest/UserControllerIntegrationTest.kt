@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.user.rest
+package com.onecosys.getthingsdone.user.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.models.UserInfoResponse
