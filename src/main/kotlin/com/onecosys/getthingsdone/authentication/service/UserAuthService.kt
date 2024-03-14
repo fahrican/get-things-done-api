@@ -5,9 +5,9 @@ import org.springframework.security.core.Authentication
 
 interface UserAuthService {
 
-    fun getCurrentUserAuthentication(): Authentication?
+    fun retrieveAuthentication(): Authentication?
 
-    fun getCurrentAuthenticatedUser(): User
+    fun findCurrentSessionUser(): User
 
-    fun getUser(): User
+    fun getAuthenticatedUser(): User
 }

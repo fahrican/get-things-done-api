@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service
 @Service
 class UserAuthServiceImpl(private val repository: UserRepository) : UserAuthService {
 
-    override fun getCurrentUserAuthentication(): Authentication? {
+    override fun retrieveAuthentication(): Authentication? {
         return SecurityContextHolder.getContext().authentication
     }
 
-    override fun getCurrentAuthenticatedUser(): User {
-        val authentication = getCurrentUserAuthentication()
+    override fun findCurrentSessionUser(): User {
+        val authentication = retrieveAuthentication()
             ?: throw UserNotFoundException("Authenticated user not found")
 
         val username = when (val principal = authentication.principal) {
@@ -28,8 +28,8 @@ class UserAuthServiceImpl(private val repository: UserRepository) : UserAuthServ
             ?: throw UserNotFoundException("User not found with username: $username")
     }
 
-    override fun getUser(): User {
-        val authentication = getCurrentUserAuthentication()
+    override fun getAuthenticatedUser(): User {
+        val authentication = retrieveAuthentication()
         return authentication?.principal as User
     }
 }
