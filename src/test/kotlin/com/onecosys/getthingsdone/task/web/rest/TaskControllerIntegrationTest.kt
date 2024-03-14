@@ -5,13 +5,13 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.authentication.service.JwtService
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
-import com.onecosys.getthingsdone.task.model.Priority
-import com.onecosys.getthingsdone.task.model.TaskStatus
-import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
-import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
-import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.task.model.entity.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.model.entity.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.models.Priority
+import com.onecosys.getthingsdone.models.TaskCreateRequest
+import com.onecosys.getthingsdone.models.TaskFetchResponse
+import com.onecosys.getthingsdone.models.TaskStatus
+import com.onecosys.getthingsdone.models.TaskUpdateRequest
+import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.service.TaskService
 import com.onecosys.getthingsdone.task.util.AuthenticatedUserProvider
 import org.junit.jupiter.api.BeforeEach
@@ -29,6 +29,8 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 
@@ -50,16 +52,16 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
 
     private val taskId: Long = 33
     private val dummyDto = TaskFetchResponse(
-        33,
-        "test1",
+        id = 33,
+        description = "test1",
         isReminderSet = false,
         isTaskOpen = false,
-        createdOn = LocalDateTime.now(),
+        createdOn = OffsetDateTime.now(),
         startedOn = null,
         finishedOn = null,
         timeInterval = "1d",
         timeTaken = 1,
-        priority = Priority.LOW
+        priority = Priority.lOW
     )
 
     @BeforeEach
@@ -71,21 +73,21 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given all tasks when fetch happen then check for size`() {
         // GIVEN
         val taskFetchResponse2 = TaskFetchResponse(
-            44,
-            "test2",
+            id = 44,
+            description = "test2",
             isReminderSet = false,
             isTaskOpen = false,
-            createdOn = LocalDateTime.now(),
+            createdOn = OffsetDateTime.now(),
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW
+            priority = Priority.lOW
         )
         val taskDtos = setOf(dummyDto, taskFetchResponse2)
 
         // WHEN
-        `when`(mockService.getTasks(mockUserProvider.getUser(),null)).thenReturn(taskDtos)
+        `when`(mockService.getTasks(mockUserProvider.getUser(), null)).thenReturn(taskDtos)
 
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks"))
 
@@ -98,19 +100,19 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     @Test
     fun `given open tasks when fetch happen then check for size and isTaskOpen is true`() {
         val taskFetchResponse2 = TaskFetchResponse(
-            44,
-            "test2",
+            id = 44,
+            description = "test2",
             isReminderSet = false,
             isTaskOpen = true,
-            createdOn = LocalDateTime.now(),
+            createdOn = OffsetDateTime.now(),
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW
+            priority = Priority.lOW
         )
 
-        `when`(mockService.getTasks(mockUserProvider.getUser(), TaskStatus.OPEN)).thenReturn(setOf(taskFetchResponse2))
+        `when`(mockService.getTasks(mockUserProvider.getUser(), TaskStatus.oPEN)).thenReturn(setOf(taskFetchResponse2))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
@@ -123,7 +125,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
-        `when`(mockService.getTasks(mockUserProvider.getUser(), TaskStatus.CLOSED)).thenReturn(setOf(dummyDto))
+        `when`(mockService.getTasks(mockUserProvider.getUser(), TaskStatus.cLOSED)).thenReturn(setOf(dummyDto))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=closed"))
 
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(dummyDto.isTaskOpen))
@@ -150,7 +152,12 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given task id when id does not exist then check for task not found exception`() {
         val id: Long = 121
 
-        `when`(mockService.deleteTask(id, mockUserProvider.getUser())).thenThrow(TaskNotFoundException("Task with ID: $id does not exist!"))
+        `when`(
+            mockService.deleteTask(
+                id,
+                mockUserProvider.getUser()
+            )
+        ).thenThrow(TaskNotFoundException("Task with ID: $id does not exist!"))
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/$id"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -166,7 +173,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW
+            priority = Priority.lOW
         )
         val badRequestException =
             BadRequestException("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
@@ -191,19 +198,19 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW
+            priority = Priority.lOW
         )
         val taskFetchResponse = TaskFetchResponse(
-            0,
-            "test for db",
+            id = 0,
+            description = "test for db",
             isReminderSet = false,
             isTaskOpen = false,
-            createdOn = LocalDateTime.now(),
+            createdOn = OffsetDateTime.now(),
             startedOn = null,
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW
+            priority = Priority.lOW
         )
 
         `when`(mockService.createTask(request, mockUserProvider.getUser())).thenReturn(taskFetchResponse)
@@ -222,7 +229,8 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given update task request when task gets updated then check for correct property`() {
         val str = "1986-04-08 12:30"
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-        val dateTime = LocalDateTime.parse(str, formatter)
+        val localDateTime = LocalDateTime.parse(str, formatter)
+        val dateTime = localDateTime.atOffset(ZoneOffset.UTC)
 
         val request = TaskUpdateRequest(
             "update task",
@@ -232,11 +240,11 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.LOW
+            priority = Priority.lOW
         )
         val dummyDto = TaskFetchResponse(
-            44,
-            request.description ?: "",
+            id = 44,
+            description = request.description ?: "",
             isReminderSet = true,
             isTaskOpen = true,
             createdOn = dateTime,
@@ -244,7 +252,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = dateTime,
             timeInterval = "3d",
             timeTaken = 3,
-            priority = Priority.MEDIUM
+            priority = Priority.mEDIUM
         )
 
         `when`(mockService.updateTask(dummyDto.id!!, request, mockUserProvider.getUser())).thenReturn(dummyDto)

@@ -241,10 +241,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
-            enum:
-              - OPEN
-              - CLOSED
+            $ref: '#/components/schemas/TaskStatus'
       responses:
         '200':
           description: all open & closed tasks
@@ -365,6 +362,19 @@ paths:
 
 components:
   schemas:
+    TaskStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
+      description: The status of the task
+    Priority:
+      type: string
+      enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+      description: The priority of the task
     TaskCreateRequest:
       required:
         - description
@@ -394,11 +404,7 @@ components:
           type: integer
           format: int32
         priority:
-          type: string
-          enum:
-            - LOW
-            - MEDIUM
-            - HIGH
+          $ref: '#/components/schemas/Priority'
     ApiError:
       required:
         - code
@@ -520,11 +526,7 @@ components:
           type: integer
           format: int32
         priority:
-          type: string
-          enum:
-            - LOW
-            - MEDIUM
-            - HIGH
+          $ref: '#/components/schemas/Priority'
     RegisterRequest:
       required:
         - email
@@ -631,11 +633,7 @@ components:
           type: integer
           format: int32
         priority:
-          type: string
-          enum:
-            - LOW
-            - MEDIUM
-            - HIGH
+          $ref: '#/components/schemas/Priority'
   securitySchemes:
     BearerAuth:
       type: http

@@ -2,13 +2,13 @@ package com.onecosys.getthingsdone.task.service
 
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
-import com.onecosys.getthingsdone.task.model.TaskStatus
-import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
-import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
-import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.task.model.entity.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.model.entity.MIN_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.model.entity.Task
+import com.onecosys.getthingsdone.models.TaskCreateRequest
+import com.onecosys.getthingsdone.models.TaskFetchResponse
+import com.onecosys.getthingsdone.models.TaskStatus
+import com.onecosys.getthingsdone.models.TaskUpdateRequest
+import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.entity.Task
 import com.onecosys.getthingsdone.task.repository.TaskRepository
 import com.onecosys.getthingsdone.task.util.TaskTimestamp
 import com.onecosys.getthingsdone.task.util.converter.TaskMapper
@@ -25,8 +25,8 @@ class TaskServiceImpl(
 
     override fun getTasks(user: User, status: TaskStatus?): Set<TaskFetchResponse> {
         return when (status) {
-            TaskStatus.OPEN -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true).map(mapper::toDto).toSet()
-            TaskStatus.CLOSED -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false).map(mapper::toDto)
+            TaskStatus.oPEN -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true).map(mapper::toDto).toSet()
+            TaskStatus.cLOSED -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false).map(mapper::toDto)
                 .toSet()
 
             else -> repository.findAllByUserOrderByIdAsc(user)
