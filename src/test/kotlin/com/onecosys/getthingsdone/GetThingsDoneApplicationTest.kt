@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.authentication.service.UserAuthService
+import com.onecosys.getthingsdone.authentication.service.UserSessionService
 import com.onecosys.getthingsdone.models.Priority
 import com.onecosys.getthingsdone.models.TaskCreateRequest
 import com.onecosys.getthingsdone.models.TaskFetchResponse
@@ -45,7 +45,7 @@ class GetThingsDoneApplicationTest {
     private lateinit var mockService: TaskService
 
     @MockBean
-    private lateinit var mockUserProvider: UserAuthService
+    private lateinit var mockUserProvider: UserSessionService
 
     private val mapper = jacksonObjectMapper()
 

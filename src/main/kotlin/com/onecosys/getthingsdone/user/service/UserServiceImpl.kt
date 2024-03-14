@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.user.service
 
-import com.onecosys.getthingsdone.authentication.service.UserAuthService
+import com.onecosys.getthingsdone.authentication.service.UserSessionService
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
 import com.onecosys.getthingsdone.models.UserInfoResponse
@@ -18,11 +18,11 @@ class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val repository: UserRepository,
     private val mapper: UserInfoMapper,
-    private val userAuthService: UserAuthService
+    private val userSessionService: UserSessionService
 ) : UserService {
 
     override fun changeEmail(request: Map<String, String>): UserInfoResponse {
-        val currentUser = userAuthService.findCurrentSessionUser()
+        val currentUser = userSessionService.findCurrentSessionUser()
 
         val newEmail = request["email"] ?: throw BadRequestException("Email is missing in request")
         validateEmail(newEmail)
@@ -34,7 +34,7 @@ class UserServiceImpl(
     }
 
     override fun changeUsername(request: Map<String, String>): UserInfoResponse {
-        val user = userAuthService.findCurrentSessionUser()
+        val user = userSessionService.findCurrentSessionUser()
 
         val newUsername = request["username"] ?: throw BadRequestException("Username can't be blank/null !")
         validateUsername(newUsername)
@@ -45,7 +45,7 @@ class UserServiceImpl(
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest) {
-        val user = userAuthService.findCurrentSessionUser()
+        val user = userSessionService.findCurrentSessionUser()
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw PasswordMismatchException("The current password is wrong!")
@@ -60,7 +60,7 @@ class UserServiceImpl(
     }
 
     override fun changeInfo(request: UserInfoUpdateRequest): UserInfoResponse {
-        val user = userAuthService.findCurrentSessionUser()
+        val user = userSessionService.findCurrentSessionUser()
 
         user.apply {
             firstName = request.firstName ?: firstName
@@ -72,7 +72,7 @@ class UserServiceImpl(
     }
 
     override fun fetchInfo(): UserInfoResponse {
-        val user = userAuthService.findCurrentSessionUser()
+        val user = userSessionService.findCurrentSessionUser()
         return mapper.toDto(user)
     }
 

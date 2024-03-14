@@ -20,7 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 
 @ExtendWith(MockKExtension::class)
-class UserAuthServiceImplTest {
+class UserSessionServiceImplTest {
 
     @RelaxedMockK
     private lateinit var mockSecurityContext: SecurityContext
@@ -31,7 +31,7 @@ class UserAuthServiceImplTest {
     @RelaxedMockK
     private lateinit var mockUserRepository: UserRepository
 
-    private lateinit var objectUnderTest: UserAuthService
+    private lateinit var objectUnderTest: UserSessionService
 
     val user = User();
 
@@ -40,7 +40,7 @@ class UserAuthServiceImplTest {
         MockKAnnotations.init(this)
         every { mockSecurityContext.authentication } returns mockAuthentication
         SecurityContextHolder.setContext(mockSecurityContext)
-        objectUnderTest = UserAuthServiceImpl(mockUserRepository)
+        objectUnderTest = UserSessionServiceImpl(mockUserRepository)
     }
 
     @AfterEach
