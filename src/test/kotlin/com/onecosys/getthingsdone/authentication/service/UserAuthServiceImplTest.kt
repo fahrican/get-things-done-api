@@ -50,7 +50,7 @@ class UserAuthServiceImplTest {
 
     @Test
     fun `when get current user authentication is called then return mock authentication`() {
-        val result = objectUnderTest.getCurrentUserAuthentication()
+        val result = objectUnderTest.retrieveAuthentication()
 
         assertEquals(mockAuthentication, result, "The authentication returned was not as expected")
     }
@@ -59,7 +59,7 @@ class UserAuthServiceImplTest {
     fun `when get user is called then return expected user`() {
         every { mockAuthentication.principal } returns user
 
-        val result = objectUnderTest.getUser()
+        val result = objectUnderTest.getAuthenticatedUser()
 
         assertEquals(user, result)
     }
@@ -70,7 +70,7 @@ class UserAuthServiceImplTest {
         every { mockSecurityContext.authentication } returns null
         every { mockAuthentication.principal } returns mockException
 
-        val actualResult = assertThrows<UserNotFoundException> { objectUnderTest.getCurrentAuthenticatedUser() }
+        val actualResult = assertThrows<UserNotFoundException> { objectUnderTest.findCurrentSessionUser() }
 
         assertEquals("Authenticated user not found", actualResult.message)
     }
@@ -83,7 +83,7 @@ class UserAuthServiceImplTest {
         every { mockAuthentication.principal } returns userDetails
         every { mockUserRepository.findBy_username(username) } returns null
 
-        val actualResult = assertThrows<UserNotFoundException> { objectUnderTest.getCurrentAuthenticatedUser() }
+        val actualResult = assertThrows<UserNotFoundException> { objectUnderTest.findCurrentSessionUser() }
 
         assertEquals("User not found with username: $username", actualResult.message)
     }
@@ -92,7 +92,7 @@ class UserAuthServiceImplTest {
     fun `when get current authenticated user is called then expect user return`() {
         every { mockUserRepository.findBy_username(any()) } returns user
 
-        val actualResult = objectUnderTest.getCurrentAuthenticatedUser()
+        val actualResult = objectUnderTest.findCurrentSessionUser()
 
         assertEquals(user, actualResult)
     }

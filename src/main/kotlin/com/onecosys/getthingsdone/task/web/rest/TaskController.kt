@@ -21,12 +21,12 @@ class TaskController(
 ) : TaskResource {
 
     override fun createTask(taskCreateRequest: TaskCreateRequest): ResponseEntity<TaskFetchResponse> {
-        val task = service.createTask(taskCreateRequest, userProvider.getUser())
+        val task = service.createTask(taskCreateRequest, userProvider.getAuthenticatedUser())
         return ResponseEntity(task, HttpStatus.CREATED)
     }
 
     override fun deleteTask(id: Long): ResponseEntity<Unit> {
-        val headerValue: String = service.deleteTask(id, userProvider.getUser())
+        val headerValue: String = service.deleteTask(id, userProvider.getAuthenticatedUser())
         val httpHeader = HttpHeaders()
         httpHeader.add("delete-task-header", headerValue)
         return ResponseEntity(null, httpHeader, HttpStatus.NO_CONTENT)
@@ -34,15 +34,15 @@ class TaskController(
     }
 
 
-    override fun getTaskById(id: Long) = ResponseEntity.ok(service.getTaskById(id, userProvider.getUser()))
+    override fun getTaskById(id: Long) = ResponseEntity.ok(service.getTaskById(id, userProvider.getAuthenticatedUser()))
 
     override fun getTasks(status: TaskStatus?): ResponseEntity<List<TaskFetchResponse>> {
-        val tasks = service.getTasks(userProvider.getUser(), status).toList()
+        val tasks = service.getTasks(userProvider.getAuthenticatedUser(), status).toList()
         return ResponseEntity(tasks, HttpStatus.OK)
     }
 
     override fun updateTask(
         id: Long,
         taskUpdateRequest: TaskUpdateRequest
-    ) = ResponseEntity.ok(service.updateTask(id, taskUpdateRequest, userProvider.getUser()))
+    ) = ResponseEntity.ok(service.updateTask(id, taskUpdateRequest, userProvider.getAuthenticatedUser()))
 }

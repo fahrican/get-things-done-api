@@ -97,7 +97,7 @@ class GetThingsDoneApplicationTest {
             priority = Priority.hIGH
         )
 
-        Mockito.`when`(mockService.createTask(request, mockUserProvider.getUser())).thenReturn(taskFetchResponse)
+        Mockito.`when`(mockService.createTask(request, mockUserProvider.getAuthenticatedUser())).thenReturn(taskFetchResponse)
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)

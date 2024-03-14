@@ -22,7 +22,7 @@ class UserServiceImpl(
 ) : UserService {
 
     override fun changeEmail(request: Map<String, String>): UserInfoResponse {
-        val currentUser = userAuthService.getCurrentAuthenticatedUser()
+        val currentUser = userAuthService.findCurrentSessionUser()
 
         val newEmail = request["email"] ?: throw BadRequestException("Email is missing in request")
         validateEmail(newEmail)
@@ -34,7 +34,7 @@ class UserServiceImpl(
     }
 
     override fun changeUsername(request: Map<String, String>): UserInfoResponse {
-        val user = userAuthService.getCurrentAuthenticatedUser()
+        val user = userAuthService.findCurrentSessionUser()
 
         val newUsername = request["username"] ?: throw BadRequestException("Username can't be blank/null !")
         validateUsername(newUsername)
@@ -45,7 +45,7 @@ class UserServiceImpl(
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest) {
-        val user = userAuthService.getCurrentAuthenticatedUser()
+        val user = userAuthService.findCurrentSessionUser()
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw PasswordMismatchException("The current password is wrong!")
@@ -60,7 +60,7 @@ class UserServiceImpl(
     }
 
     override fun changeInfo(request: UserInfoUpdateRequest): UserInfoResponse {
-        val user = userAuthService.getCurrentAuthenticatedUser()
+        val user = userAuthService.findCurrentSessionUser()
 
         user.apply {
             firstName = request.firstName ?: firstName
@@ -72,7 +72,7 @@ class UserServiceImpl(
     }
 
     override fun fetchInfo(): UserInfoResponse {
-        val user = userAuthService.getCurrentAuthenticatedUser()
+        val user = userAuthService.findCurrentSessionUser()
         return mapper.toDto(user)
     }
 

@@ -60,7 +60,7 @@ internal class UserServiceImplTest {
     fun `when change user email gets triggered then expect success response`() {
         val email = HashMap<String, String>()
         email["email"] = "info@test.com"
-        every { mockAuthUserService.getCurrentAuthenticatedUser() } returns user
+        every { mockAuthUserService.findCurrentSessionUser() } returns user
         every { mockRepository.findByEmail(email["email"]!!) } returns null
         every { mockRepository.save(any()) } returns user
         every { mockMapper.toDto(user) } returns mockUserInfoResponse
@@ -89,7 +89,7 @@ internal class UserServiceImplTest {
         val email = "test@email.com"
         request["email"] = email
         val exceptionMessage = "Email is already used by another user"
-        every { mockAuthUserService.getCurrentAuthenticatedUser() } returns user
+        every { mockAuthUserService.findCurrentSessionUser()  } returns user
         every { mockRepository.findByEmail(email) } returns user
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(request) }
@@ -160,7 +160,7 @@ internal class UserServiceImplTest {
     @Test
     fun `when change user password gets triggered then expect password change success response`() {
         val request = UserPasswordUpdateRequest("test", "hello", "hello")
-        every { mockAuthUserService.getCurrentAuthenticatedUser() } returns user
+        every { mockAuthUserService.findCurrentSessionUser()  } returns user
         every { mockPasswordEncoder.matches(any(), any()) } returns true
         every { mockRepository.save(any()) } returns user
 
@@ -172,7 +172,7 @@ internal class UserServiceImplTest {
 
     @Test
     fun `when change user info gets triggered then expect success response`() {
-        every { mockAuthUserService.getCurrentAuthenticatedUser() } returns user
+        every { mockAuthUserService.findCurrentSessionUser()  } returns user
         every { mockRepository.save(any()) } returns user
         every { mockMapper.toDto(user) } returns mockUserInfoResponse
 
@@ -184,7 +184,7 @@ internal class UserServiceImplTest {
 
     @Test
     fun `when fetch user info gets triggered then expect success response`() {
-        every { mockAuthUserService.getCurrentAuthenticatedUser() } returns user
+        every { mockAuthUserService.findCurrentSessionUser()  } returns user
         every { mockMapper.toDto(user) } returns mockUserInfoResponse
 
         val response = objectUnderTest.fetchInfo()
