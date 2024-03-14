@@ -3,6 +3,7 @@ package com.onecosys.getthingsdone.task.web.rest
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.authentication.service.JwtService
+import com.onecosys.getthingsdone.authentication.service.UserAuthService
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
 import com.onecosys.getthingsdone.models.Priority
@@ -13,7 +14,6 @@ import com.onecosys.getthingsdone.models.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.service.TaskService
-import com.onecosys.getthingsdone.task.util.AuthenticatedUserProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -46,7 +46,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     private lateinit var mockJwtService: JwtService
 
     @MockBean
-    private lateinit var mockUserProvider: AuthenticatedUserProvider
+    private lateinit var mockUserProvider: UserAuthService
 
     private val mapper = jacksonObjectMapper()
 

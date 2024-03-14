@@ -1,10 +1,10 @@
 package com.onecosys.getthingsdone.user.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.onecosys.getthingsdone.authentication.service.UserAuthService
 import com.onecosys.getthingsdone.models.UserInfoResponse
 import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.task.util.AuthenticatedUserProvider
 import com.onecosys.getthingsdone.user.service.UserService
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
@@ -43,7 +43,7 @@ internal class UserControllerIntegrationTest {
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var mockUserProvider: AuthenticatedUserProvider
+    private lateinit var mockUserProvider: UserAuthService
 
     @MockBean
     private lateinit var mockService: UserService

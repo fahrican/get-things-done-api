@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.user.service
 
+import com.onecosys.getthingsdone.authentication.service.UserAuthService
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
 import com.onecosys.getthingsdone.models.UserInfoResponse
@@ -38,7 +39,7 @@ internal class UserServiceImplTest {
     private lateinit var mockMapper: UserInfoMapper
 
     @RelaxedMockK
-    private lateinit var mockAuthUserService: AuthUserService
+    private lateinit var mockAuthUserService: UserAuthService
 
     private val userInfoUpdateRequest = UserInfoUpdateRequest(firstName = "Ahmad", lastName = "Hasan")
     private val mockUserInfoResponse: UserInfoResponse = mockk()
