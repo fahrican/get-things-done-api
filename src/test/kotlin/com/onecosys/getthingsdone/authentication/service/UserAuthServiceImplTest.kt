@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 
 @ExtendWith(MockKExtension::class)
 class UserAuthServiceImplTest {
@@ -75,8 +76,20 @@ class UserAuthServiceImplTest {
     }
 
     @Test
+    fun `when get current authenticated user is called then expect user not found with username`() {
+        val username = "salah-ad-din"
+        val userDetails = mockk<UserDetails>()
+        every { userDetails.username } returns username
+        every { mockAuthentication.principal } returns userDetails
+        every { mockUserRepository.findBy_username(username) } returns null
+
+        val actualResult = assertThrows<UserNotFoundException> { objectUnderTest.getCurrentAuthenticatedUser() }
+
+        assertEquals("User not found with username: $username", actualResult.message)
+    }
+
+    @Test
     fun `when get current authenticated user is called then expect user return`() {
-       val username = "Salah Ad-Din"
         every { mockUserRepository.findBy_username(any()) } returns user
 
         val actualResult = objectUnderTest.getCurrentAuthenticatedUser()
