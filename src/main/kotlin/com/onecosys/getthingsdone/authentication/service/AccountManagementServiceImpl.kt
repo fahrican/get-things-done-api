@@ -27,7 +27,7 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Service
-class AuthenticationServiceImpl(
+class AccountManagementServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
@@ -35,7 +35,7 @@ class AuthenticationServiceImpl(
     private val userRepository: UserRepository,
     private val verificationTokenRepository: VerificationTokenRepository,
     private val emailService: EmailService
-) : AuthenticationService {
+) : AccountManagementService {
 
     companion object  {
         private const val TEN_CHARACTERS = 10

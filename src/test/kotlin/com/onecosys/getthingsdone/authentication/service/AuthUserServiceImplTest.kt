@@ -79,13 +79,13 @@ internal class AuthUserServiceImplTest {
 
     private val authenticationRequest = AuthenticationRequest("abu-ali", "password")
 
-    private lateinit var objectUnderTest: AuthenticationService
+    private lateinit var objectUnderTest: AccountManagementService
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
 
-        objectUnderTest = AuthenticationServiceImpl(
+        objectUnderTest = AccountManagementServiceImpl(
             mockPasswordEncoder,
             mockJwtService,
             mockAuthenticationManager,

@@ -6,7 +6,7 @@ import com.onecosys.getthingsdone.models.EmailConfirmedResponse
 import com.onecosys.getthingsdone.models.RegisterRequest
 
 
-interface AuthenticationService {
+interface AccountManagementService {
 
     fun signUp(request: RegisterRequest): EmailConfirmedResponse
 

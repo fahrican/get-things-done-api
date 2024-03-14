@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.authentication.web.rest
 
 import com.onecosys.getthingsdone.apis.AuthenticationResource
-import com.onecosys.getthingsdone.authentication.service.AuthenticationService
+import com.onecosys.getthingsdone.authentication.service.AccountManagementService
 import com.onecosys.getthingsdone.models.AuthenticationRequest
 import com.onecosys.getthingsdone.models.AuthenticationResponse
 import com.onecosys.getthingsdone.models.EmailConfirmedResponse
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class AuthenticationController(
-    private val service: AuthenticationService
+    private val service: AccountManagementService
 ) : AuthenticationResource {
 
     override fun requestPasswordReset(
