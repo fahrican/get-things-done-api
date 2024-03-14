@@ -49,14 +49,14 @@ class UserAuthServiceImplTest {
     }
 
     @Test
-    fun `when get current user authentication is called then return mock authentication`() {
+    fun `when retrieve authentication is called then return mock authentication`() {
         val result = objectUnderTest.retrieveAuthentication()
 
         assertEquals(mockAuthentication, result, "The authentication returned was not as expected")
     }
 
     @Test
-    fun `when get user is called then return expected user`() {
+    fun `when get authenticated user is called then return expected user`() {
         every { mockAuthentication.principal } returns user
 
         val result = objectUnderTest.getAuthenticatedUser()
@@ -65,7 +65,7 @@ class UserAuthServiceImplTest {
     }
 
     @Test
-    fun `when get current authenticated user is called then expect user not found`() {
+    fun `when find current session user is called then expect user not found exception`() {
         val mockException = mockk<UserNotFoundException>()
         every { mockSecurityContext.authentication } returns null
         every { mockAuthentication.principal } returns mockException
@@ -76,7 +76,7 @@ class UserAuthServiceImplTest {
     }
 
     @Test
-    fun `when get current authenticated user is called then expect user not found with username`() {
+    fun `when find current session user is called then expect user not found with username exception`() {
         val username = "salah-ad-din"
         val userDetails = mockk<UserDetails>()
         every { userDetails.username } returns username
@@ -89,7 +89,7 @@ class UserAuthServiceImplTest {
     }
 
     @Test
-    fun `when get current authenticated user is called then expect user return`() {
+    fun `when find current session user is called then return expected user`() {
         every { mockUserRepository.findBy_username(any()) } returns user
 
         val actualResult = objectUnderTest.findCurrentSessionUser()
