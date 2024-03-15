@@ -371,9 +371,9 @@ components:
     Priority:
       type: string
       enum:
-        - LOW
-        - MEDIUM
-        - HIGH
+        - low
+        - medium
+        - high
       description: The priority of the task
     TaskCreateRequest:
       required:

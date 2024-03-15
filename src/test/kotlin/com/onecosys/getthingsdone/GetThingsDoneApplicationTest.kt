@@ -83,7 +83,7 @@ class GetThingsDoneApplicationTest {
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.lOW
+            priority = Priority.low
         )
 
         val request = TaskCreateRequest(
@@ -94,7 +94,7 @@ class GetThingsDoneApplicationTest {
             finishedOn = null,
             timeInterval = "1 hour ",
             timeTaken = 2,
-            priority = Priority.hIGH
+            priority = Priority.high
         )
 
         Mockito.`when`(mockService.createTask(request, mockUserProvider.getAuthenticatedUser())).thenReturn(taskFetchResponse)

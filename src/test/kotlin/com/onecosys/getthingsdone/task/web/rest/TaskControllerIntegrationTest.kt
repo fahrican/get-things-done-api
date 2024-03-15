@@ -61,7 +61,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         finishedOn = null,
         timeInterval = "1d",
         timeTaken = 1,
-        priority = Priority.lOW
+        priority = Priority.low
     )
 
     @BeforeEach
@@ -82,7 +82,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.lOW
+            priority = Priority.low
         )
         val taskDtos = setOf(dummyDto, taskFetchResponse2)
 
@@ -109,7 +109,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.lOW
+            priority = Priority.low
         )
 
         `when`(mockService.getTasks(mockUserProvider.getAuthenticatedUser(), TaskStatus.oPEN)).thenReturn(setOf(taskFetchResponse2))
@@ -173,7 +173,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.lOW
+            priority = Priority.low
         )
         val badRequestException =
             BadRequestException("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
@@ -198,7 +198,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.lOW
+            priority = Priority.low
         )
         val taskFetchResponse = TaskFetchResponse(
             id = 0,
@@ -210,7 +210,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.lOW
+            priority = Priority.low
         )
 
         `when`(mockService.createTask(request, mockUserProvider.getAuthenticatedUser())).thenReturn(taskFetchResponse)
@@ -240,7 +240,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = null,
             timeInterval = "2d",
             timeTaken = 2,
-            priority = Priority.lOW
+            priority = Priority.low
         )
         val dummyDto = TaskFetchResponse(
             id = 44,
@@ -252,7 +252,7 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             finishedOn = dateTime,
             timeInterval = "3d",
             timeTaken = 3,
-            priority = Priority.mEDIUM
+            priority = Priority.medium
         )
 
         `when`(mockService.updateTask(dummyDto.id!!, request, mockUserProvider.getAuthenticatedUser())).thenReturn(dummyDto)

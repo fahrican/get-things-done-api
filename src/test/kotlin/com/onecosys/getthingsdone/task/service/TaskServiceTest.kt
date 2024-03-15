@@ -66,7 +66,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.lOW
+            priority = Priority.low
         )
         clock = Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         task = Task()
@@ -159,7 +159,7 @@ internal class TaskServiceTest {
             finishedOn = OffsetDateTime.now(),
             timeInterval = "35d",
             timeTaken = 1,
-            priority = Priority.mEDIUM
+            priority = Priority.medium
         )
 
         val exception =
@@ -178,7 +178,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.lOW
+            priority = Priority.low
         )
 
         val exception =
@@ -290,7 +290,7 @@ internal class TaskServiceTest {
                 ),
                 timeInterval = "0d",
                 timeTaken = 0,
-                priority = Priority.lOW
+                priority = Priority.low
             )
 
         every { mockRepository.existsById(any()) } returns true

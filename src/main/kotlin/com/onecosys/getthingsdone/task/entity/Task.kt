@@ -58,7 +58,7 @@ class Task {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    var priority: Priority = Priority.lOW
+    var priority: Priority = Priority.low
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
