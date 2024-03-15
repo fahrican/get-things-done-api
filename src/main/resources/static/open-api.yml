@@ -365,8 +365,8 @@ components:
     TaskStatus:
       type: string
       enum:
-        - OPEN
-        - CLOSED
+        - open
+        - closed
       description: The status of the task
     Priority:
       type: string

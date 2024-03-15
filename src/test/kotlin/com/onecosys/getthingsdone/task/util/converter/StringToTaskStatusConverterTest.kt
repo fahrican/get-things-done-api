@@ -12,13 +12,13 @@ class StringToTaskStatusConverterTest {
 
     @Test
     fun `convert should return the corresponding TaskStatus value for a valid string`() {
-        assertThat(converter.convert("OPEN")).isEqualTo(TaskStatus.oPEN)
-        assertThat(converter.convert("CLOSED")).isEqualTo(TaskStatus.cLOSED)
+        assertThat(converter.convert("open")).isEqualTo(TaskStatus.open)
+        assertThat(converter.convert("closed")).isEqualTo(TaskStatus.closed)
     }
 
     @Test
     fun `convert should throw ConversionFailedException for an invalid string`() {
-        val expectedMessage = "Query parameter 'status' can only be 'OPEN' or 'CLOSED'"
+        val expectedMessage = "Query parameter 'status' can only be 'open' or 'closed'"
 
         val exception = assertThrows(BadRequestException::class.java) { converter.convert("invalid") }
 

@@ -25,8 +25,8 @@ class TaskServiceImpl(
 
     override fun getTasks(user: User, status: TaskStatus?): Set<TaskFetchResponse> {
         return when (status) {
-            TaskStatus.oPEN -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true).map(mapper::toDto).toSet()
-            TaskStatus.cLOSED -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false).map(mapper::toDto)
+            TaskStatus.open -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true).map(mapper::toDto).toSet()
+            TaskStatus.closed -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false).map(mapper::toDto)
                 .toSet()
 
             else -> repository.findAllByUserOrderByIdAsc(user)

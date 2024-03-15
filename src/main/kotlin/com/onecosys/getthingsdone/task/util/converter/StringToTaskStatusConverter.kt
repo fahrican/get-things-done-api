@@ -8,10 +8,10 @@ import java.util.Locale
 class StringToTaskStatusConverter : Converter<String, TaskStatus> {
 
     override fun convert(source: String): TaskStatus {
-        return when (source.uppercase(Locale.getDefault())) {
-            "OPEN" -> TaskStatus.valueOf("oPEN")
-            "CLOSED" -> TaskStatus.valueOf("cLOSED")
-            else -> throw BadRequestException("Query parameter 'status' can only be 'OPEN' or 'CLOSED'")
+        return when (source.lowercase(Locale.getDefault())) {
+            "open" -> TaskStatus.open
+            "closed" -> TaskStatus.closed
+            else -> throw BadRequestException("Query parameter 'status' can only be 'open' or 'closed'")
         }
     }
 }
