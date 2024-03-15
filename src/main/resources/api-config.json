@@ -1,0 +1,8 @@
+{
+  "sourceFolder": "src/main/kotlin",
+  "apiSuffix": "",
+  "useTags": true,
+  "exceptionHandler": false,
+  "swaggerAnnotations": false,
+  "interfaceOnly": true
+}

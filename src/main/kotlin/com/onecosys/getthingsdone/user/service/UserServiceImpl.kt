@@ -1,52 +1,51 @@
 package com.onecosys.getthingsdone.user.service
 
+import com.onecosys.getthingsdone.authentication.service.UserSessionService
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
-import com.onecosys.getthingsdone.user.model.dto.UserInfoResponse
-import com.onecosys.getthingsdone.user.model.dto.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.user.model.dto.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.models.UserInfoResponse
+import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
+import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import com.onecosys.getthingsdone.user.util.UserInfoMapper
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.security.Principal
 
 
 @Service
 class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val repository: UserRepository,
-    private val mapper: UserInfoMapper
+    private val mapper: UserInfoMapper,
+    private val userSessionService: UserSessionService
 ) : UserService {
 
-    override fun changeEmail(request: HashMap<String, String>, connectedUser: Principal): UserInfoResponse {
-        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+    override fun changeEmail(request: Map<String, String>): UserInfoResponse {
+        val currentUser = userSessionService.findCurrentSessionUser()
 
-        if (request["email"] != null || request["email"] != "") {
-            validateEmail(request["email"].toString())
-            user.email = request["email"].toString()
+        val newEmail = request["email"] ?: throw BadRequestException("Email is missing in request")
+        validateEmail(newEmail)
 
-            val updatedUser = repository.save(user)
-            return mapper.toDto(updatedUser)
-        } else throw BadRequestException("Email can't be blank/null !")
+        currentUser.email = newEmail
+        val updatedUser = repository.save(currentUser)
+
+        return mapper.toDto(updatedUser)
     }
 
-    override fun changeUsername(request: HashMap<String, String>, connectedUser: Principal): UserInfoResponse {
-        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+    override fun changeUsername(request: Map<String, String>): UserInfoResponse {
+        val user = userSessionService.findCurrentSessionUser()
 
-        if (request["username"] != null || request["username"] != "") {
-            validateUsername(request["username"].toString())
-            user._username = request["username"].toString()
+        val newUsername = request["username"] ?: throw BadRequestException("Username can't be blank/null !")
+        validateUsername(newUsername)
+        user._username = newUsername
 
-            val updatedUser = repository.save(user)
-            return mapper.toDto(updatedUser)
-        } else throw BadRequestException("Username can't be blank/null !")
+        val updatedUser = repository.save(user)
+        return mapper.toDto(updatedUser)
     }
 
-    override fun changePassword(request: UserPasswordUpdateRequest, connectedUser: Principal) {
-        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+    override fun changePassword(request: UserPasswordUpdateRequest) {
+        val user = userSessionService.findCurrentSessionUser()
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw PasswordMismatchException("The current password is wrong!")
@@ -60,8 +59,8 @@ class UserServiceImpl(
         repository.save(user)
     }
 
-    override fun changeInfo(request: UserInfoUpdateRequest, connectedUser: Principal): UserInfoResponse {
-        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+    override fun changeInfo(request: UserInfoUpdateRequest): UserInfoResponse {
+        val user = userSessionService.findCurrentSessionUser()
 
         user.apply {
             firstName = request.firstName ?: firstName
@@ -72,18 +71,20 @@ class UserServiceImpl(
         return mapper.toDto(savedUser)
     }
 
-    override fun fetchInfo(connectedUser: Principal): UserInfoResponse {
-        val user = (connectedUser as UsernamePasswordAuthenticationToken).principal as User
+    override fun fetchInfo(): UserInfoResponse {
+        val user = userSessionService.findCurrentSessionUser()
         return mapper.toDto(user)
     }
 
-    fun validateEmail(email: String) {
+    fun validateEmail(email: String, currentUserId: Long? = null) {
         if (!email.contains("@")) {
             throw BadRequestException("Email must contain '@' symbol")
         }
 
-        if (repository.findByEmail(email) != null) {
-            throw BadRequestException("Email is already used by another user")
+        repository.findByEmail(email)?.let {
+            if (currentUserId == null || it.id != currentUserId) {
+                throw BadRequestException("Email is already used by another user")
+            }
         }
     }
 

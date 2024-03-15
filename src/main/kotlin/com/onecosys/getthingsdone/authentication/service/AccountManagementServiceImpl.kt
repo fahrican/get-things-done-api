@@ -1,10 +1,6 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
-import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
-import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
-import com.onecosys.getthingsdone.authentication.dto.EmailConfirmedResponse
-import com.onecosys.getthingsdone.authentication.dto.VerificationToken
+import com.onecosys.getthingsdone.authentication.entity.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
 import com.onecosys.getthingsdone.error.AccountVerificationException
@@ -12,7 +8,11 @@ import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
 import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.models.AuthenticationRequest
+import com.onecosys.getthingsdone.models.AuthenticationResponse
+import com.onecosys.getthingsdone.models.EmailConfirmedResponse
+import com.onecosys.getthingsdone.models.RegisterRequest
+import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
@@ -27,7 +27,7 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Service
-class AuthenticationServiceImpl(
+class AccountManagementServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
@@ -35,7 +35,7 @@ class AuthenticationServiceImpl(
     private val userRepository: UserRepository,
     private val verificationTokenRepository: VerificationTokenRepository,
     private val emailService: EmailService
-) : AuthenticationService {
+) : AccountManagementService {
 
     companion object  {
         private const val TEN_CHARACTERS = 10

@@ -2,18 +2,18 @@ package com.onecosys.getthingsdone.task.service
 
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
-import com.onecosys.getthingsdone.task.model.TaskStatus
-import com.onecosys.getthingsdone.task.model.Priority
-import com.onecosys.getthingsdone.task.model.dto.TaskCreateRequest
-import com.onecosys.getthingsdone.task.model.dto.TaskFetchResponse
-import com.onecosys.getthingsdone.task.model.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.task.model.entity.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.model.entity.MIN_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.model.entity.Task
+import com.onecosys.getthingsdone.models.Priority
+import com.onecosys.getthingsdone.models.TaskCreateRequest
+import com.onecosys.getthingsdone.models.TaskFetchResponse
+import com.onecosys.getthingsdone.models.TaskStatus
+import com.onecosys.getthingsdone.models.TaskUpdateRequest
+import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.entity.Task
 import com.onecosys.getthingsdone.task.repository.TaskRepository
 import com.onecosys.getthingsdone.task.util.TaskTimestamp
 import com.onecosys.getthingsdone.task.util.converter.TaskMapper
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.user.entity.User
 import io.mockk.MockKAnnotations
 import io.mockk.called
 import io.mockk.every
@@ -29,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.time.ZoneId
 
 @ExtendWith(MockKExtension::class)
@@ -65,7 +66,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.LOW
+            priority = Priority.low
         )
         clock = Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         task = Task()
@@ -94,7 +95,7 @@ internal class TaskServiceTest {
                 true
             )
         } returns expectedTasks.toMutableSet()
-        val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(mockUser, TaskStatus.OPEN)
+        val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(mockUser, TaskStatus.open)
 
         assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
         verify(exactly = 1) { mockRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(any(), true) }
@@ -111,7 +112,7 @@ internal class TaskServiceTest {
                 false
             )
         } returns expectedTasks.toMutableSet()
-        val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(mockUser, TaskStatus.CLOSED)
+        val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(mockUser, TaskStatus.closed)
 
         assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
     }
@@ -154,11 +155,11 @@ internal class TaskServiceTest {
             description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to,  took a galley of type and scrambled",
             isReminderSet = true,
             isTaskOpen = true,
-            startedOn = LocalDateTime.now(),
-            finishedOn = LocalDateTime.now(),
+            startedOn = OffsetDateTime.now(),
+            finishedOn = OffsetDateTime.now(),
             timeInterval = "35d",
             timeTaken = 1,
-            priority = Priority.MEDIUM
+            priority = Priority.medium
         )
 
         val exception =
@@ -177,7 +178,7 @@ internal class TaskServiceTest {
             finishedOn = null,
             timeInterval = "0d",
             timeTaken = 0,
-            priority = Priority.LOW
+            priority = Priority.low
         )
 
         val exception =
@@ -192,7 +193,7 @@ internal class TaskServiceTest {
         task.description = createRequest.description
         task.isReminderSet = createRequest.isReminderSet
         task.isTaskOpen = createRequest.isTaskOpen
-        task.createdOn = LocalDateTime.now(
+        task.createdOn = OffsetDateTime.now(
             Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
         )
         task.startedOn = createRequest.startedOn
@@ -281,15 +282,15 @@ internal class TaskServiceTest {
                 task.description,
                 isReminderSet = false,
                 isTaskOpen = false,
-                startedOn = LocalDateTime.now(
+                startedOn = OffsetDateTime.now(
                     Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
                 ),
-                finishedOn = LocalDateTime.now(
+                finishedOn = OffsetDateTime.now(
                     Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
                 ),
                 timeInterval = "0d",
                 timeTaken = 0,
-                priority = Priority.LOW
+                priority = Priority.low
             )
 
         every { mockRepository.existsById(any()) } returns true

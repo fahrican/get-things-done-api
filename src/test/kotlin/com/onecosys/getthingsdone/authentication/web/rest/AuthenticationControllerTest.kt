@@ -1,12 +1,12 @@
 package com.onecosys.getthingsdone.authentication.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.authentication.dto.AuthenticationRequest
-import com.onecosys.getthingsdone.authentication.dto.AuthenticationResponse
-import com.onecosys.getthingsdone.authentication.dto.EmailConfirmedResponse
-import com.onecosys.getthingsdone.authentication.dto.RegisterRequest
-import com.onecosys.getthingsdone.authentication.service.AuthenticationService
+import com.onecosys.getthingsdone.authentication.service.AccountManagementService
 import com.onecosys.getthingsdone.authentication.service.JwtService
+import com.onecosys.getthingsdone.models.AuthenticationRequest
+import com.onecosys.getthingsdone.models.AuthenticationResponse
+import com.onecosys.getthingsdone.models.EmailConfirmedResponse
+import com.onecosys.getthingsdone.models.RegisterRequest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
@@ -30,7 +30,7 @@ internal class AuthenticationControllerTest {
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var mockAuthenticationService: AuthenticationService
+    private lateinit var mockAccountManagementService: AccountManagementService
 
     @MockBean
     private lateinit var mockJwtService: JwtService
@@ -50,7 +50,7 @@ internal class AuthenticationControllerTest {
             password = "123456",
             passwordConfirmation = "123456"
         )
-        `when`(mockAuthenticationService.signUp(registerRequest)).thenReturn(dummyEmailConfirmResponse)
+        `when`(mockAccountManagementService.signUp(registerRequest)).thenReturn(dummyEmailConfirmResponse)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/auth/sign-up")
@@ -66,7 +66,7 @@ internal class AuthenticationControllerTest {
     @Test
     fun `when user verify is triggered then expect success response`() {
         val token = "a1b2c3"
-        `when`(mockAuthenticationService.verifyUser(token)).thenReturn(dummyEmailConfirmResponse)
+        `when`(mockAccountManagementService.verifyUser(token)).thenReturn(dummyEmailConfirmResponse)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.get("/api/v1/auth/verify")
@@ -83,7 +83,7 @@ internal class AuthenticationControllerTest {
     fun `when user sign in triggered then expect success response`() {
         val request = AuthenticationRequest(username = "mahmoud-darwoush", password = "123456")
         val response = AuthenticationResponse(accessToken = "acess123", refreshToken = "refresh123")
-        `when`(mockAuthenticationService.signIn(request)).thenReturn(response)
+        `when`(mockAccountManagementService.signIn(request)).thenReturn(response)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/auth/sign-in")
@@ -99,7 +99,7 @@ internal class AuthenticationControllerTest {
     @Test
     fun `when user password reset triggered then expect success response`() {
         val email = "mahmoud@aol.com"
-        `when`(mockAuthenticationService.requestPasswordReset(email)).thenReturn(dummyEmailConfirmResponse)
+        `when`(mockAccountManagementService.requestPasswordReset(email)).thenReturn(dummyEmailConfirmResponse)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/auth/password-reset")

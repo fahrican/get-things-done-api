@@ -1,7 +1,7 @@
-package com.onecosys.getthingsdone.task.model.entity
+package com.onecosys.getthingsdone.task.entity
 
-import com.onecosys.getthingsdone.task.model.Priority
-import com.onecosys.getthingsdone.user.model.entity.User
+import com.onecosys.getthingsdone.models.Priority
+import com.onecosys.getthingsdone.user.entity.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -17,7 +17,7 @@ import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Entity
 @Table(
@@ -42,13 +42,13 @@ class Task {
     var isTaskOpen: Boolean = true
 
     @Column(name = "created_on", nullable = false)
-    var createdOn: LocalDateTime = LocalDateTime.now()
+    var createdOn: OffsetDateTime = OffsetDateTime.now()
 
     @Column(name = "started_on", nullable = true)
-    var startedOn: LocalDateTime? = null
+    var startedOn: OffsetDateTime? = null
 
     @Column(name = "finished_on", nullable = true)
-    var finishedOn: LocalDateTime? = null
+    var finishedOn: OffsetDateTime? = null
 
     @Column(name = "time_interval", nullable = false)
     var timeInterval: String = ""
@@ -58,7 +58,7 @@ class Task {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    var priority: Priority = Priority.LOW
+    var priority: Priority = Priority.low
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

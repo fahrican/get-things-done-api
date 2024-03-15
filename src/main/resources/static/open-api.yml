@@ -12,67 +12,20 @@ info:
     url: https://github.com/fahrican/get-things-done-api/blob/master/LICENSE.txt
   version: 1.0.0
 servers:
-  - url: http://localhost:9091
-    description: DEV ENV
+  - url: http://localhost:9000
+    description: DEVELOPMENT
   - url: https://task-manager.justluxurylifestyle.com/
-    description: PROD ENV
+    description: PRODUCTION
 security:
   - BearerAuth: [ ]
 paths:
-  /api/v1/tasks:
-    get:
-      tags:
-        - task
-      summary: Get all tasks
-      operationId: getTasks
-      parameters:
-        - name: status
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - OPEN
-              - CLOSED
-      responses:
-        '200':
-          description: all open & closed tasks
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TaskFetchResponse'
-    post:
-      tags:
-        - task
-      summary: Create a new task
-      operationId: createTask
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TaskCreateRequest'
-        required: true
-      responses:
-        '201':
-          description: Task successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskFetchResponse'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
   /api/v1/auth/sign-up:
     post:
       tags:
-        - authentication
+        - authentication-resource
       summary: sign-up user
       operationId: signUp
+      description: methods to sign-up user or inform about sign-up problems
       requestBody:
         content:
           application/json:
@@ -95,9 +48,10 @@ paths:
   /api/v1/auth/sign-in:
     post:
       tags:
-        - authentication
+        - authentication-resource
       summary: sign-in user
       operationId: signIn
+      description: methods to sign-in user or inform about sign-in problems
       requestBody:
         content:
           application/json:
@@ -120,9 +74,10 @@ paths:
   /api/v1/auth/password-reset:
     post:
       tags:
-        - authentication
+        - authentication-resource
       summary: reset user password
       operationId: requestPasswordReset
+      description: methods to reset user password or inform about reset problems
       parameters:
         - name: email
           in: query
@@ -142,19 +97,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+  /api/v1/auth/verify:
+    get:
+      tags:
+        - authentication-resource
+      summary: verify user
+      operationId: verifyUser
+      description: methods to verify user or inform about verification problem
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: email verification was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConfirmedResponse'
+        '403':
+          description: Verification step not complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
   /api/v1/user/username:
     patch:
       tags:
-        - user
+        - user-resource
       summary: change username
       operationId: changeUsername
+      description: method to change the current username
       requestBody:
         content:
           application/json:
             schema:
               type: object
               additionalProperties:
-                type: object
+                type: string
                 example:
                   username: abu-hasan
               description: username to sign in
@@ -171,9 +154,10 @@ paths:
   /api/v1/user/password:
     patch:
       tags:
-        - user
+        - user-resource
       summary: change user password
       operationId: changePassword
+      description: method to change user password
       requestBody:
         content:
           application/json:
@@ -188,9 +172,10 @@ paths:
   /api/v1/user/info:
     patch:
       tags:
-        - user
+        - user-resource
       summary: update user information
       operationId: updateInfo
+      description: method to update user information like name, surname ect.
       requestBody:
         content:
           application/json:
@@ -207,35 +192,99 @@ paths:
   /api/v1/user/email:
     patch:
       tags:
-        - user
+        - user-resource
       summary: change user email
       operationId: changeEmail
+      description: method to change user email
       requestBody:
         content:
           application/json:
             schema:
               type: object
               additionalProperties:
-                type: object
-                example:
-                  email: test@mail.com
-              description: email to sign in
+                type: string
+              description: Email to sign in
               example:
-                email: test@mail.com
+                email: "hello@gmail.com"
         required: true
       responses:
         '200':
-          description: Updating the E-MAIL was successful
+          description: Updating the EMAIL was successful
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfoResponse'
+  /api/v1/user:
+    get:
+      tags:
+        - user-resource
+      summary: fetch user information
+      operationId: fetchInfo
+      description: method to get all entered information from the current logged in user
+      responses:
+        '200':
+          description: Updating information was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+
+  /api/v1/tasks:
+    get:
+      tags:
+        - task-resource
+      summary: Get all tasks
+      operationId: getTasks
+      description: methods to get open and closed tasks
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/TaskStatus'
+      responses:
+        '200':
+          description: all open & closed tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskFetchResponse'
+    post:
+      tags:
+        - task-resource
+      summary: Create a new task
+      operationId: createTask
+      description: methods to create a new task or inform about invalid input
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Task successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskFetchResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+
   /api/v1/tasks/{id}:
     get:
       tags:
-        - task
+        - task-resource
       summary: Get task by its ID
       operationId: getTaskById
+      description: methods to get a task by its ID or inform about not found
       parameters:
         - name: id
           in: path
@@ -258,9 +307,10 @@ paths:
                 $ref: '#/components/schemas/ApiError'
     delete:
       tags:
-        - task
+        - task-resource
       summary: Delete a task by its ID
       operationId: deleteTask
+      description: methods to delete a task by its ID or inform task does not exist
       parameters:
         - name: id
           in: path
@@ -279,9 +329,10 @@ paths:
                 $ref: '#/components/schemas/ApiError'
     patch:
       tags:
-        - task
+        - task-resource
       summary: Update an existing task
       operationId: updateTask
+      description: methods to update an existing task or inform task does not exist
       parameters:
         - name: id
           in: path
@@ -308,46 +359,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
-  /api/v1/user:
-    get:
-      tags:
-        - user
-      summary: fetch user information
-      operationId: fetchInfo
-      responses:
-        '200':
-          description: Updating information was successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserInfoResponse'
-  /api/v1/auth/verify:
-    get:
-      tags:
-        - authentication
-      summary: verify user
-      operationId: verifyUser
-      parameters:
-        - name: token
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: email verification was successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailConfirmedResponse'
-        '403':
-          description: Verification step not complete
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
+
 components:
   schemas:
+    TaskStatus:
+      type: string
+      enum:
+        - open
+        - closed
+      description: The status of the task
+    Priority:
+      type: string
+      enum:
+        - low
+        - medium
+        - high
+      description: The priority of the task
     TaskCreateRequest:
       required:
         - description
@@ -377,11 +404,7 @@ components:
           type: integer
           format: int32
         priority:
-          type: string
-          enum:
-            - LOW
-            - MEDIUM
-            - HIGH
+          $ref: '#/components/schemas/Priority'
     ApiError:
       required:
         - code
@@ -503,11 +526,7 @@ components:
           type: integer
           format: int32
         priority:
-          type: string
-          enum:
-            - LOW
-            - MEDIUM
-            - HIGH
+          $ref: '#/components/schemas/Priority'
     RegisterRequest:
       required:
         - email
@@ -614,11 +633,7 @@ components:
           type: integer
           format: int32
         priority:
-          type: string
-          enum:
-            - LOW
-            - MEDIUM
-            - HIGH
+          $ref: '#/components/schemas/Priority'
   securitySchemes:
     BearerAuth:
       type: http

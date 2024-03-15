@@ -1,10 +1,10 @@
-package com.onecosys.getthingsdone.user.rest
+package com.onecosys.getthingsdone.user.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.task.util.AuthenticatedUserProvider
-import com.onecosys.getthingsdone.user.model.dto.UserInfoResponse
-import com.onecosys.getthingsdone.user.model.dto.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.user.model.dto.UserPasswordUpdateRequest
+import com.onecosys.getthingsdone.authentication.service.UserSessionService
+import com.onecosys.getthingsdone.models.UserInfoResponse
+import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.service.UserService
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
@@ -28,7 +28,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import java.security.Principal
 
 @ActiveProfiles("dev")
 @SpringBootTest
@@ -44,13 +43,10 @@ internal class UserControllerIntegrationTest {
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var mockUserProvider: AuthenticatedUserProvider
+    private lateinit var mockUserProvider: UserSessionService
 
     @MockBean
     private lateinit var mockService: UserService
-
-    @MockBean
-    private lateinit var mockPrincipal: Principal
 
     private val mapper = jacksonObjectMapper()
 
@@ -80,7 +76,7 @@ internal class UserControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `when user info is requested then return success response`() {
-        `when`(mockService.fetchInfo(mockPrincipal)).thenReturn(userResponse)
+        `when`(mockService.fetchInfo()).thenReturn(userResponse)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.get("/api/v1/user")
@@ -95,7 +91,7 @@ internal class UserControllerIntegrationTest {
         val email = "hello@aon.at"
         val request = HashMap<String, String>()
         request["email"] = email
-        `when`(mockService.changeEmail(request, mockPrincipal)).thenReturn(userResponse)
+        `when`(mockService.changeEmail(request)).thenReturn(userResponse)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/v1/user/email")
@@ -111,7 +107,7 @@ internal class UserControllerIntegrationTest {
         val email = "ali-aziz"
         val request = HashMap<String, String>()
         request["username"] = email
-        `when`(mockService.changeEmail(request, mockPrincipal)).thenReturn(userResponse)
+        `when`(mockService.changeEmail(request)).thenReturn(userResponse)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/v1/user/username")
@@ -125,7 +121,7 @@ internal class UserControllerIntegrationTest {
     @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `when change user password is triggered then return success response`() {
         val passwordRequest = UserPasswordUpdateRequest("oldPassword", "newPassword", "newPassword")
-        doNothing().`when`(mockService).changePassword(passwordRequest, mockPrincipal)
+        doNothing().`when`(mockService).changePassword(passwordRequest)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/v1/user/password")
@@ -139,7 +135,7 @@ internal class UserControllerIntegrationTest {
     @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `when change user info is triggered then return success response`() {
         val updateRequest = UserInfoUpdateRequest(firstName = "Omar", lastName = "Ramadan")
-        `when`(mockService.changeInfo(updateRequest, mockPrincipal)).thenReturn(userResponse)
+        `when`(mockService.changeInfo(updateRequest)).thenReturn(userResponse)
 
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/v1/user/info")
