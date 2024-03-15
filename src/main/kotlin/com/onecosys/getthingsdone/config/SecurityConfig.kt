@@ -29,7 +29,7 @@ class SecurityConfig(
                     "api/swagger-ui.html",
                     "api/v3/api-docs/swagger-config",
                     "api/v3/api-docs",
-                    "/open-api.yml"
+                    "api/open-api.yml"
                 ).permitAll()
                     .anyRequest()
                     .authenticated()

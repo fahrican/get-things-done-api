@@ -70,7 +70,7 @@ dependencies {
 
 openApiGenerate {
     generatorName.set("kotlin-spring")
-    inputSpec.set("$rootDir/src/main/resources/static/open-api.yml")
+    inputSpec.set("$rootDir/src/main/resources/static/api/open-api.yml")
     outputDir.set("$buildDir/generated/")
     configFile.set("$rootDir/src/main/resources/api-config.json")
     apiPackage.set("com.onecosys.getthingsdone.apis")
