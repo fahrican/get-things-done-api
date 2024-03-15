@@ -40,7 +40,7 @@ springdoc:
     path: '/api/swagger-ui.html'
     configUrl: '/api/v3/api-docs/swagger-config'
     disable-swagger-default-url: true
-    url: /open-api.yml
+    url: /api/open-api.yml
 
 jwt:
   secret-key: ${JWT_SECRET_KEY:jwtkey}
