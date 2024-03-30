@@ -12,19 +12,14 @@ import com.onecosys.getthingsdone.models.AuthenticationRequest
 import com.onecosys.getthingsdone.models.RegisterRequest
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
-import io.mockk.MockKAnnotations
 import io.mockk.called
 import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
@@ -32,28 +27,21 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-@ExtendWith(MockKExtension::class)
 internal class AuthUserServiceImplTest {
-    @RelaxedMockK
-    private lateinit var mockPasswordEncoder: PasswordEncoder
 
-    @RelaxedMockK
-    private lateinit var mockJwtService: JwtService
+    private val mockPasswordEncoder = mockk<PasswordEncoder>()
 
-    @RelaxedMockK
-    private lateinit var mockAuthenticationManager: AuthenticationManager
+    private val mockJwtService = mockk<JwtService>()
 
-    @RelaxedMockK
-    private lateinit var mockMapper: UserRegistrationMapper
+    private val mockAuthenticationManager = mockk<AuthenticationManager>()
 
-    @RelaxedMockK
-    private lateinit var mockUserRepository: UserRepository
+    private val mockMapper = mockk<UserRegistrationMapper>()
 
-    @RelaxedMockK
-    private lateinit var mockVerificationTokenRepository: VerificationTokenRepository
+    private val mockUserRepository = mockk<UserRepository>()
 
-    @RelaxedMockK
-    private lateinit var mockEmailService: EmailService
+    private val mockVerificationTokenRepository = mockk<VerificationTokenRepository>()
+
+    private val mockEmailService = mockk<EmailService>()
 
     private val registerRequest = RegisterRequest(
         "John",
@@ -79,22 +67,15 @@ internal class AuthUserServiceImplTest {
 
     private val authenticationRequest = AuthenticationRequest("abu-ali", "password")
 
-    private lateinit var objectUnderTest: AccountManagementService
-
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-
-        objectUnderTest = AccountManagementServiceImpl(
-            mockPasswordEncoder,
-            mockJwtService,
-            mockAuthenticationManager,
-            mockMapper,
-            mockUserRepository,
-            mockVerificationTokenRepository,
-            mockEmailService
-        )
-    }
+    private val objectUnderTest = AccountManagementServiceImpl(
+        mockPasswordEncoder,
+        mockJwtService,
+        mockAuthenticationManager,
+        mockMapper,
+        mockUserRepository,
+        mockVerificationTokenRepository,
+        mockEmailService
+    )
 
 
     @Test
@@ -104,6 +85,7 @@ internal class AuthUserServiceImplTest {
         every { mockMapper.toEntity(any(), any()) } returns user
         every { mockUserRepository.save(any()) } returns user
         every { mockVerificationTokenRepository.save(any()) } returns verificationToken
+        every { mockEmailService.sendVerificationEmail(any(), any()) } returns Unit
 
         val actualResult = objectUnderTest.signUp(registerRequest)
 
@@ -176,7 +158,7 @@ internal class AuthUserServiceImplTest {
         verificationToken.expiryDate = Instant.now().minus(1, ChronoUnit.DAYS)
         every { mockVerificationTokenRepository.findByToken(token) } returns verificationToken
         every { mockVerificationTokenRepository.save(verificationToken) } returns verificationToken
-        every { mockEmailService.sendVerificationEmail(user, verificationToken.token) } returns Unit
+        every { mockEmailService.sendVerificationEmail(any(), any()) } returns Unit
 
         val actualResult = assertThrows<TokenExpiredException> { objectUnderTest.verifyUser(token) }
 
@@ -253,7 +235,7 @@ internal class AuthUserServiceImplTest {
         every { mockUserRepository.findByEmail(user.email) } returns user
         every { mockPasswordEncoder.encode(any()) } returns password
         every { mockUserRepository.save(user) } returns user
-        every { mockEmailService.sendPasswordResetEmail(user, password) } returns Unit
+        every { mockEmailService.sendPasswordResetEmail(any(), any()) } returns Unit
 
         val actualResult = objectUnderTest.requestPasswordReset(user.email)
 
@@ -266,8 +248,8 @@ internal class AuthUserServiceImplTest {
 
     @Test
     fun `when request password reset is triggered then expect user not found exception`() {
-        val unfe = UserNotFoundException("E-Mail: ${user.email} does not exist!")
-        every { mockUserRepository.findByEmail(user.email) } throws unfe
+        val userNotFoundException = UserNotFoundException("E-Mail: ${user.email} does not exist!")
+        every { mockUserRepository.findByEmail(user.email) } throws userNotFoundException
 
         val actualResult = assertThrows<UserNotFoundException> { objectUnderTest.requestPasswordReset(user.email) }
 
