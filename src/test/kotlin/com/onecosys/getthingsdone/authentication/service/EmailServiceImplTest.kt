@@ -26,7 +26,7 @@ internal class EmailServiceImplTest {
     @RelaxedMockK
     private lateinit var mockMimeMessage: MimeMessage
 
-    private lateinit var objectUnderTest: EmailServiceImpl
+    private lateinit var objectUnderTest: EmailService
 
     private val dummyToken = "a12b34c56"
 
