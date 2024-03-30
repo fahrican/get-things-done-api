@@ -34,7 +34,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @AutoConfigureMockMvc
-internal class UserControllerIntegrationTest {
+internal class UserControllerIT {
 
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate

@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(controllers = [AuthenticationController::class])
 @AutoConfigureMockMvc(addFilters = false)
-internal class AuthenticationControllerTest {
+internal class AuthenticationControllerIT {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

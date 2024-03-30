@@ -9,52 +9,36 @@ import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import com.onecosys.getthingsdone.user.util.UserInfoMapper
-import io.mockk.MockKAnnotations
 import io.mockk.called
 import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 
-@ExtendWith(MockKExtension::class)
 internal class UserServiceImplTest {
 
-    @RelaxedMockK
-    private lateinit var mockPasswordEncoder: PasswordEncoder
+    private val mockPasswordEncoder = mockk<PasswordEncoder>(relaxed = true)
 
-    @RelaxedMockK
-    private lateinit var mockRepository: UserRepository
+    private val mockRepository = mockk<UserRepository>(relaxed = true)
 
-    @RelaxedMockK
-    private lateinit var mockMapper: UserInfoMapper
+    private val mockMapper = mockk<UserInfoMapper>(relaxed = true)
 
-    @RelaxedMockK
-    private lateinit var mockAuthUserService: UserSessionService
+    private val mockAuthUserService = mockk<UserSessionService>(relaxed = true)
 
     private val userInfoUpdateRequest = UserInfoUpdateRequest(firstName = "Ahmad", lastName = "Hasan")
+
     private val mockUserInfoResponse: UserInfoResponse = mockk()
+
     private val user = User(email = "newemail@example.com", _password = "test", firstName = "Ali", lastName = "Muataz")
+
     private val request = HashMap<String, String>()
 
-    private lateinit var objectUnderTest: UserService
-    private lateinit var principal: Authentication
+    private val objectUnderTest = UserServiceImpl(mockPasswordEncoder, mockRepository, mockMapper, mockAuthUserService)
 
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-        principal = UsernamePasswordAuthenticationToken(user, null)
-        objectUnderTest = UserServiceImpl(mockPasswordEncoder, mockRepository, mockMapper, mockAuthUserService)
-    }
 
     @Test
     fun `when change user email gets triggered then expect success response`() {
@@ -122,7 +106,6 @@ internal class UserServiceImplTest {
     @Test
     fun `when change username gets triggered then expect username changed success response`() {
         request["username"] = "ahmad-hasan"
-
         every { mockRepository.findBy_username(request["username"]!!) } returns null
         every { mockRepository.save(any()) } returns user
         every { mockMapper.toDto(user) } returns mockUserInfoResponse
