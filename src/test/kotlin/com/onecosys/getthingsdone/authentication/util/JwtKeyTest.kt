@@ -1,8 +1,6 @@
 package com.onecosys.getthingsdone.authentication.util
 
 import com.onecosys.getthingsdone.error.JwtKeyException
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
@@ -10,17 +8,19 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import javax.crypto.SecretKey
 
 
 internal class JwtKeyTest {
 
-    private val keyGenerator = mockk<KeyGenerator>()
+    private val mockSecretKey = mockk<SecretKey>(relaxed = true)
+    private val mockKeyGenerator = mockk<KeyGenerator>()
     private lateinit var jwtKey: JwtKey
 
     @BeforeEach
     fun setUp() {
-        every { keyGenerator.generateHmacShaKey() } returns Keys.secretKeyFor(SignatureAlgorithm.HS256)
-        jwtKey = JwtKey(keyGenerator)
+        every { mockKeyGenerator.generateHmacShaKey() } returns mockSecretKey
+        jwtKey = JwtKey(mockKeyGenerator)
     }
 
     @Test
@@ -30,7 +30,7 @@ internal class JwtKeyTest {
 
     @Test
     fun `when generate key is called then should log error and throw JWT key exception on failure`() {
-        every { keyGenerator.generateHmacShaKey() } throws IllegalStateException("expected exception")
+        every { mockKeyGenerator.generateHmacShaKey() } throws IllegalStateException("expected exception")
 
         val exception = assertThrows<JwtKeyException> { jwtKey.secretKey }
         assertEquals("Invalid JWT secret key", exception.message)
