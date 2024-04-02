@@ -72,8 +72,8 @@ openApiGenerate {
     generatorName.set("kotlin-spring")
     inputSpec.set("$rootDir/src/main/resources/static/api/open-api.yml")
     configFile.set("$rootDir/src/main/resources/api-config.json")
-    apiPackage.set("com.onecosys.getthingsdone.apis")
-    modelPackage.set("com.onecosys.getthingsdone.models")
+    apiPackage.set("com.onecosys.getthingsdone.api")
+    modelPackage.set("com.onecosys.getthingsdone.model")
     configOptions.set(mapOf("useSpringBoot3" to "true"))
 }
 
