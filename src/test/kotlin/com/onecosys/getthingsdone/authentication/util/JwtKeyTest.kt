@@ -3,6 +3,7 @@ package com.onecosys.getthingsdone.authentication.util
 import com.onecosys.getthingsdone.error.JwtKeyException
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -25,7 +26,7 @@ internal class JwtKeyTest {
 
     @Test
     fun `when jwt secret key is called then should successfully generate JWT key`() {
-        val key = jwtKey.secretKey
+        val key = assertDoesNotThrow { jwtKey.secretKey }
 
         assertNotNull(key)
     }
