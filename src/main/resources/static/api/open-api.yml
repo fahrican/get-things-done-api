@@ -505,6 +505,7 @@ components:
         id:
           type: integer
           format: int64
+          readOnly: true
         description:
           type: string
         isReminderSet:
@@ -539,6 +540,8 @@ components:
       properties:
         firstName:
           type: string
+          maxLength: 30
+          pattern: \w+
         lastName:
           type: string
         email:
