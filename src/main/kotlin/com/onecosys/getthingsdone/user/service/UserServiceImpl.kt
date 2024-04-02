@@ -1,11 +1,11 @@
 package com.onecosys.getthingsdone.user.service
 
 import com.onecosys.getthingsdone.authentication.service.UserSessionService
+import com.onecosys.getthingsdone.dto.UserInfoResponse
+import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
-import com.onecosys.getthingsdone.models.UserInfoResponse
-import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.entity.User
 import com.onecosys.getthingsdone.user.repository.UserRepository
 import com.onecosys.getthingsdone.user.util.UserInfoMapper

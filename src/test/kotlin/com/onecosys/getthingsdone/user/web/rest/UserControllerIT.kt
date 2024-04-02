@@ -2,9 +2,9 @@ package com.onecosys.getthingsdone.user.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.authentication.service.UserSessionService
-import com.onecosys.getthingsdone.models.UserInfoResponse
-import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
+import com.onecosys.getthingsdone.dto.UserInfoResponse
+import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.service.UserService
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test

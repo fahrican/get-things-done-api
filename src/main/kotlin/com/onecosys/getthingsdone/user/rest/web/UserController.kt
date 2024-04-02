@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.user.rest.web
 
-import com.onecosys.getthingsdone.apis.UserResource
-import com.onecosys.getthingsdone.models.UserInfoResponse
-import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
+import com.onecosys.getthingsdone.api.UserResource
+import com.onecosys.getthingsdone.dto.UserInfoResponse
+import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

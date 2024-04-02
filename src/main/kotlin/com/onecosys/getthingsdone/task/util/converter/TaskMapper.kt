@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.util.converter
 
-import com.onecosys.getthingsdone.models.TaskCreateRequest
-import com.onecosys.getthingsdone.models.TaskFetchResponse
+import com.onecosys.getthingsdone.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.task.entity.Task
 import com.onecosys.getthingsdone.user.entity.User
 import org.springframework.stereotype.Component

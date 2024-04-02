@@ -2,9 +2,9 @@ package com.onecosys.getthingsdone
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.authentication.service.UserSessionService
-import com.onecosys.getthingsdone.models.Priority
-import com.onecosys.getthingsdone.models.TaskCreateRequest
-import com.onecosys.getthingsdone.models.TaskFetchResponse
+import com.onecosys.getthingsdone.dto.Priority
+import com.onecosys.getthingsdone.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.task.service.TaskService
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test

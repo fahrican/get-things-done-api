@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.util
 
-import com.onecosys.getthingsdone.models.RegisterRequest
+import com.onecosys.getthingsdone.dto.RegisterRequest
 import com.onecosys.getthingsdone.user.entity.User
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component

@@ -1,12 +1,12 @@
 package com.onecosys.getthingsdone.task.service
 
+import com.onecosys.getthingsdone.dto.Priority
+import com.onecosys.getthingsdone.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.dto.TaskStatus
+import com.onecosys.getthingsdone.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
-import com.onecosys.getthingsdone.models.Priority
-import com.onecosys.getthingsdone.models.TaskCreateRequest
-import com.onecosys.getthingsdone.models.TaskFetchResponse
-import com.onecosys.getthingsdone.models.TaskStatus
-import com.onecosys.getthingsdone.models.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.entity.Task
@@ -28,7 +28,6 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import java.time.Clock
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
 

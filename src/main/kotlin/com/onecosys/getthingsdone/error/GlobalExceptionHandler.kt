@@ -62,3 +62,4 @@ class AccountVerificationException(message: String) : RuntimeException(message)
 
 class TokenExpiredException(message: String) : RuntimeException(message)
 
+class JwtKeyException(message: String) : IllegalStateException(message)

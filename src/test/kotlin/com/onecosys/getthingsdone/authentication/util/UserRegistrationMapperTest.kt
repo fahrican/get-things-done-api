@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.authentication.util
 
-import com.onecosys.getthingsdone.models.RegisterRequest
+import com.onecosys.getthingsdone.dto.RegisterRequest
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.security.crypto.password.PasswordEncoder
 

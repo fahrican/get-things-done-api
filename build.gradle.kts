@@ -73,7 +73,7 @@ openApiGenerate {
     inputSpec.set("$rootDir/src/main/resources/static/api/open-api.yml")
     configFile.set("$rootDir/src/main/resources/api-config.json")
     apiPackage.set("com.onecosys.getthingsdone.api")
-    modelPackage.set("com.onecosys.getthingsdone.model")
+    modelPackage.set("com.onecosys.getthingsdone.dto")
     configOptions.set(mapOf("useSpringBoot3" to "true"))
 }
 

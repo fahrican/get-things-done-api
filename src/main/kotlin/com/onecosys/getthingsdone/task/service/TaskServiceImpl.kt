@@ -1,11 +1,11 @@
 package com.onecosys.getthingsdone.task.service
 
+import com.onecosys.getthingsdone.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.dto.TaskStatus
+import com.onecosys.getthingsdone.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
-import com.onecosys.getthingsdone.models.TaskCreateRequest
-import com.onecosys.getthingsdone.models.TaskFetchResponse
-import com.onecosys.getthingsdone.models.TaskStatus
-import com.onecosys.getthingsdone.models.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.entity.Task
