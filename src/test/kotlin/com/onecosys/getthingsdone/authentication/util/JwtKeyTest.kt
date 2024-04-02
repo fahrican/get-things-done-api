@@ -1,38 +1,38 @@
 package com.onecosys.getthingsdone.authentication.util
 
+import com.onecosys.getthingsdone.error.JwtKeyException
+import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 
 internal class JwtKeyTest {
-    /*
-        @Test
-        fun `when JWT key gets created expect decode a valid secret key`() {
-            val mockJwtConfig = mockk<JwtConfig>()
-            val validBase64Key = "c29tZSBzZWNyZXQga2V5IGVuY29kZWQgaW4gYmFzZTY0" // This should be a valid base64 string
-            every { mockJwtConfig.secretKey } returns validBase64Key
 
-            val jwtKey = JwtKey(mockJwtConfig)
+    private val keyGenerator = mockk<KeyGenerator>()
+    private lateinit var jwtKey: JwtKey
 
-            assertNotNull(jwtKey.secretKey)
-            assertEquals("HmacSHA256", jwtKey.secretKey.algorithm)
-        }
+    @BeforeEach
+    fun setUp() {
+        every { keyGenerator.generateHmacShaKey() } returns Keys.secretKeyFor(SignatureAlgorithm.HS256)
+        jwtKey = JwtKey(keyGenerator)
+    }
 
-        @Test
-        fun `when JWT key gets created expect illegal state exception`() {
-            val mockConfig = mockk<JwtConfig>()
-            val mockJwtKey = JwtKey(mockConfig)
-            val message = "Invalid JWT secret key"
-            every { mockConfig.secretKey } throws IllegalStateException(message)
+    @Test
+    fun `when jwt secret key is called then should successfully generate JWT key`() {
+        assertDoesNotThrow { val key = jwtKey.secretKey }
+    }
 
-            val exception = assertThrows<IllegalStateException> { mockJwtKey.secretKey }
+    @Test
+    fun `when generate key is called then should log error and throw JWT key exception on failure`() {
+        every { keyGenerator.generateHmacShaKey() } throws IllegalStateException("expected exception")
 
-            assertEquals(message, exception.message)
-        }
-
-     */
+        val exception = assertThrows<JwtKeyException> { jwtKey.secretKey }
+        assertEquals("Invalid JWT secret key", exception.message)
+    }
 }

@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.authentication.util
 
+import com.onecosys.getthingsdone.error.JwtKeyException
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.slf4j.LoggerFactory
@@ -16,16 +17,21 @@ class JwtConfig {
 }
 
 @Component
-class JwtKey(private val jwtConfig: JwtConfig) {
+class KeyGenerator(private val jwtConfig: JwtConfig) {
+    fun generateHmacShaKey(): SecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.secretKey))
+}
+
+@Component
+class JwtKey(private val keyGenerator: KeyGenerator) {
 
     private val log = LoggerFactory.getLogger(JwtKey::class.java)
 
     val secretKey: SecretKey by lazy {
         try {
-            Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.secretKey))
+            keyGenerator.generateHmacShaKey()
         } catch (ise: IllegalStateException) {
             log.error("Error decoding JWT secret key: ${ise.message}")
-            throw IllegalStateException("Invalid JWT secret key")
+            throw JwtKeyException("Invalid JWT secret key")
         }
     }
 }
