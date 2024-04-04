@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.user.service
 
-import com.onecosys.getthingsdone.authentication.service.UserSessionService
+import com.onecosys.getthingsdone.authentication.service.ClientSessionService
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
@@ -27,7 +27,7 @@ internal class AppUserServiceImplTest {
 
     private val mockMapper = mockk<UserInfoMapper>(relaxed = true)
 
-    private val mockAuthUserService = mockk<UserSessionService>(relaxed = true)
+    private val mockAuthUserService = mockk<ClientSessionService>(relaxed = true)
 
     private val userInfoUpdateRequest = UserInfoUpdateRequest(firstName = "Ahmad", lastName = "Hasan")
 

@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 
 @Service
-class UserSessionServiceImpl(private val repository: AppUserRepository) : UserSessionService {
+class ClientSessionServiceImpl(private val repository: AppUserRepository) : ClientSessionService {
 
     override fun retrieveAuthentication(): Authentication? {
         return SecurityContextHolder.getContext().authentication

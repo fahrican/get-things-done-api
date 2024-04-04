@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.user.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.authentication.service.UserSessionService
+import com.onecosys.getthingsdone.authentication.service.ClientSessionService
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
@@ -43,7 +43,7 @@ internal class AppUserControllerIT {
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var mockUserProvider: UserSessionService
+    private lateinit var mockUserProvider: ClientSessionService
 
     @MockBean
     private lateinit var mockService: AppUserService
