@@ -23,8 +23,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
-@Table(name = "_user")
-class User(
+@Table(name = "app_user")
+class AppUser(
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
@@ -43,10 +43,10 @@ class User(
 
     @NotBlank
     @Column(unique = true, nullable = false)
-    var _username: String = "",
+    var appUsername: String = "",
 
     @NotBlank
-    var _password: String = "",
+    var appPassword: String = "",
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -54,18 +54,18 @@ class User(
 
     var isVerified: Boolean = false,
 
-    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, optional = true)
+    @OneToOne(mappedBy = "appUser", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, optional = true)
     private val verificationToken: VerificationToken? = null,
 
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "appUser", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     private val tasks: List<Task>? = null
 ) : UserDetails {
 
     override fun getAuthorities(): List<GrantedAuthority> = listOf(SimpleGrantedAuthority(role.name))
 
-    override fun getPassword() = _password
+    override fun getPassword() = appPassword
 
-    override fun getUsername() = _username
+    override fun getUsername() = appUsername
 
     override fun isAccountNonExpired() = true
 

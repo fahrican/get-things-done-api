@@ -5,7 +5,7 @@ import com.onecosys.getthingsdone.authentication.service.UserSessionService
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.user.service.UserService
+import com.onecosys.getthingsdone.user.service.AppUserService
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
@@ -34,7 +34,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @AutoConfigureMockMvc
-internal class UserControllerIT {
+internal class AppUserControllerIT {
 
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -46,7 +46,7 @@ internal class UserControllerIT {
     private lateinit var mockUserProvider: UserSessionService
 
     @MockBean
-    private lateinit var mockService: UserService
+    private lateinit var mockService: AppUserService
 
     private val mapper = jacksonObjectMapper()
 

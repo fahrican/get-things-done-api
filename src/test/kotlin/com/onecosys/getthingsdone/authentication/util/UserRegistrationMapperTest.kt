@@ -29,7 +29,7 @@ internal class UserRegistrationMapperTest {
         assertEquals(request.firstName, user.firstName)
         assertEquals(request.lastName, user.lastName)
         assertEquals(request.email, user.email)
-        assertEquals(request.username, user._username)
-        assertEquals(encodedPassword, user._password)
+        assertEquals(request.username, user.appUsername)
+        assertEquals(encodedPassword, user.appPassword)
     }
 }

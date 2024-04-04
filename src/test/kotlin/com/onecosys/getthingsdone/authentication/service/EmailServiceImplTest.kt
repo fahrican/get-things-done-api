@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.authentication.service
 
 import com.onecosys.getthingsdone.error.SignUpException
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.entity.AppUser
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,12 +23,12 @@ internal class EmailServiceImplTest {
 
     private val dummyToken = "a12b34c56"
 
-    private val user = User(
+    private val appUser = AppUser(
         email = "test@aon.at",
-        _password = "password",
+        appPassword = "password",
         firstName = "Hamad",
         lastName = "Al Khoury",
-        _username = "abu-ali"
+        appUsername = "abu-ali"
     )
 
 
@@ -37,7 +37,7 @@ internal class EmailServiceImplTest {
         every { mockMailSender.createMimeMessage() } returns mockMimeMessage
         every { mockMailSender.send(any<MimeMessage>()) } returns Unit
 
-        objectUnderTest.sendVerificationEmail(user, dummyToken)
+        objectUnderTest.sendVerificationEmail(appUser, dummyToken)
 
         verify(exactly = 1) { mockMailSender.createMimeMessage() }
         verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
@@ -47,7 +47,8 @@ internal class EmailServiceImplTest {
     fun `when send email verification is triggered then expect messaging exception`() {
         every { mockMailSender.createMimeMessage() } throws SignUpException("failed to send email")
 
-        val actualException = assertThrows<SignUpException> { objectUnderTest.sendVerificationEmail(user, dummyToken) }
+        val actualException =
+            assertThrows<SignUpException> { objectUnderTest.sendVerificationEmail(appUser, dummyToken) }
 
         assertEquals("failed to send email", actualException.message)
         verify(exactly = 1) { mockMailSender.createMimeMessage() }
@@ -59,7 +60,7 @@ internal class EmailServiceImplTest {
         val password = "test-password"
         every { mockMailSender.createMimeMessage() } returns mockMimeMessage
 
-        objectUnderTest.sendPasswordResetEmail(user, password)
+        objectUnderTest.sendPasswordResetEmail(appUser, password)
 
         verify(exactly = 1) { mockMailSender.createMimeMessage() }
         verify(exactly = 1) { mockMailSender.send(any<MimeMessage>()) }
@@ -71,7 +72,7 @@ internal class EmailServiceImplTest {
         every { mockMailSender.send(any<MimeMessage>()) } throws MessagingException("Simulated error")
 
         val actualException = assertThrows<SignUpException> {
-            objectUnderTest.sendPasswordResetEmail(user, password)
+            objectUnderTest.sendPasswordResetEmail(appUser, password)
         }
 
         assertEquals("failed to send email", actualException.message)

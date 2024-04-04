@@ -4,12 +4,12 @@ import com.onecosys.getthingsdone.api.UserResource
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.user.service.UserService
+import com.onecosys.getthingsdone.user.service.AppUserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class UserController(private val service: UserService) : UserResource {
+class AppUserController(private val service: AppUserService) : UserResource {
 
     override fun changeEmail(
         requestBody: Map<String, String>

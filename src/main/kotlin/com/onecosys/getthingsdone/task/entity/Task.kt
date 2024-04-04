@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.entity
 
 import com.onecosys.getthingsdone.dto.Priority
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.entity.AppUser
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -61,8 +61,8 @@ class Task {
     var priority: Priority = Priority.low
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    var user: User? = null
+    @JoinColumn(name = "app_user_id")
+    var appUser: AppUser? = null
 }
 
 const val MIN_DESCRIPTION_LENGTH: Int = 3

@@ -12,7 +12,7 @@ import com.onecosys.getthingsdone.task.entity.Task
 import com.onecosys.getthingsdone.task.repository.TaskRepository
 import com.onecosys.getthingsdone.task.util.TaskTimestamp
 import com.onecosys.getthingsdone.task.util.converter.TaskMapper
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.entity.AppUser
 import org.springframework.stereotype.Service
 
 
@@ -23,25 +23,27 @@ class TaskServiceImpl(
     private val taskTimestamp: TaskTimestamp
 ) : TaskService {
 
-    override fun getTasks(user: User, status: TaskStatus?): Set<TaskFetchResponse> {
+    override fun getTasks(appUser: AppUser, status: TaskStatus?): Set<TaskFetchResponse> {
         return when (status) {
-            TaskStatus.open -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true).map(mapper::toDto).toSet()
-            TaskStatus.closed -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false).map(mapper::toDto)
+            TaskStatus.open -> repository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(appUser, true).map(mapper::toDto)
                 .toSet()
 
-            else -> repository.findAllByUserOrderByIdAsc(user)
+            TaskStatus.closed -> repository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(appUser, false).map(mapper::toDto)
+                .toSet()
+
+            else -> repository.findAllByAppUserOrderByIdAsc(appUser)
                 .map(mapper::toDto)
                 .toSet()
         }
     }
 
-    override fun getTaskById(id: Long, user: User): TaskFetchResponse {
+    override fun getTaskById(id: Long, appUser: AppUser): TaskFetchResponse {
         validateTaskIdExistence(id)
-        val task: Task = repository.findTaskByIdAndUser(id, user)
+        val task: Task = repository.findTaskByIdAndAppUser(id, appUser)
         return mapper.toDto(task)
     }
 
-    override fun createTask(createRequest: TaskCreateRequest, user: User): TaskFetchResponse {
+    override fun createTask(createRequest: TaskCreateRequest, appUser: AppUser): TaskFetchResponse {
         val descriptionLength: Int = createRequest.description.length
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
@@ -49,14 +51,14 @@ class TaskServiceImpl(
         if (repository.existsByDescription(createRequest.description)) {
             throw BadRequestException("A task with the description '${createRequest.description}' already exists")
         }
-        val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), user)
+        val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), appUser)
         val savedTask: Task = repository.save(task)
         return mapper.toDto(savedTask)
     }
 
-    override fun updateTask(id: Long, updateRequest: TaskUpdateRequest, user: User): TaskFetchResponse {
+    override fun updateTask(id: Long, updateRequest: TaskUpdateRequest, appUser: AppUser): TaskFetchResponse {
         validateTaskIdExistence(id)
-        val existingTask: Task = repository.findTaskByIdAndUser(id, user)
+        val existingTask: Task = repository.findTaskByIdAndAppUser(id, appUser)
 
         existingTask.apply {
             description = updateRequest.description ?: description
@@ -73,7 +75,7 @@ class TaskServiceImpl(
         return mapper.toDto(savedTask)
     }
 
-    override fun deleteTask(id: Long, user: User): String {
+    override fun deleteTask(id: Long, appUser: AppUser): String {
         validateTaskIdExistence(id)
         repository.deleteById(id)
         return "Task with id: $id has been deleted."

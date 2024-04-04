@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.config
 
-import com.onecosys.getthingsdone.user.repository.UserRepository
+import com.onecosys.getthingsdone.user.repository.AppUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
@@ -12,12 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
-class AuthenticationConfig(private val repository: UserRepository) {
+class AuthenticationConfig(private val repository: AppUserRepository) {
 
     @Bean
     fun getUsername() =
         UserDetailsService { username ->
-            repository.findBy_username(username) ?: throw UsernameNotFoundException("User not found")
+            repository.findByAppUsername(username) ?: throw UsernameNotFoundException("User not found")
         }
 
     @Bean
