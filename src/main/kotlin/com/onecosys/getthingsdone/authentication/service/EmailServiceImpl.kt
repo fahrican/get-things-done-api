@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.authentication.service
 
 import com.onecosys.getthingsdone.error.SignUpException
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.entity.AppUser
 import jakarta.mail.MessagingException
 import org.slf4j.LoggerFactory
 import org.springframework.mail.javamail.JavaMailSender
@@ -14,23 +14,23 @@ class EmailServiceImpl(private val mailSender: JavaMailSender) : EmailService {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun sendVerificationEmail(user: User, token: String) {
+    override fun sendVerificationEmail(appUser: AppUser, token: String) {
         val link = "https://task-manager.justluxurylifestyle.com/api/v1/auth/verify?token=$token"
         val verificationText = getVerificationEmailText(link)
-        sendEmail(user, "Confirm your email for justluxurylifestyle.com", verificationText)
+        sendEmail(appUser, "Confirm your email for justluxurylifestyle.com", verificationText)
     }
 
-    override fun sendPasswordResetEmail(user: User, newPassword: String) {
+    override fun sendPasswordResetEmail(appUser: AppUser, newPassword: String) {
         val resetEmailText = "<p>This is your new password: $newPassword</p>"
-        sendEmail(user, "Password reset", resetEmailText)
+        sendEmail(appUser, "Password reset", resetEmailText)
     }
 
-    private fun sendEmail(user: User, subject: String, content: String) {
+    private fun sendEmail(appUser: AppUser, subject: String, content: String) {
         try {
             val mimeMessage = mailSender.createMimeMessage()
             val helper = MimeMessageHelper(mimeMessage, "utf-8")
-            helper.setText(buildEmail(user.firstName, content), true)
-            helper.setTo(user.email)
+            helper.setText(buildEmail(appUser.firstName, content), true)
+            helper.setTo(appUser.email)
             helper.setSubject(subject)
             helper.setFrom("hello@justluxurylifestyle.com")
             mailSender.send(mimeMessage)

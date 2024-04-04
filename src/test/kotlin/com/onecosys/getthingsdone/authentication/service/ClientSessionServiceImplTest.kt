@@ -1,8 +1,8 @@
 package com.onecosys.getthingsdone.authentication.service
 
 import com.onecosys.getthingsdone.error.UserNotFoundException
-import com.onecosys.getthingsdone.user.entity.User
-import com.onecosys.getthingsdone.user.repository.UserRepository
+import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.repository.AppUserRepository
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -10,9 +10,9 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
@@ -20,7 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 
 @ExtendWith(MockKExtension::class)
-class UserSessionServiceImplTest {
+class ClientSessionServiceImplTest {
 
     @RelaxedMockK
     private lateinit var mockSecurityContext: SecurityContext
@@ -29,18 +29,18 @@ class UserSessionServiceImplTest {
     private lateinit var mockAuthentication: Authentication
 
     @RelaxedMockK
-    private lateinit var mockUserRepository: UserRepository
+    private lateinit var mockAppUserRepository: AppUserRepository
 
-    private lateinit var objectUnderTest: UserSessionService
+    private lateinit var objectUnderTest: ClientSessionService
 
-    val user = User();
+    val appUser = AppUser();
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
         every { mockSecurityContext.authentication } returns mockAuthentication
         SecurityContextHolder.setContext(mockSecurityContext)
-        objectUnderTest = UserSessionServiceImpl(mockUserRepository)
+        objectUnderTest = ClientSessionServiceImpl(mockAppUserRepository)
     }
 
     @AfterEach
@@ -57,11 +57,11 @@ class UserSessionServiceImplTest {
 
     @Test
     fun `when get authenticated user is called then return expected user`() {
-        every { mockAuthentication.principal } returns user
+        every { mockAuthentication.principal } returns appUser
 
         val result = objectUnderTest.getAuthenticatedUser()
 
-        assertEquals(user, result)
+        assertEquals(appUser, result)
     }
 
     @Test
@@ -81,7 +81,7 @@ class UserSessionServiceImplTest {
         val userDetails = mockk<UserDetails>()
         every { userDetails.username } returns username
         every { mockAuthentication.principal } returns userDetails
-        every { mockUserRepository.findBy_username(username) } returns null
+        every { mockAppUserRepository.findByAppUsername(username) } returns null
 
         val actualResult = assertThrows<UserNotFoundException> { objectUnderTest.findCurrentSessionUser() }
 
@@ -90,10 +90,10 @@ class UserSessionServiceImplTest {
 
     @Test
     fun `when find current session user is called then return expected user`() {
-        every { mockUserRepository.findBy_username(any()) } returns user
+        every { mockAppUserRepository.findByAppUsername(any()) } returns appUser
 
         val actualResult = objectUnderTest.findCurrentSessionUser()
 
-        assertEquals(user, actualResult)
+        assertEquals(appUser, actualResult)
     }
 }

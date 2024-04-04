@@ -1,11 +1,11 @@
 package com.onecosys.getthingsdone.authentication.web.rest
 
-import com.onecosys.getthingsdone.apis.AuthenticationResource
+import com.onecosys.getthingsdone.api.AuthenticationResource
 import com.onecosys.getthingsdone.authentication.service.AccountManagementService
-import com.onecosys.getthingsdone.models.AuthenticationRequest
-import com.onecosys.getthingsdone.models.AuthenticationResponse
-import com.onecosys.getthingsdone.models.EmailConfirmedResponse
-import com.onecosys.getthingsdone.models.RegisterRequest
+import com.onecosys.getthingsdone.dto.AuthenticationRequest
+import com.onecosys.getthingsdone.dto.AuthenticationResponse
+import com.onecosys.getthingsdone.dto.EmailConfirmedResponse
+import com.onecosys.getthingsdone.dto.RegisterRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

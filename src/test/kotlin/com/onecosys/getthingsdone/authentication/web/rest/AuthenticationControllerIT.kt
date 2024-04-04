@@ -3,10 +3,10 @@ package com.onecosys.getthingsdone.authentication.web.rest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onecosys.getthingsdone.authentication.service.AccountManagementService
 import com.onecosys.getthingsdone.authentication.service.JwtService
-import com.onecosys.getthingsdone.models.AuthenticationRequest
-import com.onecosys.getthingsdone.models.AuthenticationResponse
-import com.onecosys.getthingsdone.models.EmailConfirmedResponse
-import com.onecosys.getthingsdone.models.RegisterRequest
+import com.onecosys.getthingsdone.dto.AuthenticationRequest
+import com.onecosys.getthingsdone.dto.AuthenticationResponse
+import com.onecosys.getthingsdone.dto.EmailConfirmedResponse
+import com.onecosys.getthingsdone.dto.RegisterRequest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(controllers = [AuthenticationController::class])
 @AutoConfigureMockMvc(addFilters = false)
-internal class AuthenticationControllerTest {
+internal class AuthenticationControllerIT {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

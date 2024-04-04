@@ -1,76 +1,62 @@
 package com.onecosys.getthingsdone.user.service
 
-import com.onecosys.getthingsdone.authentication.service.UserSessionService
+import com.onecosys.getthingsdone.authentication.service.ClientSessionService
+import com.onecosys.getthingsdone.dto.UserInfoResponse
+import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
-import com.onecosys.getthingsdone.models.UserInfoResponse
-import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.user.entity.User
-import com.onecosys.getthingsdone.user.repository.UserRepository
+import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.repository.AppUserRepository
 import com.onecosys.getthingsdone.user.util.UserInfoMapper
-import io.mockk.MockKAnnotations
 import io.mockk.called
 import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 
-@ExtendWith(MockKExtension::class)
-internal class UserServiceImplTest {
+internal class AppUserServiceImplTest {
 
-    @RelaxedMockK
-    private lateinit var mockPasswordEncoder: PasswordEncoder
+    private val mockPasswordEncoder = mockk<PasswordEncoder>(relaxed = true)
 
-    @RelaxedMockK
-    private lateinit var mockRepository: UserRepository
+    private val mockRepository = mockk<AppUserRepository>(relaxed = true)
 
-    @RelaxedMockK
-    private lateinit var mockMapper: UserInfoMapper
+    private val mockMapper = mockk<UserInfoMapper>(relaxed = true)
 
-    @RelaxedMockK
-    private lateinit var mockAuthUserService: UserSessionService
+    private val mockAuthUserService = mockk<ClientSessionService>(relaxed = true)
 
     private val userInfoUpdateRequest = UserInfoUpdateRequest(firstName = "Ahmad", lastName = "Hasan")
+
     private val mockUserInfoResponse: UserInfoResponse = mockk()
-    private val user = User(email = "newemail@example.com", _password = "test", firstName = "Ali", lastName = "Muataz")
+
+    private val appUser =
+        AppUser(email = "newemail@example.com", appPassword = "test", firstName = "Ali", lastName = "Muataz")
+
     private val request = HashMap<String, String>()
 
-    private lateinit var objectUnderTest: UserService
-    private lateinit var principal: Authentication
+    private val objectUnderTest =
+        AppUserServiceImpl(mockPasswordEncoder, mockRepository, mockMapper, mockAuthUserService)
 
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-        principal = UsernamePasswordAuthenticationToken(user, null)
-        objectUnderTest = UserServiceImpl(mockPasswordEncoder, mockRepository, mockMapper, mockAuthUserService)
-    }
 
     @Test
     fun `when change user email gets triggered then expect success response`() {
         val email = HashMap<String, String>()
         email["email"] = "info@test.com"
-        every { mockAuthUserService.findCurrentSessionUser() } returns user
+        every { mockAuthUserService.findCurrentSessionUser() } returns appUser
         every { mockRepository.findByEmail(email["email"]!!) } returns null
-        every { mockRepository.save(any()) } returns user
-        every { mockMapper.toDto(user) } returns mockUserInfoResponse
+        every { mockRepository.save(any()) } returns appUser
+        every { mockMapper.toDto(appUser) } returns mockUserInfoResponse
 
         val result = objectUnderTest.changeEmail(email)
 
         assertNotNull(result)
         assertEquals(mockUserInfoResponse, result)
         verify(exactly = 1) { mockRepository.save(any()) }
-        verify(exactly = 1) { mockMapper.toDto(user) }
+        verify(exactly = 1) { mockMapper.toDto(appUser) }
     }
 
     @Test
@@ -81,7 +67,7 @@ internal class UserServiceImplTest {
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(email) }
 
         assertEquals("Email must contain '@' symbol", exception.message)
-        verify { mockRepository.save(user) wasNot called }
+        verify { mockRepository.save(appUser) wasNot called }
     }
 
     @Test
@@ -89,8 +75,8 @@ internal class UserServiceImplTest {
         val email = "test@email.com"
         request["email"] = email
         val exceptionMessage = "Email is already used by another user"
-        every { mockAuthUserService.findCurrentSessionUser()  } returns user
-        every { mockRepository.findByEmail(email) } returns user
+        every { mockAuthUserService.findCurrentSessionUser() } returns appUser
+        every { mockRepository.findByEmail(email) } returns appUser
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(request) }
 
@@ -105,45 +91,44 @@ internal class UserServiceImplTest {
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeUsername(request) }
 
         assertEquals("Username cannot contain '@' symbol", exception.message)
-        verify { mockRepository.save(user) wasNot called }
+        verify { mockRepository.save(appUser) wasNot called }
     }
 
     @Test
     fun `when change username gets triggered then expect username already taken exception`() {
         request["username"] = "ahmad-hasan"
 
-        every { mockRepository.findBy_username(request["username"]!!) } returns user
+        every { mockRepository.findByAppUsername(request["username"]!!) } returns appUser
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeUsername(request) }
         assertEquals("Username is already used by another user", exception.message)
-        verify { mockRepository.save(user) wasNot called }
+        verify { mockRepository.save(appUser) wasNot called }
     }
 
     @Test
     fun `when change username gets triggered then expect username changed success response`() {
         request["username"] = "ahmad-hasan"
-
-        every { mockRepository.findBy_username(request["username"]!!) } returns null
-        every { mockRepository.save(any()) } returns user
-        every { mockMapper.toDto(user) } returns mockUserInfoResponse
+        every { mockRepository.findByAppUsername(request["username"]!!) } returns null
+        every { mockRepository.save(any()) } returns appUser
+        every { mockMapper.toDto(appUser) } returns mockUserInfoResponse
 
         val response = objectUnderTest.changeUsername(request)
 
         assertNotNull(response)
         assertEquals(mockUserInfoResponse, response)
         verify(exactly = 1) { mockRepository.save(any()) }
-        verify(exactly = 1) { mockMapper.toDto(user) }
+        verify(exactly = 1) { mockMapper.toDto(appUser) }
     }
 
     @Test
     fun `when change user password gets triggered then expect current password wrong exception`() {
         val request = UserPasswordUpdateRequest("hello", "hello", "hello")
-        user._password = "test"
+        appUser.appPassword = "test"
 
         val exception = assertThrows<PasswordMismatchException> { objectUnderTest.changePassword(request) }
 
         assertEquals("The current password is wrong!", exception.message)
-        verify { mockRepository.save(user) wasNot called }
+        verify { mockRepository.save(appUser) wasNot called }
     }
 
     @Test
@@ -154,38 +139,38 @@ internal class UserServiceImplTest {
         val exception = assertThrows<PasswordMismatchException> { objectUnderTest.changePassword(request) }
 
         assertEquals("Your new password does not match with the password confirmation!", exception.message)
-        verify { mockRepository.save(user) wasNot called }
+        verify { mockRepository.save(appUser) wasNot called }
     }
 
     @Test
     fun `when change user password gets triggered then expect password change success response`() {
         val request = UserPasswordUpdateRequest("test", "hello", "hello")
-        every { mockAuthUserService.findCurrentSessionUser()  } returns user
+        every { mockAuthUserService.findCurrentSessionUser() } returns appUser
         every { mockPasswordEncoder.matches(any(), any()) } returns true
-        every { mockRepository.save(any()) } returns user
+        every { mockRepository.save(any()) } returns appUser
 
         objectUnderTest.changePassword(request)
 
         assertEquals("hello", request.newPassword)
-        verify(exactly = 1) { mockRepository.save(user) }
+        verify(exactly = 1) { mockRepository.save(appUser) }
     }
 
     @Test
     fun `when change user info gets triggered then expect success response`() {
-        every { mockAuthUserService.findCurrentSessionUser()  } returns user
-        every { mockRepository.save(any()) } returns user
-        every { mockMapper.toDto(user) } returns mockUserInfoResponse
+        every { mockAuthUserService.findCurrentSessionUser() } returns appUser
+        every { mockRepository.save(any()) } returns appUser
+        every { mockMapper.toDto(appUser) } returns mockUserInfoResponse
 
         val response = objectUnderTest.changeInfo(userInfoUpdateRequest)
 
         assertEquals(mockUserInfoResponse, response)
-        verify(exactly = 1) { mockRepository.save(user) }
+        verify(exactly = 1) { mockRepository.save(appUser) }
     }
 
     @Test
     fun `when fetch user info gets triggered then expect success response`() {
-        every { mockAuthUserService.findCurrentSessionUser()  } returns user
-        every { mockMapper.toDto(user) } returns mockUserInfoResponse
+        every { mockAuthUserService.findCurrentSessionUser() } returns appUser
+        every { mockMapper.toDto(appUser) } returns mockUserInfoResponse
 
         val response = objectUnderTest.fetchInfo()
 

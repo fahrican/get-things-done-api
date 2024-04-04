@@ -1,20 +1,20 @@
 package com.onecosys.getthingsdone.task.service
 
-import com.onecosys.getthingsdone.models.TaskCreateRequest
-import com.onecosys.getthingsdone.models.TaskFetchResponse
-import com.onecosys.getthingsdone.models.TaskStatus
-import com.onecosys.getthingsdone.models.TaskUpdateRequest
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.dto.TaskStatus
+import com.onecosys.getthingsdone.dto.TaskUpdateRequest
+import com.onecosys.getthingsdone.user.entity.AppUser
 
 interface TaskService {
 
-    fun getTasks(user: User, status: TaskStatus?): Set<TaskFetchResponse>
+    fun getTasks(appUser: AppUser, status: TaskStatus?): Set<TaskFetchResponse>
 
-    fun getTaskById(id: Long, user: User): TaskFetchResponse
+    fun getTaskById(id: Long, appUser: AppUser): TaskFetchResponse
 
-    fun createTask(createRequest: TaskCreateRequest, user: User): TaskFetchResponse
+    fun createTask(createRequest: TaskCreateRequest, appUser: AppUser): TaskFetchResponse
 
-    fun updateTask(id: Long, updateRequest: TaskUpdateRequest, user: User): TaskFetchResponse
+    fun updateTask(id: Long, updateRequest: TaskUpdateRequest, appUser: AppUser): TaskFetchResponse
 
-    fun deleteTask(id: Long, user: User): String
+    fun deleteTask(id: Long, appUser: AppUser): String
 }

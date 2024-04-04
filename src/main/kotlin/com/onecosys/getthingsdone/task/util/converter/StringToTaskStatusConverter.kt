@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.util.converter
 
+import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.error.BadRequestException
-import com.onecosys.getthingsdone.models.TaskStatus
 import org.springframework.core.convert.converter.Converter
 import java.util.Locale
 

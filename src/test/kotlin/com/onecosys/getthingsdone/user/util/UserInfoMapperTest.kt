@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.user.util
 
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.entity.AppUser
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -10,14 +10,14 @@ internal class UserInfoMapperTest {
 
     @Test
     fun `when entity to dto is triggered then correct user info response`() {
-        val user = mockk<User>()
-        every { user.firstName } returns "John"
-        every { user.lastName } returns "Doe"
-        every { user.email } returns "john.doe@example.com"
-        every { user.username } returns "johndoe"
+        val appUser = mockk<AppUser>()
+        every { appUser.firstName } returns "John"
+        every { appUser.lastName } returns "Doe"
+        every { appUser.email } returns "john.doe@example.com"
+        every { appUser.username } returns "johndoe"
         val userInfoMapper = UserInfoMapper()
 
-        val userInfoResponse = userInfoMapper.toDto(user)
+        val userInfoResponse = userInfoMapper.toDto(appUser)
 
         assertEquals("John", userInfoResponse.firstName)
         assertEquals("Doe", userInfoResponse.lastName)

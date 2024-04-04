@@ -1,11 +1,11 @@
 package com.onecosys.getthingsdone.task.web.rest
 
-import com.onecosys.getthingsdone.apis.TaskResource
-import com.onecosys.getthingsdone.authentication.service.UserSessionService
-import com.onecosys.getthingsdone.models.TaskCreateRequest
-import com.onecosys.getthingsdone.models.TaskFetchResponse
-import com.onecosys.getthingsdone.models.TaskStatus
-import com.onecosys.getthingsdone.models.TaskUpdateRequest
+import com.onecosys.getthingsdone.api.TaskResource
+import com.onecosys.getthingsdone.authentication.service.ClientSessionService
+import com.onecosys.getthingsdone.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.dto.TaskStatus
+import com.onecosys.getthingsdone.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.service.TaskService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class TaskController(
     private val service: TaskService,
-    private val userProvider: UserSessionService
+    private val userProvider: ClientSessionService
 ) : TaskResource {
 
     override fun createTask(taskCreateRequest: TaskCreateRequest): ResponseEntity<TaskFetchResponse> {

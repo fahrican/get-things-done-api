@@ -1,10 +1,10 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.entity.AppUser
 
 interface EmailService {
 
-    fun sendVerificationEmail(user: User, token: String)
+    fun sendVerificationEmail(appUser: AppUser, token: String)
 
-    fun sendPasswordResetEmail(user: User, newPassword: String)
+    fun sendPasswordResetEmail(appUser: AppUser, newPassword: String)
 }

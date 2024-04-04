@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.models.AuthenticationRequest
-import com.onecosys.getthingsdone.models.AuthenticationResponse
-import com.onecosys.getthingsdone.models.EmailConfirmedResponse
-import com.onecosys.getthingsdone.models.RegisterRequest
+import com.onecosys.getthingsdone.dto.AuthenticationRequest
+import com.onecosys.getthingsdone.dto.AuthenticationResponse
+import com.onecosys.getthingsdone.dto.EmailConfirmedResponse
+import com.onecosys.getthingsdone.dto.RegisterRequest
 
 
 interface AccountManagementService {

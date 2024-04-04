@@ -3,17 +3,17 @@ package com.onecosys.getthingsdone.authentication.service
 import com.onecosys.getthingsdone.authentication.entity.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
 import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
+import com.onecosys.getthingsdone.dto.AuthenticationRequest
+import com.onecosys.getthingsdone.dto.AuthenticationResponse
+import com.onecosys.getthingsdone.dto.EmailConfirmedResponse
+import com.onecosys.getthingsdone.dto.RegisterRequest
 import com.onecosys.getthingsdone.error.AccountVerificationException
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
 import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
-import com.onecosys.getthingsdone.models.AuthenticationRequest
-import com.onecosys.getthingsdone.models.AuthenticationResponse
-import com.onecosys.getthingsdone.models.EmailConfirmedResponse
-import com.onecosys.getthingsdone.models.RegisterRequest
-import com.onecosys.getthingsdone.user.entity.User
-import com.onecosys.getthingsdone.user.repository.UserRepository
+import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.repository.AppUserRepository
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
@@ -32,7 +32,7 @@ class AccountManagementServiceImpl(
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
     private val mapper: UserRegistrationMapper,
-    private val userRepository: UserRepository,
+    private val appUserRepository: AppUserRepository,
     private val verificationTokenRepository: VerificationTokenRepository,
     private val emailService: EmailService
 ) : AccountManagementService {
@@ -48,7 +48,7 @@ class AccountManagementServiceImpl(
         checkForSignUpMistakes(request)
 
         val user = mapper.toEntity(request, passwordEncoder)
-        val savedUser = userRepository.save(user)
+        val savedUser = appUserRepository.save(user)
         val (token, verificationToken) = initiateEmailVerificationToken(savedUser)
 
         verificationTokenRepository.save(verificationToken)
@@ -61,7 +61,7 @@ class AccountManagementServiceImpl(
         val currentVerificationToken: VerificationToken =
             verificationTokenRepository.findByToken(token) ?: throw AccountVerificationException("Invalid Token")
 
-        val user = currentVerificationToken.user
+        val user = currentVerificationToken.appUser
         if (currentVerificationToken.isExpired()) {
             log.error("Token Expired for user: $user")
             currentVerificationToken.token = UUID.randomUUID().toString()
@@ -77,13 +77,14 @@ class AccountManagementServiceImpl(
         }
 
         user.isVerified = true
-        userRepository.save(user)
+        appUserRepository.save(user)
         return EmailConfirmedResponse("Account Verified Successfully")
     }
 
     @Transactional
     override fun signIn(request: AuthenticationRequest): AuthenticationResponse {
-        val user = userRepository.findBy_username(request.username) ?: throw UsernameNotFoundException("User not found")
+        val user =
+            appUserRepository.findByAppUsername(request.username) ?: throw UsernameNotFoundException("User not found")
         if (!user.isVerified) {
             log.error("user not verified: $user")
             throw SignUpException("You didn't clicked yet on the verification link, check your email: ${user.email}")
@@ -103,33 +104,33 @@ class AccountManagementServiceImpl(
     }
 
     override fun requestPasswordReset(email: String): EmailConfirmedResponse {
-        val user = userRepository.findByEmail(email) ?: throw UserNotFoundException("E-Mail: $email does not exist!")
+        val user = appUserRepository.findByEmail(email) ?: throw UserNotFoundException("E-Mail: $email does not exist!")
 
         val newPassword = UUID.randomUUID().toString().take(TEN_CHARACTERS)
-        user._password = passwordEncoder.encode(newPassword)
-        userRepository.save(user)
+        user.appPassword = passwordEncoder.encode(newPassword)
+        appUserRepository.save(user)
 
         emailService.sendPasswordResetEmail(user, newPassword)
         return EmailConfirmedResponse("New password sent to $email")
     }
 
-    private fun initiateEmailVerificationToken(user: User): Pair<String, VerificationToken> {
+    private fun initiateEmailVerificationToken(appUser: AppUser): Pair<String, VerificationToken> {
         val token = UUID.randomUUID().toString()
         val verificationToken = VerificationToken(
             token = token,
-            user = user,
+            appUser = appUser,
             expiryDate = Instant.now().plus(15, ChronoUnit.MINUTES)
         )
         return Pair(token, verificationToken)
     }
 
     private fun checkForSignUpMistakes(request: RegisterRequest) {
-        userRepository.findByEmail(request.email)?.let {
+        appUserRepository.findByEmail(request.email)?.let {
             log.error("User email already exists: $request")
             throw SignUpException("User email already exists!")
         }
 
-        userRepository.findBy_username(request.username)?.let {
+        appUserRepository.findByAppUsername(request.username)?.let {
             log.error("Username already exists: $request")
             throw SignUpException("Username already exists!")
         }

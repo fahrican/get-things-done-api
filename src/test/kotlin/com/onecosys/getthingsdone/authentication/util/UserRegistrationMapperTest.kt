@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.authentication.util
 
-import com.onecosys.getthingsdone.models.RegisterRequest
+import com.onecosys.getthingsdone.dto.RegisterRequest
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.security.crypto.password.PasswordEncoder
 
@@ -29,7 +29,7 @@ internal class UserRegistrationMapperTest {
         assertEquals(request.firstName, user.firstName)
         assertEquals(request.lastName, user.lastName)
         assertEquals(request.email, user.email)
-        assertEquals(request.username, user._username)
-        assertEquals(encodedPassword, user._password)
+        assertEquals(request.username, user.appUsername)
+        assertEquals(encodedPassword, user.appPassword)
     }
 }

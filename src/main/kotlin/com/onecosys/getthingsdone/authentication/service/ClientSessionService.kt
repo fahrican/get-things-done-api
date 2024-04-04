@@ -1,13 +1,13 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.entity.AppUser
 import org.springframework.security.core.Authentication
 
-interface UserSessionService {
+interface ClientSessionService {
 
     fun retrieveAuthentication(): Authentication?
 
-    fun findCurrentSessionUser(): User
+    fun findCurrentSessionUser(): AppUser
 
-    fun getAuthenticatedUser(): User
+    fun getAuthenticatedUser(): AppUser
 }

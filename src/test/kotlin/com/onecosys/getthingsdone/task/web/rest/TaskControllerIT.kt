@@ -2,19 +2,18 @@ package com.onecosys.getthingsdone.task.web.rest
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.onecosys.getthingsdone.authentication.service.ClientSessionService
 import com.onecosys.getthingsdone.authentication.service.JwtService
-import com.onecosys.getthingsdone.authentication.service.UserSessionService
+import com.onecosys.getthingsdone.dto.Priority
+import com.onecosys.getthingsdone.dto.TaskCreateRequest
+import com.onecosys.getthingsdone.dto.TaskFetchResponse
+import com.onecosys.getthingsdone.dto.TaskStatus
+import com.onecosys.getthingsdone.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
-import com.onecosys.getthingsdone.models.Priority
-import com.onecosys.getthingsdone.models.TaskCreateRequest
-import com.onecosys.getthingsdone.models.TaskFetchResponse
-import com.onecosys.getthingsdone.models.TaskStatus
-import com.onecosys.getthingsdone.models.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.service.TaskService
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
@@ -37,7 +36,7 @@ import java.time.format.DateTimeFormatter
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(controllers = [TaskController::class])
 @AutoConfigureMockMvc(addFilters = false)
-internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: MockMvc) {
+internal class TaskControllerIT(@Autowired private val mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var mockService: TaskService
@@ -46,11 +45,12 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     private lateinit var mockJwtService: JwtService
 
     @MockBean
-    private lateinit var mockUserProvider: UserSessionService
+    private lateinit var mockUserProvider: ClientSessionService
 
-    private val mapper = jacksonObjectMapper()
+    private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
     private val taskId: Long = 33
+
     private val dummyDto = TaskFetchResponse(
         id = 33,
         description = "test1",
@@ -64,10 +64,6 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
         priority = Priority.low
     )
 
-    @BeforeEach
-    fun setUp() {
-        mapper.registerModule(JavaTimeModule())
-    }
 
     @Test
     fun `given all tasks when fetch happen then check for size`() {
@@ -112,7 +108,11 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             priority = Priority.low
         )
 
-        `when`(mockService.getTasks(mockUserProvider.getAuthenticatedUser(), TaskStatus.open)).thenReturn(setOf(taskFetchResponse2))
+        `when`(mockService.getTasks(mockUserProvider.getAuthenticatedUser(), TaskStatus.open)).thenReturn(
+            setOf(
+                taskFetchResponse2
+            )
+        )
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=open"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().`is`(200))
@@ -125,7 +125,11 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
     fun `given closed tasks when fetch happen then check for size  and isTaskOpen is false`() {
         // GIVEN
         // WHEN
-        `when`(mockService.getTasks(mockUserProvider.getAuthenticatedUser(), TaskStatus.closed)).thenReturn(setOf(dummyDto))
+        `when`(mockService.getTasks(mockUserProvider.getAuthenticatedUser(), TaskStatus.closed)).thenReturn(
+            setOf(
+                dummyDto
+            )
+        )
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks?status=closed"))
 
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$[0].isTaskOpen").value(dummyDto.isTaskOpen))
@@ -255,7 +259,9 @@ internal class TaskControllerIntegrationTest(@Autowired private val mockMvc: Moc
             priority = Priority.medium
         )
 
-        `when`(mockService.updateTask(dummyDto.id!!, request, mockUserProvider.getAuthenticatedUser())).thenReturn(dummyDto)
+        `when`(mockService.updateTask(dummyDto.id!!, request, mockUserProvider.getAuthenticatedUser())).thenReturn(
+            dummyDto
+        )
         val resultActions: ResultActions = mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/v1/tasks/${dummyDto.id}")
                 .contentType(MediaType.APPLICATION_JSON)

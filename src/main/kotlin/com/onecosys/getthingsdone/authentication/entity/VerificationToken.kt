@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.entity
 
-import com.onecosys.getthingsdone.user.entity.User
+import com.onecosys.getthingsdone.user.entity.AppUser
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -29,7 +29,7 @@ class VerificationToken(
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
-    val user: User,
+    val appUser: AppUser,
 
     var expiryDate: Instant
 ) {

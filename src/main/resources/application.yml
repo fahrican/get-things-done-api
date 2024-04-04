@@ -6,6 +6,8 @@ server:
   port: ${SERVER_PORT:8080}
 
 spring:
+  application:
+    name: get-things-done-api
   datasource:
     username: ${DATASOURCE_USERNAME:sa}
     password: ${DATASOURCE_PASSWORD:''}

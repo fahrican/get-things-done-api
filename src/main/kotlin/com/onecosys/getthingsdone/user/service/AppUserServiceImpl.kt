@@ -1,28 +1,28 @@
 package com.onecosys.getthingsdone.user.service
 
-import com.onecosys.getthingsdone.authentication.service.UserSessionService
+import com.onecosys.getthingsdone.authentication.service.ClientSessionService
+import com.onecosys.getthingsdone.dto.UserInfoResponse
+import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
+import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
-import com.onecosys.getthingsdone.models.UserInfoResponse
-import com.onecosys.getthingsdone.models.UserInfoUpdateRequest
-import com.onecosys.getthingsdone.models.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.user.entity.User
-import com.onecosys.getthingsdone.user.repository.UserRepository
+import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.repository.AppUserRepository
 import com.onecosys.getthingsdone.user.util.UserInfoMapper
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 
 @Service
-class UserServiceImpl(
+class AppUserServiceImpl(
     private val passwordEncoder: PasswordEncoder,
-    private val repository: UserRepository,
+    private val repository: AppUserRepository,
     private val mapper: UserInfoMapper,
-    private val userSessionService: UserSessionService
-) : UserService {
+    private val service: ClientSessionService
+) : AppUserService {
 
     override fun changeEmail(request: Map<String, String>): UserInfoResponse {
-        val currentUser = userSessionService.findCurrentSessionUser()
+        val currentUser = service.findCurrentSessionUser()
 
         val newEmail = request["email"] ?: throw BadRequestException("Email is missing in request")
         validateEmail(newEmail)
@@ -34,18 +34,18 @@ class UserServiceImpl(
     }
 
     override fun changeUsername(request: Map<String, String>): UserInfoResponse {
-        val user = userSessionService.findCurrentSessionUser()
+        val user = service.findCurrentSessionUser()
 
         val newUsername = request["username"] ?: throw BadRequestException("Username can't be blank/null !")
         validateUsername(newUsername)
-        user._username = newUsername
+        user.appUsername = newUsername
 
         val updatedUser = repository.save(user)
         return mapper.toDto(updatedUser)
     }
 
     override fun changePassword(request: UserPasswordUpdateRequest) {
-        val user = userSessionService.findCurrentSessionUser()
+        val user = service.findCurrentSessionUser()
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
             throw PasswordMismatchException("The current password is wrong!")
@@ -55,24 +55,24 @@ class UserServiceImpl(
             throw PasswordMismatchException("Your new password does not match with the password confirmation!")
         }
 
-        user._password = passwordEncoder.encode(request.newPassword)
+        user.appPassword = passwordEncoder.encode(request.newPassword)
         repository.save(user)
     }
 
     override fun changeInfo(request: UserInfoUpdateRequest): UserInfoResponse {
-        val user = userSessionService.findCurrentSessionUser()
+        val user = service.findCurrentSessionUser()
 
         user.apply {
             firstName = request.firstName ?: firstName
             lastName = request.lastName ?: lastName
         }
 
-        val savedUser: User = repository.save(user)
-        return mapper.toDto(savedUser)
+        val savedAppUser: AppUser = repository.save(user)
+        return mapper.toDto(savedAppUser)
     }
 
     override fun fetchInfo(): UserInfoResponse {
-        val user = userSessionService.findCurrentSessionUser()
+        val user = service.findCurrentSessionUser()
         return mapper.toDto(user)
     }
 
@@ -93,7 +93,7 @@ class UserServiceImpl(
             throw BadRequestException("Username cannot contain '@' symbol")
         }
 
-        if (repository.findBy_username(username) != null) {
+        if (repository.findByAppUsername(username) != null) {
             throw BadRequestException("Username is already used by another user")
         }
     }
