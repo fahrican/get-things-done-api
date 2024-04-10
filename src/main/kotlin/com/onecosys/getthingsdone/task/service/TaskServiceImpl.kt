@@ -75,10 +75,9 @@ class TaskServiceImpl(
         return mapper.toDto(savedTask)
     }
 
-    override fun deleteTask(id: Long, appUser: AppUser): String {
+    override fun deleteTask(id: Long, appUser: AppUser) {
         validateTaskIdExistence(id)
         repository.deleteById(id)
-        return "Task with id: $id has been deleted."
     }
 
     private fun validateTaskIdExistence(id: Long) {
