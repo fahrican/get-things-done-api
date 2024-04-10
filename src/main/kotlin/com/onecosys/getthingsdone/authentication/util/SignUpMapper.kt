@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
-class UserRegistrationMapper {
+class SignUpMapper {
 
     fun toEntity(request: RegisterRequest, passwordEncoder: PasswordEncoder) = AppUser().apply {
         firstName = request.firstName

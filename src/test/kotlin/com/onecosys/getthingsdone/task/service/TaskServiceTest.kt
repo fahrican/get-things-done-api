@@ -255,10 +255,10 @@ internal class TaskServiceTest {
 
     @Test
     fun `when delete task by id is called then check for return message`() {
-        every { mockRepository.existsById(any()) } returns true
-        val deleteTaskMsg: String = objectUnderTest.deleteTask(taskId, mockAppUser)
+        every { mockRepository.existsById(taskId) } returns true
+        objectUnderTest.deleteTask(taskId, mockAppUser)
 
-        assertThat(deleteTaskMsg).isEqualTo("Task with id: $taskId has been deleted.")
+        assertThat(mockRepository.findAll().size).isEqualTo(0)
     }
 
     @Test

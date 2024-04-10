@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.security.crypto.password.PasswordEncoder
 
-internal class UserRegistrationMapperTest {
+internal class SignUpMapperTest {
 
     @Test
     fun `when request to entity is triggered then expect correct user entity`() {
@@ -22,9 +22,9 @@ internal class UserRegistrationMapperTest {
         )
         val encodedPassword = "encodedPassword"
         every { passwordEncoder.encode(request.password) } returns encodedPassword
-        val userRegistrationMapper = UserRegistrationMapper()
+        val signUpMapper = SignUpMapper()
 
-        val user = userRegistrationMapper.toEntity(request, passwordEncoder)
+        val user = signUpMapper.toEntity(request, passwordEncoder)
 
         assertEquals(request.firstName, user.firstName)
         assertEquals(request.lastName, user.lastName)

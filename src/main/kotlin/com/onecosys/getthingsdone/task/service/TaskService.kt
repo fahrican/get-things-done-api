@@ -16,5 +16,5 @@ interface TaskService {
 
     fun updateTask(id: Long, updateRequest: TaskUpdateRequest, appUser: AppUser): TaskFetchResponse
 
-    fun deleteTask(id: Long, appUser: AppUser): String
+    fun deleteTask(id: Long, appUser: AppUser)
 }

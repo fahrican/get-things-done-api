@@ -7,13 +7,10 @@ import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.task.service.TaskService
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RestController
 
-@CrossOrigin
 @RestController
 class TaskController(
     private val service: TaskService,
@@ -26,13 +23,9 @@ class TaskController(
     }
 
     override fun deleteTask(id: Long): ResponseEntity<Unit> {
-        val headerValue: String = service.deleteTask(id, userProvider.getAuthenticatedUser())
-        val httpHeader = HttpHeaders()
-        httpHeader.add("delete-task-header", headerValue)
-        return ResponseEntity(null, httpHeader, HttpStatus.NO_CONTENT)
-
+        service.deleteTask(id, userProvider.getAuthenticatedUser())
+        return ResponseEntity(null, HttpStatus.NO_CONTENT)
     }
-
 
     override fun getTaskById(id: Long) = ResponseEntity.ok(service.getTaskById(id, userProvider.getAuthenticatedUser()))
 

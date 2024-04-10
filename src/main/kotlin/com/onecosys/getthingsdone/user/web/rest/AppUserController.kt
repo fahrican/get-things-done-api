@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.user.rest.web
+package com.onecosys.getthingsdone.user.web.rest
 
 import com.onecosys.getthingsdone.api.UserResource
 import com.onecosys.getthingsdone.dto.UserInfoResponse

@@ -2,7 +2,7 @@ package com.onecosys.getthingsdone.authentication.service
 
 import com.onecosys.getthingsdone.authentication.entity.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
-import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
+import com.onecosys.getthingsdone.authentication.util.SignUpMapper
 import com.onecosys.getthingsdone.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.dto.RegisterRequest
 import com.onecosys.getthingsdone.error.AccountVerificationException
@@ -35,7 +35,7 @@ internal class AccountManagementServiceImplTest {
 
     private val mockAuthenticationManager = mockk<AuthenticationManager>()
 
-    private val mockMapper = mockk<UserRegistrationMapper>()
+    private val mockMapper = mockk<SignUpMapper>()
 
     private val mockAppUserRepository = mockk<AppUserRepository>()
 
