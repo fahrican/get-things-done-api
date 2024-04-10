@@ -2,7 +2,7 @@ package com.onecosys.getthingsdone.authentication.service
 
 import com.onecosys.getthingsdone.authentication.entity.VerificationToken
 import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
-import com.onecosys.getthingsdone.authentication.util.UserRegistrationMapper
+import com.onecosys.getthingsdone.authentication.util.SignUpMapper
 import com.onecosys.getthingsdone.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.dto.EmailConfirmedResponse
@@ -31,7 +31,7 @@ class AccountManagementServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
-    private val mapper: UserRegistrationMapper,
+    private val mapper: SignUpMapper,
     private val appUserRepository: AppUserRepository,
     private val verificationTokenRepository: VerificationTokenRepository,
     private val emailService: EmailService
