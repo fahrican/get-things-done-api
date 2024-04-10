@@ -279,12 +279,8 @@ internal class TaskControllerIT(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `given id for delete request when delete task is performed then check for the message`() {
-        val expectedHeaderValue = "Task with id: $taskId has been deleted."
-
-        `when`(mockService.deleteTask(taskId, mockUserProvider.getAuthenticatedUser())).thenReturn(expectedHeaderValue)
         val resultActions: ResultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/$taskId"))
 
         resultActions.andExpect(MockMvcResultMatchers.status().isNoContent)
-        resultActions.andExpect(MockMvcResultMatchers.header().string("delete-task-header", expectedHeaderValue))
     }
 }

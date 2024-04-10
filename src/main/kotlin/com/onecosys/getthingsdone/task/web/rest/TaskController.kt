@@ -27,7 +27,6 @@ class TaskController(
         return ResponseEntity(null, HttpStatus.NO_CONTENT)
     }
 
-
     override fun getTaskById(id: Long) = ResponseEntity.ok(service.getTaskById(id, userProvider.getAuthenticatedUser()))
 
     override fun getTasks(status: TaskStatus?): ResponseEntity<List<TaskFetchResponse>> {
