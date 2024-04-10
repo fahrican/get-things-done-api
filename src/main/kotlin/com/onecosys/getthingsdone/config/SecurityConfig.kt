@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
@@ -20,7 +22,8 @@ class SecurityConfig(
     @Bean
     fun filterRequests(httpSecurity: HttpSecurity): SecurityFilterChain {
         httpSecurity
-            .csrf { csrf -> csrf.disable() }
+            .csrf { it.disable() }
+            .cors { it.configurationSource(corsConfigurationSource()) }
             .authorizeHttpRequests {
                 it.requestMatchers(
                     "api/v1/auth/**",
@@ -39,5 +42,19 @@ class SecurityConfig(
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return httpSecurity.build()
+    }
+
+    @Bean
+    fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
+        val configuration = CorsConfiguration().apply {
+            allowedOrigins = listOf("*")
+            allowedMethods = listOf("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH")
+            allowedHeaders = listOf("*")
+            allowCredentials = true
+        }
+        val source = UrlBasedCorsConfigurationSource().apply {
+            registerCorsConfiguration("/**", configuration)
+        }
+        return source
     }
 }
