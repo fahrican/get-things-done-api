@@ -38,8 +38,7 @@ class TaskServiceImpl(
     }
 
     override fun getTaskById(id: Long, appUser: AppUser): TaskFetchResponse {
-        validateTaskIdExistence(id)
-        val task: Task = repository.findTaskByIdAndAppUser(id, appUser)
+        val task = validateTaskIdExistence(id, appUser)
         return mapper.toDto(task)
     }
 
@@ -57,8 +56,7 @@ class TaskServiceImpl(
     }
 
     override fun updateTask(id: Long, updateRequest: TaskUpdateRequest, appUser: AppUser): TaskFetchResponse {
-        validateTaskIdExistence(id)
-        val existingTask: Task = repository.findTaskByIdAndAppUser(id, appUser)
+        val existingTask = validateTaskIdExistence(id, appUser)
 
         existingTask.apply {
             description = updateRequest.description ?: description
@@ -76,13 +74,13 @@ class TaskServiceImpl(
     }
 
     override fun deleteTask(id: Long, appUser: AppUser) {
-        validateTaskIdExistence(id)
+        validateTaskIdExistence(id, appUser)
         repository.deleteById(id)
     }
 
-    private fun validateTaskIdExistence(id: Long) {
-        if (!repository.existsById(id)) {
-            throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
-        }
+    private fun validateTaskIdExistence(id: Long, appUser: AppUser): Task {
+        val task = repository.findTaskByIdAndAppUser(id, appUser)
+            ?: throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
+        return task
     }
 }
