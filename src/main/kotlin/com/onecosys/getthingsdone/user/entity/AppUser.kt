@@ -58,7 +58,7 @@ class AppUser(
     private val verificationToken: VerificationToken? = null,
 
     @OneToMany(mappedBy = "appUser", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    private val tasks: List<Task>? = null
+    private val tasks: Set<Task>? = null
 ) : UserDetails {
 
     override fun getAuthorities(): List<GrantedAuthority> = listOf(SimpleGrantedAuthority(role.name))
