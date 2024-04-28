@@ -233,11 +233,17 @@ internal class TaskServiceTest {
 
     @Test
     fun `when get task by id is called then expect a task not found exception`() {
-        every { mockRepository.existsById(any()) } returns false
-        val exception = assertThrows<TaskNotFoundException> { objectUnderTest.getTaskById(taskId, mockAppUser) }
+        val expectedException = TaskNotFoundException("Task with ID: $taskId does not exist!")
+        every {
+            mockRepository.findTaskByIdAndAppUser(
+                any(),
+                any()
+            )
+        } throws expectedException
+        val actualException = assertThrows<TaskNotFoundException> { objectUnderTest.getTaskById(taskId, mockAppUser) }
 
-        assertThat(exception.message).isEqualTo("Task with ID: $taskId does not exist!")
-        verify { mockRepository.findTaskByIdAndAppUser(any(), any()) wasNot called }
+        assertThat(actualException.message).isEqualTo(expectedException.message)
+        verify { mockRepository.findTaskByIdAndAppUser(any(), any())?.wasNot(called) }
     }
 
     @Test
