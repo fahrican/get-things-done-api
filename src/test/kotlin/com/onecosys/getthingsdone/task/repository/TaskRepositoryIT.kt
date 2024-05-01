@@ -3,6 +3,8 @@ package com.onecosys.getthingsdone.task.repository
 import com.onecosys.getthingsdone.task.entity.Task
 import com.onecosys.getthingsdone.user.entity.AppUser
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -14,9 +16,16 @@ class TaskRepositoryIT @Autowired constructor(
     val taskRepository: TaskRepository
 ) {
 
+    val user = AppUser(
+        firstName = "John",
+        lastName = "Doe",
+        email = "john.doe@example.com",
+        appUsername = "johndoe",
+        appPassword = "securepassword"
+    )
+
     @Test
-    fun `test findTaskByIdAndUser`() {
-        // Arrange
+    fun `when find task by id and user is queried then expect pre-defined description`() {
         val user = AppUser(
             firstName = "John",
             lastName = "Doe",
@@ -25,16 +34,36 @@ class TaskRepositoryIT @Autowired constructor(
             appPassword = "securepassword"
         )
         entityManager.persist(user)
-        val task = Task().apply { description = "Test Task"; appUser = user }
+        val expectedDescription = "Test Task"
+        val task = Task().apply { description = expectedDescription; appUser = user }
         entityManager.persist(task)
         entityManager.flush()
 
-        // Act
-        val foundTask = taskRepository.findTaskByIdAndUser(task.id, user)
+        val actualTask = taskRepository.findTaskByIdAndUser(task.id, user)
 
-        // Assert
-        assert(foundTask != null)
-        assert(foundTask?.description == "Test Task")
+        assertNotNull(actualTask)
+        assertEquals(expectedDescription, actualTask?.description)
+    }
+
+    @Test
+    fun `when find task by id and user is queried with wrong user then expect null`() {
+        val anotherUser = AppUser(
+            firstName = "Jane",
+            lastName = "Doe",
+            email = "jane.doe@example.com",
+            appUsername = "janedoe",
+            appPassword = "securepassword"
+        )
+        entityManager.persist(user)
+        entityManager.persist(anotherUser)
+        val expectedDescription = "Test Task"
+        val task = Task().apply { description = expectedDescription;appUser = user }
+        entityManager.persist(task)
+        entityManager.flush()
+
+        val actualTask = taskRepository.findTaskByIdAndUser(task.id, anotherUser)
+
+        assertNull(actualTask, "Task should not be found for the wrong user")
     }
 
     @Test
