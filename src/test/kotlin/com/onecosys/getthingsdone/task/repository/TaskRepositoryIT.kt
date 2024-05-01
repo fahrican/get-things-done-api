@@ -69,9 +69,6 @@ class TaskRepositoryIT @Autowired constructor(
 
     @Test
     fun `when does description exist is queried then expect true`() {
-        val expectedDescription = "Unique Description"
-        val task = Task().apply { description = expectedDescription }
-        entityManager.persist(task)
         entityManager.flush()
 
         val actualResult = taskRepository.doesDescriptionExist(expectedDescription)
