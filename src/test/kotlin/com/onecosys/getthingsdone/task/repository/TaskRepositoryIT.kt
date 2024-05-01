@@ -86,18 +86,26 @@ class TaskRepositoryIT @Autowired constructor(
     }
 
     @Test
-    fun `test findAllByUserAndIsTaskOpenOrderByIdAsc`() {
-        entityManager.persist(user)
-        val task1 = Task().apply { description = "Task 1"; isTaskOpen = true; appUser = user }
-        val task2 = Task().apply { description = "Task 2"; isTaskOpen = false; appUser = user }
-        entityManager.persist(task1)
+    fun `when find all by user and is task open is false order by id asc is queried then expect one task`() {
+        val expectedDescription = "Task 2"
+        val task2 = Task().apply { description = expectedDescription; isTaskOpen = false; appUser = user }
         entityManager.persist(task2)
+        entityManager.flush()
+
+        val tasks = taskRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false)
+
+        assertEquals(1, tasks.size)
+        assertEquals(expectedDescription, tasks.first().description)
+    }
+
+    @Test
+    fun `when find all by user and is task open is true order by id asc is queried then expect one task`() {
         entityManager.flush()
 
         val tasks = taskRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true)
 
-        assert(tasks.size == 1)
-        assert(tasks.first().description == "Task 1")
+        assertEquals(1, tasks.size)
+        assertEquals(expectedDescription, tasks.first().description)
     }
 
     @Test
