@@ -62,18 +62,37 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when new user gets persisted then check if username can be found`() {
         entityManager.flush()
 
-        val foundUser = appUserRepository.findByAppUsername(username)
+        val actualUser: AppUser? = appUserRepository.findByAppUsername(username)
 
-        assertNotNull(foundUser)
-        assertEquals(username, foundUser?.appUsername)
+        assertNotNull(actualUser)
+        assertEquals(username, actualUser?.appUsername)
     }
 
     @Test
     fun `when user username does not exist then check if user is null`() {
         val username = "malek-abul"
 
-        val foundUser = appUserRepository.findByAppUsername(username)
+        val actualUser: AppUser? = appUserRepository.findByAppUsername(username)
 
-        assertNull(foundUser)
+        assertNull(actualUser)
+    }
+
+    @Test
+    fun `when find by username and find by email are called then check for the some properties`() {
+        entityManager.flush()
+
+        val foundUserByUsername: AppUser? = appUserRepository.findByAppUsername(username)
+        val foundUserByEmail: AppUser? = appUserRepository.findByEmail(userEmail)
+
+        assertEquals(foundUserByEmail?.authorities, foundUserByUsername?.authorities)
+        assertEquals(foundUserByEmail?.password, foundUserByUsername?.password)
+        assertEquals(foundUserByEmail?.username, foundUserByUsername?.username)
+        assertEquals(foundUserByEmail?.isEnabled, foundUserByUsername?.isEnabled)
+        assertEquals(true, foundUserByUsername?.isAccountNonExpired)
+        assertEquals(true, foundUserByUsername?.isAccountNonLocked)
+        assertEquals(true, foundUserByUsername?.isCredentialsNonExpired)
+        assertEquals(true, foundUserByEmail?.isAccountNonExpired)
+        assertEquals(true, foundUserByEmail?.isAccountNonLocked)
+        assertEquals(true, foundUserByEmail?.isCredentialsNonExpired)
     }
 }
