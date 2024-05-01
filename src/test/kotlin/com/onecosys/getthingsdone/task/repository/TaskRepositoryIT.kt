@@ -57,28 +57,34 @@ class TaskRepositoryIT @Autowired constructor(
         entityManager.persist(user)
         entityManager.persist(anotherUser)
         val expectedDescription = "Test Task"
-        val task = Task().apply { description = expectedDescription;appUser = user }
+        val task = Task().apply { description = expectedDescription; appUser = user }
         entityManager.persist(task)
         entityManager.flush()
 
         val actualTask = taskRepository.findTaskByIdAndUser(task.id, anotherUser)
 
-        assertNull(actualTask, "Task should not be found for the wrong user")
+        assertNull(actualTask)
     }
 
     @Test
-    fun `test existsByDescription`() {
-        // Arrange
-        val task = Task().apply { description = "Unique Description" }
+    fun `when does description exists is queried then expect true`() {
+        val expectedDescription = "Unique Description"
+        val task = Task().apply { description = expectedDescription }
         entityManager.persist(task)
         entityManager.flush()
 
-        // Act
-        val exists = taskRepository.doesDescriptionExist("Unique Description")
+        val actualResult = taskRepository.doesDescriptionExist(expectedDescription)
 
-        // Assert
-        assert(exists)
-        assertEquals(true, exists)
+        assertEquals(true, actualResult)
+    }
+
+    @Test
+    fun `when does description exists is queried then expect false`() {
+        val expectedDescription = "Unique Description"
+
+        val actualResult = taskRepository.doesDescriptionExist(expectedDescription)
+
+        assertEquals(false, actualResult)
     }
 
     @Test
