@@ -44,7 +44,7 @@ class TaskRepositoryIT @Autowired constructor(
     fun `when find task by id and user is queried then expect pre-defined description`() {
         entityManager.flush()
 
-        val actualTask = taskRepository.findTaskByIdAndUser(task.id, user)
+        val actualTask: Task? = taskRepository.findTaskByIdAndUser(task.id, user)
 
         assertNotNull(actualTask)
         assertEquals(expectedDescription, actualTask?.description)
@@ -62,7 +62,7 @@ class TaskRepositoryIT @Autowired constructor(
         entityManager.persist(anotherUser)
         entityManager.flush()
 
-        val actualTask = taskRepository.findTaskByIdAndUser(task.id, anotherUser)
+        val actualTask: Task? = taskRepository.findTaskByIdAndUser(task.id, anotherUser)
 
         assertNull(actualTask)
     }
@@ -71,7 +71,7 @@ class TaskRepositoryIT @Autowired constructor(
     fun `when does description exist is queried then expect true`() {
         entityManager.flush()
 
-        val actualResult = taskRepository.doesDescriptionExist(expectedDescription)
+        val actualResult: Boolean = taskRepository.doesDescriptionExist(expectedDescription)
 
         assertEquals(true, actualResult)
     }
@@ -80,7 +80,7 @@ class TaskRepositoryIT @Autowired constructor(
     fun `when does description exist is queried then expect false`() {
         val expectedDescription = "Unique Description"
 
-        val actualResult = taskRepository.doesDescriptionExist(expectedDescription)
+        val actualResult: Boolean = taskRepository.doesDescriptionExist(expectedDescription)
 
         assertEquals(false, actualResult)
     }
@@ -92,7 +92,7 @@ class TaskRepositoryIT @Autowired constructor(
         entityManager.persist(task2)
         entityManager.flush()
 
-        val tasks = taskRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false)
+        val tasks: Set<Task> = taskRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, false)
 
         assertEquals(1, tasks.size)
         assertEquals(expectedDescription, tasks.first().description)
@@ -102,33 +102,31 @@ class TaskRepositoryIT @Autowired constructor(
     fun `when find all by user and is task open is true order by id asc is queried then expect one task`() {
         entityManager.flush()
 
-        val tasks = taskRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true)
+        val tasks: Set<Task> = taskRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(user, true)
 
         assertEquals(1, tasks.size)
         assertEquals(expectedDescription, tasks.first().description)
     }
 
     @Test
-    fun `test findAllByUserOrderByIdAsc`() {
-        // Arrange
-        val user = AppUser(
-            firstName = "Bob",
-            lastName = "Brown",
-            email = "bob.brown@example.com",
-            appUsername = "bobbrown",
-            appPassword = "securepassword"
-        )
-        entityManager.persist(user)
+    fun `when find all by user order by id asc is queried then expect three tasks`() {
         val task1 = Task().apply { description = "Task 1"; appUser = user }
         val task2 = Task().apply { description = "Task 2"; appUser = user }
         entityManager.persist(task1)
         entityManager.persist(task2)
         entityManager.flush()
 
-        // Act
-        val tasks = taskRepository.findAllByUserOrderByIdAsc(user)
+        val tasks: Set<Task> = taskRepository.findAllByUserOrderByIdAsc(user)
 
-        // Assert
-        assert(tasks.size == 2)
+        assertEquals(3, tasks.size)
+    }
+
+    @Test
+    fun `when find all by user order by id asc is queried then expect zero tasks`() {
+        entityManager.clear()
+
+        val tasks: Set<Task> = taskRepository.findAllByUserOrderByIdAsc(user)
+
+        assertEquals(0, tasks.size)
     }
 }
