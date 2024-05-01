@@ -141,7 +141,7 @@ internal class TaskServiceTest {
 
     @Test
     fun `when task gets created with non unique description then check for bad request exception`() {
-        every { mockRepository.existsByDescription(any()) } returns true
+        every { mockRepository.doesDescriptionExist(any()) } returns true
         val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(createRequest, mockAppUser) }
 
         assertThat(exception.message).isEqualTo("A task with the description '${createRequest.description}' already exists")

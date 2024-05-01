@@ -47,7 +47,7 @@ class TaskServiceImpl(
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         }
-        if (repository.existsByDescription(createRequest.description)) {
+        if (repository.doesDescriptionExist(createRequest.description)) {
             throw BadRequestException("A task with the description '${createRequest.description}' already exists")
         }
         val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), appUser)
