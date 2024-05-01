@@ -25,13 +25,13 @@ class TaskServiceImpl(
 
     override fun getTasks(appUser: AppUser, status: TaskStatus?): Set<TaskFetchResponse> {
         return when (status) {
-            TaskStatus.open -> repository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(appUser, true).map(mapper::toDto)
+            TaskStatus.open -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(appUser, true).map(mapper::toDto)
                 .toSet()
 
-            TaskStatus.closed -> repository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(appUser, false).map(mapper::toDto)
+            TaskStatus.closed -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(appUser, false).map(mapper::toDto)
                 .toSet()
 
-            else -> repository.findAllByAppUserOrderByIdAsc(appUser)
+            else -> repository.findAllByUserOrderByIdAsc(appUser)
                 .map(mapper::toDto)
                 .toSet()
         }
@@ -79,7 +79,7 @@ class TaskServiceImpl(
     }
 
     private fun validateTaskIdExistence(id: Long, appUser: AppUser): Task {
-        val task = repository.findTaskByIdAndAppUser(id, appUser)
+        val task = repository.findTaskByIdAndUser(id, appUser)
             ?: throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
         return task
     }

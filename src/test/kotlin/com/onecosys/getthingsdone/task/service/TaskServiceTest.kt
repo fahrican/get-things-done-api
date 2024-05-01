@@ -76,11 +76,11 @@ internal class TaskServiceTest {
     fun `when all tasks get fetched then check if the given size is correct`() {
         val expectedTasks = listOf(Task(), Task())
 
-        every { mockRepository.findAllByAppUserOrderByIdAsc(any()) } returns expectedTasks.toMutableSet()
+        every { mockRepository.findAllByUserOrderByIdAsc(any()) } returns expectedTasks.toMutableSet()
         val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(mockAppUser, null)
 
         assertThat(actualList.size).isEqualTo(expectedTasks.size)
-        verify(exactly = 1) { mockRepository.findAllByAppUserOrderByIdAsc(any()) }
+        verify(exactly = 1) { mockRepository.findAllByUserOrderByIdAsc(any()) }
     }
 
     @Test
@@ -89,7 +89,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every {
-            mockRepository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(
+            mockRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(
                 any(),
                 true
             )
@@ -97,7 +97,7 @@ internal class TaskServiceTest {
         val actualList: Set<TaskFetchResponse> = objectUnderTest.getTasks(mockAppUser, TaskStatus.open)
 
         assertThat(actualList.elementAt(0).isTaskOpen).isEqualTo(task.isTaskOpen)
-        verify(exactly = 1) { mockRepository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(any(), true) }
+        verify(exactly = 1) { mockRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(any(), true) }
     }
 
     @Test
@@ -106,7 +106,7 @@ internal class TaskServiceTest {
         val expectedTasks = listOf(task)
 
         every {
-            mockRepository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(
+            mockRepository.findAllByUserAndIsTaskOpenOrderByIdAsc(
                 any(),
                 false
             )
@@ -225,7 +225,7 @@ internal class TaskServiceTest {
     fun `when get task by id is called then expect a specific description`() {
         task.description = "getTaskById"
         every { mockRepository.existsById(any()) } returns true
-        every { mockRepository.findTaskByIdAndAppUser(any(), any()) } returns task
+        every { mockRepository.findTaskByIdAndUser(any(), any()) } returns task
         val taskDto = objectUnderTest.getTaskById(1234, mockAppUser)
 
         assertThat(taskDto.description).isEqualTo(task.description)
@@ -235,7 +235,7 @@ internal class TaskServiceTest {
     fun `when get task by id is called then expect a task not found exception`() {
         val expectedException = TaskNotFoundException("Task with ID: $taskId does not exist!")
         every {
-            mockRepository.findTaskByIdAndAppUser(
+            mockRepository.findTaskByIdAndUser(
                 any(),
                 any()
             )
@@ -243,7 +243,7 @@ internal class TaskServiceTest {
         val actualException = assertThrows<TaskNotFoundException> { objectUnderTest.getTaskById(taskId, mockAppUser) }
 
         assertThat(actualException.message).isEqualTo(expectedException.message)
-        verify { mockRepository.findTaskByIdAndAppUser(any(), any())?.wasNot(called) }
+        verify { mockRepository.findTaskByIdAndUser(any(), any())?.wasNot(called) }
     }
 
     @Test
@@ -252,10 +252,10 @@ internal class TaskServiceTest {
         val taskIdSlot = slot<Long>()
 
         every { mockRepository.existsById(any()) } returns true
-        every { mockRepository.findTaskByIdAndAppUser(capture(taskIdSlot), any()) } returns task
+        every { mockRepository.findTaskByIdAndUser(capture(taskIdSlot), any()) } returns task
         objectUnderTest.getTaskById(id, mockAppUser)
 
-        verify { mockRepository.findTaskByIdAndAppUser(capture(taskIdSlot), any()) }
+        verify { mockRepository.findTaskByIdAndUser(capture(taskIdSlot), any()) }
         assertThat(taskIdSlot.captured).isEqualTo(id)
     }
 
@@ -299,7 +299,7 @@ internal class TaskServiceTest {
             )
 
         every { mockRepository.existsById(any()) } returns true
-        every { mockRepository.findTaskByIdAndAppUser(any(), any()) } returns task
+        every { mockRepository.findTaskByIdAndUser(any(), any()) } returns task
         every { mockRepository.save(any()) } returns task
         val actualTask = objectUnderTest.updateTask(task.id, updateRequest, mockAppUser)
 
