@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 @DataJpaTest
 class AppUserRepositoryIT @Autowired constructor(
     val entityManager: TestEntityManager,
-    val appUserRepository: AppUserRepository
+    val objectUnderTest: AppUserRepository
 ) {
 
     val userEmail = "faris.diab@example.com"
@@ -43,7 +43,7 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when new user gets persisted then check if email can be found`() {
         entityManager.flush()
 
-        val actualUser: AppUser? = appUserRepository.findByEmail(userEmail)
+        val actualUser: AppUser? = objectUnderTest.findByEmail(userEmail)
 
         assertNotNull(actualUser)
         assertEquals(userEmail, actualUser?.email)
@@ -53,7 +53,7 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when user email does not exist then check if user is null`() {
         val email = "none-existent@example.com"
 
-        val actualUser: AppUser? = appUserRepository.findByEmail(email)
+        val actualUser: AppUser? = objectUnderTest.findByEmail(email)
 
         assertNull(actualUser)
     }
@@ -62,7 +62,7 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when new user gets persisted then check if username can be found`() {
         entityManager.flush()
 
-        val actualUser: AppUser? = appUserRepository.findByAppUsername(username)
+        val actualUser: AppUser? = objectUnderTest.findByAppUsername(username)
 
         assertNotNull(actualUser)
         assertEquals(username, actualUser?.appUsername)
@@ -72,7 +72,7 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when user username does not exist then check if user is null`() {
         val username = "malek-abul"
 
-        val actualUser: AppUser? = appUserRepository.findByAppUsername(username)
+        val actualUser: AppUser? = objectUnderTest.findByAppUsername(username)
 
         assertNull(actualUser)
     }
@@ -81,8 +81,8 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when find by username and find by email are called then check for the some properties`() {
         entityManager.flush()
 
-        val foundUserByUsername: AppUser? = appUserRepository.findByAppUsername(username)
-        val foundUserByEmail: AppUser? = appUserRepository.findByEmail(userEmail)
+        val foundUserByUsername: AppUser? = objectUnderTest.findByAppUsername(username)
+        val foundUserByEmail: AppUser? = objectUnderTest.findByEmail(userEmail)
 
         assertEquals(foundUserByEmail?.authorities, foundUserByUsername?.authorities)
         assertEquals(foundUserByEmail?.password, foundUserByUsername?.password)

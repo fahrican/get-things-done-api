@@ -18,7 +18,7 @@ import java.time.temporal.ChronoUnit
 @DataJpaTest
 class VerificationTokenRepositoryIT @Autowired constructor(
     val entityManager: TestEntityManager,
-    val verificationTokenRepository: VerificationTokenRepository
+    val objectUnderTest: VerificationTokenRepository
 ) {
 
     val user = AppUser()
@@ -43,7 +43,7 @@ class VerificationTokenRepositoryIT @Autowired constructor(
         entityManager.persist(token)
         entityManager.flush()
 
-        val foundToken = verificationTokenRepository.findByToken("test-token")
+        val foundToken = objectUnderTest.findByToken("test-token")
 
         assertNotNull(foundToken)
         assertEquals("test-token", foundToken?.token)
@@ -53,7 +53,7 @@ class VerificationTokenRepositoryIT @Autowired constructor(
     fun `when token does not exist then check if the result is null`() {
         val nonExistentToken = "non-existent-token"
 
-        val foundToken = verificationTokenRepository.findByToken(nonExistentToken)
+        val foundToken = objectUnderTest.findByToken(nonExistentToken)
 
         assertNull(foundToken)
     }
