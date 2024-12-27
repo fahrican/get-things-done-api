@@ -3,6 +3,7 @@ package com.onecosys.getthingsdone.config
 import com.onecosys.getthingsdone.user.repository.AppUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -32,5 +33,7 @@ class AuthenticationConfig(private val repository: AppUserRepository) {
     }
 
     @Bean
-    fun getAuthenticationManager(authConfig: AuthenticationConfiguration) = authConfig.getAuthenticationManager()
+    fun getAuthenticationManager(
+        authConfig: AuthenticationConfiguration
+    ): AuthenticationManager = authConfig.authenticationManager
 }
