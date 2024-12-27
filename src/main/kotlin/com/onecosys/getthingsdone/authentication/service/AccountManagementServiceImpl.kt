@@ -26,13 +26,14 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
+
 @Service
 class AccountManagementServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
     private val mapper: SignUpMapper,
-    private val appUserRepository: AppUserRepository,
+    private val userRepository: AppUserRepository,
     private val verificationTokenRepository: VerificationTokenRepository,
     private val emailService: EmailService
 ) : AccountManagementService {
@@ -48,7 +49,7 @@ class AccountManagementServiceImpl(
         checkForSignUpMistakes(request)
 
         val user = mapper.toEntity(request, passwordEncoder)
-        val savedUser = appUserRepository.save(user)
+        val savedUser = userRepository.save(user)
         val (token, verificationToken) = initiateEmailVerificationToken(savedUser)
 
         verificationTokenRepository.save(verificationToken)
@@ -63,12 +64,7 @@ class AccountManagementServiceImpl(
 
         val user = currentVerificationToken.appUser
         if (currentVerificationToken.isExpired()) {
-            log.error("Token Expired for user: $user")
-            currentVerificationToken.token = UUID.randomUUID().toString()
-            currentVerificationToken.expiryDate = Instant.now().plus(15, ChronoUnit.MINUTES)
-            verificationTokenRepository.save(currentVerificationToken)
-            emailService.sendVerificationEmail(user, currentVerificationToken.token)
-            throw TokenExpiredException("Token expired. A new verification link has been sent to your email: ${user.email}")
+            handleExpiredToken(user, currentVerificationToken)
         }
 
         if (user.isVerified) {
@@ -77,39 +73,29 @@ class AccountManagementServiceImpl(
         }
 
         user.isVerified = true
-        appUserRepository.save(user)
+        userRepository.save(user)
         return EmailConfirmedResponse("Account Verified Successfully")
     }
 
     @Transactional
     override fun signIn(request: AuthenticationRequest): AuthenticationResponse {
         val user =
-            appUserRepository.findByAppUsername(request.username) ?: throw UsernameNotFoundException("User not found")
+            userRepository.findByAppUsername(request.username) ?: throw UsernameNotFoundException("User not found")
         if (!user.isVerified) {
             log.error("user not verified: $user")
             throw SignUpException("You didn't clicked yet on the verification link, check your email: ${user.email}")
         }
-
-        try {
-            authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
-        } catch (bce: BadCredentialsException) {
-            log.error("Username or password is incorrect: ${bce.message}")
-            throw UsernamePasswordMismatchException("Username or password is incorrect")
-        }
-
+        authenticateUser(request)
         val jwtToken = jwtService.generateAccessToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
-
         return AuthenticationResponse(jwtToken, refreshToken)
     }
 
     override fun requestPasswordReset(email: String): EmailConfirmedResponse {
-        val user = appUserRepository.findByEmail(email) ?: throw UserNotFoundException("E-Mail: $email does not exist!")
-
+        val user = userRepository.findByEmail(email) ?: throw UserNotFoundException("E-Mail: $email does not exist!")
         val newPassword = UUID.randomUUID().toString().take(TEN_CHARACTERS)
         user.appPassword = passwordEncoder.encode(newPassword)
-        appUserRepository.save(user)
-
+        userRepository.save(user)
         emailService.sendPasswordResetEmail(user, newPassword)
         return EmailConfirmedResponse("New password sent to $email")
     }
@@ -125,12 +111,12 @@ class AccountManagementServiceImpl(
     }
 
     private fun checkForSignUpMistakes(request: RegisterRequest) {
-        appUserRepository.findByEmail(request.email)?.let {
+        userRepository.findByEmail(request.email)?.let {
             log.error("User email already exists: $request")
             throw SignUpException("User email already exists!")
         }
 
-        appUserRepository.findByAppUsername(request.username)?.let {
+        userRepository.findByAppUsername(request.username)?.let {
             log.error("Username already exists: $request")
             throw SignUpException("Username already exists!")
         }
@@ -138,6 +124,27 @@ class AccountManagementServiceImpl(
         if (request.password != request.passwordConfirmation) {
             log.error("Password and password confirmation does not match: $request")
             throw SignUpException("Password and password confirmation does not match!")
+        }
+    }
+
+    private fun handleExpiredToken(
+        user: AppUser,
+        currentVerificationToken: VerificationToken
+    ): Nothing {
+        log.error("Token Expired for user: $user")
+        currentVerificationToken.token = UUID.randomUUID().toString()
+        currentVerificationToken.expiryDate = Instant.now().plus(15, ChronoUnit.MINUTES)
+        verificationTokenRepository.save(currentVerificationToken)
+        emailService.sendVerificationEmail(user, currentVerificationToken.token)
+        throw TokenExpiredException("Token expired. A new verification link has been sent to your email: ${user.email}")
+    }
+
+    private fun authenticateUser(request: AuthenticationRequest) {
+        try {
+            authenticationManager.authenticate(UsernamePasswordAuthenticationToken(request.username, request.password))
+        } catch (bce: BadCredentialsException) {
+            log.error("Username or password is incorrect: ${bce.message}")
+            throw UsernamePasswordMismatchException("Username or password is incorrect")
         }
     }
 }
