@@ -33,7 +33,7 @@ class ClientSessionServiceImplTest {
 
     private lateinit var objectUnderTest: ClientSessionService
 
-    val appUser = AppUser();
+    private val appUser = AppUser();
 
     @BeforeEach
     fun setUp() {

@@ -26,6 +26,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @AutoConfigureMockMvc(addFilters = false)
 internal class AuthenticationControllerIT {
 
+    companion object {
+        private const val DUMMY_PASSWORD = "123456"
+        private const val USERNAME = "mahmoud-darwoush"
+        private const val EMAIL = "mahmoud@aol.com"
+    }
+
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -45,10 +51,10 @@ internal class AuthenticationControllerIT {
         val registerRequest = RegisterRequest(
             firstName = "Mahmoud",
             lastName = "Darwoush",
-            email = "mahmoud@aol.com",
-            username = "mahmoud-darwoush",
-            password = "123456",
-            passwordConfirmation = "123456"
+            email = EMAIL,
+            username = USERNAME,
+            password = DUMMY_PASSWORD,
+            passwordConfirmation = DUMMY_PASSWORD
         )
         `when`(mockAccountManagementService.signUp(registerRequest)).thenReturn(dummyEmailConfirmResponse)
 
@@ -81,8 +87,8 @@ internal class AuthenticationControllerIT {
 
     @Test
     fun `when user sign in triggered then expect success response`() {
-        val request = AuthenticationRequest(username = "mahmoud-darwoush", password = "123456")
-        val response = AuthenticationResponse(accessToken = "acess123", refreshToken = "refresh123")
+        val request = AuthenticationRequest(username = USERNAME, password = DUMMY_PASSWORD)
+        val response = AuthenticationResponse(accessToken = "access123", refreshToken = "refresh123")
         `when`(mockAccountManagementService.signIn(request)).thenReturn(response)
 
         val resultActions: ResultActions = mockMvc.perform(
@@ -98,7 +104,7 @@ internal class AuthenticationControllerIT {
 
     @Test
     fun `when user password reset triggered then expect success response`() {
-        val email = "mahmoud@aol.com"
+        val email = EMAIL
         `when`(mockAccountManagementService.requestPasswordReset(email)).thenReturn(dummyEmailConfirmResponse)
 
         val resultActions: ResultActions = mockMvc.perform(

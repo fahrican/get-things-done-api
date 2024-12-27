@@ -5,7 +5,6 @@ import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import io.jsonwebtoken.Jwts
 import io.mockk.MockKAnnotations
 import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,22 +18,22 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.crypto.SecretKey
 
+
 @ExtendWith(MockKExtension::class)
 internal class JwtServiceImplTest {
 
-    @RelaxedMockK
-    private lateinit var mockJwtKey: JwtKey
-
-    private lateinit var secretKey: SecretKey
-
-    private val username = "abu-ali"
-
-    private lateinit var objectUnderTest: JwtService
-
     companion object {
+        private const val USERNAME = "abu-ali"
         private val EXPIRATION_ONE_DAY = TimeUnit.DAYS.toMillis(1)
         private val EXPIRATION_SEVEN_DAYS = TimeUnit.DAYS.toMillis(7)
     }
+
+    private val mockJwtKey = mockk<JwtKey>(relaxed = true)
+
+    private lateinit var secretKey: SecretKey
+
+    private lateinit var objectUnderTest: JwtService
+
 
     @BeforeEach
     fun setUp() {
@@ -49,18 +48,18 @@ internal class JwtServiceImplTest {
     @Test
     fun `when extract username is triggered then expect correct username`() {
         val token = Jwts.builder()
-            .claim("sub", username)
+            .claim("sub", USERNAME)
             .signWith(secretKey)
             .compact()
 
         val actualUsername = objectUnderTest.extractUsername(token)
 
-        assertEquals(username, actualUsername)
+        assertEquals(USERNAME, actualUsername)
     }
 
     @Test
     fun `when extract username is triggered then expect jwt authentication exception`() {
-        val invalidToken = "invalidToken"
+        val invalidToken = "invalid-token"
 
         val actualResult = assertThrows<JwtAuthenticationException> { objectUnderTest.extractUsername(invalidToken) }
 
@@ -69,15 +68,14 @@ internal class JwtServiceImplTest {
 
     @Test
     fun `when is token valid is triggered then expect true`() {
-        val username = "testuser"
         val expirationDate = Date(System.currentTimeMillis() + 3600000) // Set token to expire in 1 hour
         val token = Jwts.builder()
-            .claim("sub", username)
+            .claim("sub", USERNAME)
             .claim("exp", expirationDate)
             .signWith(secretKey)
             .compact()
         val userDetails = mockk<UserDetails>()
-        every { userDetails.username } returns username
+        every { userDetails.username } returns USERNAME
 
         val actualResult = objectUnderTest.isTokenValid(token, userDetails)
 
@@ -87,7 +85,7 @@ internal class JwtServiceImplTest {
     @Test
     fun `when generate access token is triggered then expect new token`() {
         val userDetails = mockk<UserDetails>()
-        every { userDetails.username } returns username
+        every { userDetails.username } returns USERNAME
 
         val accessToken = objectUnderTest.generateAccessToken(userDetails)
         val actualClaims = Jwts.parser()
@@ -96,14 +94,14 @@ internal class JwtServiceImplTest {
             .parseSignedClaims(accessToken)
             .payload
 
-        assertEquals(username, actualClaims.subject)
+        assertEquals(USERNAME, actualClaims.subject)
         assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_ONE_DAY)
     }
 
     @Test
     fun `when generate refresh token is triggered then expect new token`() {
         val userDetails = mockk<UserDetails>()
-        every { userDetails.username } returns username
+        every { userDetails.username } returns USERNAME
 
         val refreshToken = objectUnderTest.generateRefreshToken(userDetails)
         val actualClaims = Jwts.parser()
@@ -112,7 +110,7 @@ internal class JwtServiceImplTest {
             .parseSignedClaims(refreshToken)
             .payload
 
-        assertEquals(username, actualClaims.subject)
+        assertEquals(USERNAME, actualClaims.subject)
         assertTrue(actualClaims.expiration.time <= System.currentTimeMillis() + EXPIRATION_SEVEN_DAYS)
     }
 }

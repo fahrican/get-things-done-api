@@ -21,6 +21,10 @@ class VerificationTokenRepositoryIT @Autowired constructor(
     val objectUnderTest: VerificationTokenRepository
 ) {
 
+    companion object {
+        private const val DUMMY_TOKEN = "test-token"
+    }
+
     val user = AppUser()
 
     @BeforeEach
@@ -33,20 +37,21 @@ class VerificationTokenRepositoryIT @Autowired constructor(
         entityManager.clear()
     }
 
+
     @Test
     fun `when new token gets stored then check if it can be found`() {
         val token = VerificationToken(
-            token = "test-token",
+            token = DUMMY_TOKEN,
             appUser = user,
             expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
         )
         entityManager.persist(token)
         entityManager.flush()
 
-        val foundToken = objectUnderTest.findByToken("test-token")
+        val foundToken = objectUnderTest.findByToken(DUMMY_TOKEN)
 
         assertNotNull(foundToken)
-        assertEquals("test-token", foundToken?.token)
+        assertEquals(DUMMY_TOKEN, foundToken?.token)
     }
 
     @Test

@@ -29,6 +29,12 @@ import java.time.temporal.ChronoUnit
 
 internal class AccountManagementServiceImplTest {
 
+    companion object {
+        private const val DUMMY_TOKEN = "some-token"
+        private const val DUMMY_PASSWORD = "dummy-pw"
+
+    }
+
     private val mockPasswordEncoder = mockk<PasswordEncoder>()
 
     private val mockJwtService = mockk<JwtService>()
@@ -47,8 +53,8 @@ internal class AccountManagementServiceImplTest {
         "John",
         "Doe", "john@example.com",
         "john-doe",
-        "password",
-        "password"
+        DUMMY_PASSWORD,
+        DUMMY_PASSWORD
     )
 
     private val appUser = AppUser(
@@ -60,12 +66,12 @@ internal class AccountManagementServiceImplTest {
     )
 
     private val verificationToken = VerificationToken(
-        token = "some-token",
+        token = DUMMY_TOKEN,
         appUser = appUser,
         expiryDate = Instant.now().plus(1, ChronoUnit.DAYS)
     )
 
-    private val authenticationRequest = AuthenticationRequest("abu-ali", "password")
+    private val authenticationRequest = AuthenticationRequest("abu-ali", DUMMY_PASSWORD)
 
     private val objectUnderTest = AccountManagementServiceImpl(
         mockPasswordEncoder,
@@ -141,11 +147,10 @@ internal class AccountManagementServiceImplTest {
 
     @Test
     fun `when verify user is triggerred then expect account verified successfully response`() {
-        val token = "some-token"
-        every { mockVerificationTokenRepository.findByToken(token) } returns verificationToken
+        every { mockVerificationTokenRepository.findByToken(DUMMY_TOKEN) } returns verificationToken
         every { mockAppUserRepository.save(appUser) } returns appUser
 
-        val result = objectUnderTest.verifyUser(token)
+        val result = objectUnderTest.verifyUser(DUMMY_TOKEN)
 
         verify(exactly = 1) { mockAppUserRepository.save(appUser) }
         assertEquals("Account Verified Successfully", result.message)
@@ -154,13 +159,12 @@ internal class AccountManagementServiceImplTest {
 
     @Test
     fun `when verify user is triggerred then expect token is expired`() {
-        val token = "expired-token"
         verificationToken.expiryDate = Instant.now().minus(1, ChronoUnit.DAYS)
-        every { mockVerificationTokenRepository.findByToken(token) } returns verificationToken
+        every { mockVerificationTokenRepository.findByToken(DUMMY_TOKEN) } returns verificationToken
         every { mockVerificationTokenRepository.save(verificationToken) } returns verificationToken
         every { mockEmailService.sendVerificationEmail(any(), any()) } returns Unit
 
-        val actualResult = assertThrows<TokenExpiredException> { objectUnderTest.verifyUser(token) }
+        val actualResult = assertThrows<TokenExpiredException> { objectUnderTest.verifyUser(DUMMY_TOKEN) }
 
         assertEquals(
             "Token expired. A new verification link has been sent to your email: ${appUser.email}",
@@ -171,11 +175,10 @@ internal class AccountManagementServiceImplTest {
 
     @Test
     fun `when verify user is triggerred then expect account verification exception`() {
-        val token = "some-token"
-        every { mockVerificationTokenRepository.findByToken(token) } returns verificationToken
+        every { mockVerificationTokenRepository.findByToken(DUMMY_TOKEN) } returns verificationToken
         appUser.isVerified = true
 
-        val actualResult = assertThrows<AccountVerificationException> { objectUnderTest.verifyUser(token) }
+        val actualResult = assertThrows<AccountVerificationException> { objectUnderTest.verifyUser(DUMMY_TOKEN) }
 
         assertEquals(
             "Account Already Verified",
@@ -186,18 +189,17 @@ internal class AccountManagementServiceImplTest {
 
     @Test
     fun `when sign in user is triggerred then expect authentication response`() {
-        val jwtToken = "jwt-token"
         val refreshToken = "refresh-token"
         val mockAuthentication: Authentication = mockk(relaxed = true)
         every { mockAppUserRepository.findByAppUsername(any()) } returns appUser
         appUser.isVerified = true
         every { mockAuthenticationManager.authenticate(any()) } returns mockAuthentication
-        every { mockJwtService.generateAccessToken(appUser) } returns jwtToken
+        every { mockJwtService.generateAccessToken(appUser) } returns DUMMY_TOKEN
         every { mockJwtService.generateRefreshToken(appUser) } returns refreshToken
 
         val result = objectUnderTest.signIn(authenticationRequest)
 
-        assertEquals(jwtToken, result.accessToken)
+        assertEquals(DUMMY_TOKEN, result.accessToken)
         assertEquals(refreshToken, result.refreshToken)
     }
 
