@@ -20,26 +20,27 @@ import org.springframework.stereotype.Service
 class TaskServiceImpl(
     private val repository: TaskRepository,
     private val mapper: TaskMapper,
-    private val taskTimestamp: TaskTimestamp
+    private val timestamp: TaskTimestamp
 ) : TaskService {
 
     override fun getTasks(appUser: AppUser, status: TaskStatus?): Set<TaskFetchResponse> {
         return when (status) {
-            TaskStatus.open -> repository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(appUser, true).map(mapper::toDto)
+            TaskStatus.open -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(appUser, true)
+                .map(mapper::toDto)
                 .toSet()
 
-            TaskStatus.closed -> repository.findAllByAppUserAndIsTaskOpenOrderByIdAsc(appUser, false).map(mapper::toDto)
+            TaskStatus.closed -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(appUser, false)
+                .map(mapper::toDto)
                 .toSet()
 
-            else -> repository.findAllByAppUserOrderByIdAsc(appUser)
+            else -> repository.findAllByUserOrderByIdAsc(appUser)
                 .map(mapper::toDto)
                 .toSet()
         }
     }
 
     override fun getTaskById(id: Long, appUser: AppUser): TaskFetchResponse {
-        validateTaskIdExistence(id)
-        val task: Task = repository.findTaskByIdAndAppUser(id, appUser)
+        val task = validateTaskIdExistence(id, appUser)
         return mapper.toDto(task)
     }
 
@@ -48,18 +49,16 @@ class TaskServiceImpl(
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
             throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         }
-        if (repository.existsByDescription(createRequest.description)) {
+        if (repository.doesDescriptionExist(createRequest.description)) {
             throw BadRequestException("A task with the description '${createRequest.description}' already exists")
         }
-        val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), appUser)
+        val task: Task = mapper.toEntity(createRequest, timestamp.createClockWithZone(), appUser)
         val savedTask: Task = repository.save(task)
         return mapper.toDto(savedTask)
     }
 
     override fun updateTask(id: Long, updateRequest: TaskUpdateRequest, appUser: AppUser): TaskFetchResponse {
-        validateTaskIdExistence(id)
-        val existingTask: Task = repository.findTaskByIdAndAppUser(id, appUser)
-
+        val existingTask = validateTaskIdExistence(id, appUser)
         existingTask.apply {
             description = updateRequest.description ?: description
             isReminderSet = updateRequest.isReminderSet ?: isReminderSet
@@ -70,19 +69,18 @@ class TaskServiceImpl(
             timeTaken = updateRequest.timeTaken ?: timeTaken
             priority = updateRequest.priority ?: priority
         }
-
         val savedTask: Task = repository.save(existingTask)
         return mapper.toDto(savedTask)
     }
 
     override fun deleteTask(id: Long, appUser: AppUser) {
-        validateTaskIdExistence(id)
+        validateTaskIdExistence(id, appUser)
         repository.deleteById(id)
     }
 
-    private fun validateTaskIdExistence(id: Long) {
-        if (!repository.existsById(id)) {
-            throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
-        }
+    private fun validateTaskIdExistence(id: Long, appUser: AppUser): Task {
+        val task = repository.findTaskByIdAndUser(id, appUser)
+            ?: throw TaskNotFoundException(message = "Task with ID: $id does not exist!")
+        return task
     }
 }

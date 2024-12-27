@@ -34,6 +34,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @AutoConfigureMockMvc
+@WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
 internal class AppUserControllerIT {
 
     @Autowired
@@ -74,7 +75,6 @@ internal class AppUserControllerIT {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `when user info is requested then return success response`() {
         `when`(mockService.fetchInfo()).thenReturn(userResponse)
 
@@ -86,7 +86,6 @@ internal class AppUserControllerIT {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `when change user email is triggered then return success response`() {
         val email = "hello@aon.at"
         val request = HashMap<String, String>()
@@ -102,7 +101,6 @@ internal class AppUserControllerIT {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `when change username is triggered then return success response`() {
         val email = "ali-aziz"
         val request = HashMap<String, String>()
@@ -118,7 +116,6 @@ internal class AppUserControllerIT {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `when change user password is triggered then return success response`() {
         val passwordRequest = UserPasswordUpdateRequest("oldPassword", "newPassword", "newPassword")
         doNothing().`when`(mockService).changePassword(passwordRequest)
@@ -132,7 +129,6 @@ internal class AppUserControllerIT {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = ["USER", "ADMIN"])
     fun `when change user info is triggered then return success response`() {
         val updateRequest = UserInfoUpdateRequest(firstName = "Omar", lastName = "Ramadan")
         `when`(mockService.changeInfo(updateRequest)).thenReturn(userResponse)

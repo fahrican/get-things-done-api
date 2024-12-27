@@ -19,11 +19,9 @@ class AuthenticationController(
         email: String
     ): ResponseEntity<EmailConfirmedResponse> = ResponseEntity.ok(service.requestPasswordReset(email))
 
-
     override fun signIn(
         authenticationRequest: AuthenticationRequest
     ): ResponseEntity<AuthenticationResponse> = ResponseEntity.ok(service.signIn(authenticationRequest))
-
 
     override fun signUp(registerRequest: RegisterRequest): ResponseEntity<EmailConfirmedResponse> {
         val response = service.signUp(registerRequest)
