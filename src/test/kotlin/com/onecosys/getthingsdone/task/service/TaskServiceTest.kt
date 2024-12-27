@@ -35,21 +35,36 @@ import java.time.ZoneId
 internal class TaskServiceTest {
 
     private val mockRepository = mockk<TaskRepository>(relaxed = true)
-
     private val mockTaskTimestamp = mockk<TaskTimestamp>(relaxed = true)
-
     private val mockUser = mockk<AppUser>(relaxed = true)
 
     private val taskId: Long = 234
     private val date = LocalDate.of(2020, 12, 31)
-
     private var mapper = TaskMapper()
 
     private lateinit var clock: Clock
-
     private lateinit var task: Task
     private lateinit var createRequest: TaskCreateRequest
     private lateinit var objectUnderTest: TaskService
+    private val updateRequest: TaskUpdateRequest
+        get() {
+            val updateRequest =
+                TaskUpdateRequest(
+                    task.description,
+                    isReminderSet = false,
+                    isTaskOpen = false,
+                    startedOn = OffsetDateTime.now(
+                        Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+                    ),
+                    finishedOn = OffsetDateTime.now(
+                        Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+                    ),
+                    timeInterval = "0d",
+                    timeTaken = 0,
+                    priority = Priority.low
+                )
+            return updateRequest
+        }
 
     @BeforeEach
     fun setUp() {
@@ -277,23 +292,19 @@ internal class TaskServiceTest {
     }
 
     @Test
-    fun `when update task is called with task request argument then expect specific description fpr actual task`() {
+    fun `when delete task by id is called then expect task not found exception`() {
+        val expectedException = TaskNotFoundException("Task with ID: $taskId does not exist!")
+        every { mockRepository.findTaskByIdAndUser(any(), any()) } throws expectedException
+
+        val actualException = assertThrows<TaskNotFoundException> { objectUnderTest.deleteTask(taskId, mockUser) }
+
+        assertThat(actualException.message).isEqualTo(expectedException.message)
+        verify(exactly = 0) { mockRepository.deleteById(any()) }
+    }
+
+    @Test
+    fun `when update task is called with task request argument then expect matching fields for actual task`() {
         task.description = "test task"
-        val updateRequest =
-            TaskUpdateRequest(
-                task.description,
-                isReminderSet = false,
-                isTaskOpen = false,
-                startedOn = OffsetDateTime.now(
-                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-                ),
-                finishedOn = OffsetDateTime.now(
-                    Clock.fixed(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-                ),
-                timeInterval = "0d",
-                timeTaken = 0,
-                priority = Priority.low
-            )
 
         every { mockRepository.existsById(any()) } returns true
         every { mockRepository.findTaskByIdAndUser(any(), any()) } returns task
@@ -309,5 +320,17 @@ internal class TaskServiceTest {
         assertThat(actualTask.timeInterval).isEqualTo(task.timeInterval)
         assertThat(actualTask.timeTaken).isEqualTo(task.timeTaken)
         assertThat(actualTask.priority).isEqualTo(task.priority)
+    }
+
+    @Test
+    fun `when update task is called with task request argument then expect task not found exception `() {
+        val expectedException = TaskNotFoundException("Task with ID: $taskId does not exist!")
+        every { mockRepository.findTaskByIdAndUser(any(), any()) } throws expectedException
+
+        val actualException =
+            assertThrows<TaskNotFoundException> { objectUnderTest.updateTask(taskId, updateRequest, mockUser) }
+
+        assertThat(actualException.message).isEqualTo(expectedException.message)
+        verify(exactly = 0) { mockRepository.save(any()) }
     }
 }
