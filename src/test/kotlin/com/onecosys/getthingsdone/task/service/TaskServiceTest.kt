@@ -31,6 +31,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneId
 
+
 @ExtendWith(MockKExtension::class)
 internal class TaskServiceTest {
 
@@ -246,16 +247,11 @@ internal class TaskServiceTest {
     @Test
     fun `when get task by id is called then expect a task not found exception`() {
         val expectedException = TaskNotFoundException("Task with ID: $taskId does not exist!")
-        every {
-            mockRepository.findTaskByIdAndUser(
-                any(),
-                any()
-            )
-        } throws expectedException
+        every { mockRepository.findTaskByIdAndUser(taskId, mockUser) } returns null
+
         val actualException = assertThrows<TaskNotFoundException> { objectUnderTest.getTaskById(taskId, mockUser) }
 
         assertThat(actualException.message).isEqualTo(expectedException.message)
-        verify { mockRepository.findTaskByIdAndUser(any(), any())?.wasNot(called) }
     }
 
     @Test
@@ -294,7 +290,7 @@ internal class TaskServiceTest {
     @Test
     fun `when delete task by id is called then expect task not found exception`() {
         val expectedException = TaskNotFoundException("Task with ID: $taskId does not exist!")
-        every { mockRepository.findTaskByIdAndUser(any(), any()) } throws expectedException
+        every { mockRepository.findTaskByIdAndUser(any(), any()) } returns null
 
         val actualException = assertThrows<TaskNotFoundException> { objectUnderTest.deleteTask(taskId, mockUser) }
 
@@ -323,9 +319,9 @@ internal class TaskServiceTest {
     }
 
     @Test
-    fun `when update task is called with task request argument then expect task not found exception `() {
+    fun `when update task is called with task request argument then expect task not found exception`() {
         val expectedException = TaskNotFoundException("Task with ID: $taskId does not exist!")
-        every { mockRepository.findTaskByIdAndUser(any(), any()) } throws expectedException
+        every { mockRepository.findTaskByIdAndUser(any(), any()) } returns null
 
         val actualException =
             assertThrows<TaskNotFoundException> { objectUnderTest.updateTask(taskId, updateRequest, mockUser) }

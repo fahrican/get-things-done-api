@@ -59,7 +59,6 @@ class TaskServiceImpl(
 
     override fun updateTask(id: Long, updateRequest: TaskUpdateRequest, appUser: AppUser): TaskFetchResponse {
         val existingTask = validateTaskIdExistence(id, appUser)
-
         existingTask.apply {
             description = updateRequest.description ?: description
             isReminderSet = updateRequest.isReminderSet ?: isReminderSet
@@ -70,7 +69,6 @@ class TaskServiceImpl(
             timeTaken = updateRequest.timeTaken ?: timeTaken
             priority = updateRequest.priority ?: priority
         }
-
         val savedTask: Task = repository.save(existingTask)
         return mapper.toDto(savedTask)
     }
