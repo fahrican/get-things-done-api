@@ -20,15 +20,17 @@ import org.springframework.stereotype.Service
 class TaskServiceImpl(
     private val repository: TaskRepository,
     private val mapper: TaskMapper,
-    private val taskTimestamp: TaskTimestamp
+    private val timestamp: TaskTimestamp
 ) : TaskService {
 
     override fun getTasks(appUser: AppUser, status: TaskStatus?): Set<TaskFetchResponse> {
         return when (status) {
-            TaskStatus.open -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(appUser, true).map(mapper::toDto)
+            TaskStatus.open -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(appUser, true)
+                .map(mapper::toDto)
                 .toSet()
 
-            TaskStatus.closed -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(appUser, false).map(mapper::toDto)
+            TaskStatus.closed -> repository.findAllByUserAndIsTaskOpenOrderByIdAsc(appUser, false)
+                .map(mapper::toDto)
                 .toSet()
 
             else -> repository.findAllByUserOrderByIdAsc(appUser)
@@ -50,7 +52,7 @@ class TaskServiceImpl(
         if (repository.doesDescriptionExist(createRequest.description)) {
             throw BadRequestException("A task with the description '${createRequest.description}' already exists")
         }
-        val task: Task = mapper.toEntity(createRequest, taskTimestamp.createClockWithZone(), appUser)
+        val task: Task = mapper.toEntity(createRequest, timestamp.createClockWithZone(), appUser)
         val savedTask: Task = repository.save(task)
         return mapper.toDto(savedTask)
     }
