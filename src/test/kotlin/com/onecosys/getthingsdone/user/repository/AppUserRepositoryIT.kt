@@ -17,13 +17,17 @@ class AppUserRepositoryIT @Autowired constructor(
     val objectUnderTest: AppUserRepository
 ) {
 
-    val userEmail = "faris.diab@example.com"
-    val username = "faris-diab"
-    val user = AppUser(
+    companion object {
+        private const val USER_EMAIL = "faris.diab@example.com"
+        private const val USERNAME = "faris-diab"
+    }
+
+
+    private val user = AppUser(
         firstName = "Faris",
         lastName = "Diab",
-        email = userEmail,
-        appUsername = username,
+        email = USER_EMAIL,
+        appUsername = USERNAME,
         appPassword = "SecurePassword123",
         isVerified = true
     )
@@ -43,10 +47,10 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when new user gets persisted then check if email can be found`() {
         entityManager.flush()
 
-        val actualUser: AppUser? = objectUnderTest.findByEmail(userEmail)
+        val actualUser: AppUser? = objectUnderTest.findByEmail(USER_EMAIL)
 
         assertNotNull(actualUser)
-        assertEquals(userEmail, actualUser?.email)
+        assertEquals(USER_EMAIL, actualUser?.email)
     }
 
     @Test
@@ -62,10 +66,10 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when new user gets persisted then check if username can be found`() {
         entityManager.flush()
 
-        val actualUser: AppUser? = objectUnderTest.findByAppUsername(username)
+        val actualUser: AppUser? = objectUnderTest.findByAppUsername(USERNAME)
 
         assertNotNull(actualUser)
-        assertEquals(username, actualUser?.appUsername)
+        assertEquals(USERNAME, actualUser?.appUsername)
     }
 
     @Test
@@ -81,8 +85,8 @@ class AppUserRepositoryIT @Autowired constructor(
     fun `when find by username and find by email are called then check for the some properties`() {
         entityManager.flush()
 
-        val foundUserByUsername: AppUser? = objectUnderTest.findByAppUsername(username)
-        val foundUserByEmail: AppUser? = objectUnderTest.findByEmail(userEmail)
+        val foundUserByUsername: AppUser? = objectUnderTest.findByAppUsername(USERNAME)
+        val foundUserByEmail: AppUser? = objectUnderTest.findByEmail(USER_EMAIL)
 
         assertEquals(foundUserByEmail?.authorities, foundUserByUsername?.authorities)
         assertEquals(foundUserByEmail?.password, foundUserByUsername?.password)

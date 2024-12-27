@@ -34,7 +34,7 @@ internal class AppUserServiceImplTest {
     private val mockUserInfoResponse: UserInfoResponse = mockk()
 
     private val appUser =
-        AppUser(email = "newemail@example.com", appPassword = "test", firstName = "Ali", lastName = "Muataz")
+        AppUser(email = "new-email@example.com", appPassword = "test", firstName = "Ali", lastName = "Muataz")
 
     private val request = HashMap<String, String>()
 
@@ -62,7 +62,7 @@ internal class AppUserServiceImplTest {
     @Test
     fun `when change user email gets triggered then expect invalid email exception`() {
         val email = HashMap<String, String>()
-        email["email"] = "invalidemail.com"
+        email["email"] = "invalid-email.com"
 
         val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(email) }
 
