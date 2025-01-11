@@ -2,6 +2,7 @@ package com.onecosys.getthingsdone.task.util.converter
 
 import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.error.BadRequestException
+import com.onecosys.getthingsdone.task.web.StringToTaskStatusConverter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
