@@ -2,7 +2,7 @@ package com.onecosys.getthingsdone.user.entity
 
 import com.onecosys.getthingsdone.authentication.entity.VerificationToken
 import com.onecosys.getthingsdone.authorization.Role
-import com.onecosys.getthingsdone.task.entity.Task
+import com.onecosys.getthingsdone.task.domain.Task
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

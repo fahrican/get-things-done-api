@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.task.service
+package com.onecosys.getthingsdone.task.application
 
 import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
@@ -6,12 +6,10 @@ import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
-import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.entity.Task
-import com.onecosys.getthingsdone.task.repository.TaskRepository
-import com.onecosys.getthingsdone.task.util.TaskTimestamp
-import com.onecosys.getthingsdone.task.util.converter.TaskMapper
+import com.onecosys.getthingsdone.task.domain.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.domain.Task
+import com.onecosys.getthingsdone.task.infrastructure.TaskRepository
 import com.onecosys.getthingsdone.user.entity.AppUser
 import org.springframework.stereotype.Service
 

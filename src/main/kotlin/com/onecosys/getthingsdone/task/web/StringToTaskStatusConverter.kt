@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.task.util.converter
+package com.onecosys.getthingsdone.task.web
 
 import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.error.BadRequestException

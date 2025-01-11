@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.task.entity
+package com.onecosys.getthingsdone.task.domain
 
 import com.onecosys.getthingsdone.dto.Priority
 import com.onecosys.getthingsdone.user.entity.AppUser

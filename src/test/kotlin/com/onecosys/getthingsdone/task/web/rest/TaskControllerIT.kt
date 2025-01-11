@@ -11,9 +11,9 @@ import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.TaskNotFoundException
-import com.onecosys.getthingsdone.task.entity.MAX_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.entity.MIN_DESCRIPTION_LENGTH
-import com.onecosys.getthingsdone.task.service.TaskService
+import com.onecosys.getthingsdone.task.application.TaskService
+import com.onecosys.getthingsdone.task.domain.MAX_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`

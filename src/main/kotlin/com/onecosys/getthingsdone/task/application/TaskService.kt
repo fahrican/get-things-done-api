@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.task.service
+package com.onecosys.getthingsdone.task.application
 
 import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
