@@ -21,6 +21,9 @@ val openApiWebMvc = "2.6.0"
 val jacksonModule = "2.18.2"
 val postgresVersion = "42.7.4"
 val h2databaseVersion = "2.3.232"
+val jupiterVersion = "5.11.3"
+val assertjVersion = "3.27.1"
+val mockkVersion = "1.13.10"
 
 repositories {
     mavenCentral()
@@ -58,10 +61,10 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiWebMvc")
 
     // Unit Testing stuff
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
-    testImplementation("org.assertj:assertj-core:3.24.2")
-    testImplementation("io.mockk:mockk:1.13.7")
+    testImplementation("org.junit.jupiter:junit-jupiter:$jupiterVersion")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.assertj:assertj-core:$assertjVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.springframework.security:spring-security-test")
 
     // Integration Testing
