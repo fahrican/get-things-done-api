@@ -4,7 +4,7 @@ import com.onecosys.getthingsdone.api.UserResource
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.user.service.AppUserService
+import com.onecosys.getthingsdone.user.application.AppUserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 

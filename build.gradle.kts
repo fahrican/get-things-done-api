@@ -3,11 +3,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.openapi.generator") version "7.1.0"
     id("org.sonarqube") version "3.5.0.2730"
-    id("org.springframework.boot") version "3.1.9"
-    id("io.spring.dependency-management") version "1.1.4"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.spring") version "1.8.22"
-    kotlin("plugin.jpa") version "1.8.22"
+    id("org.springframework.boot") version "3.3.7"
+    id("io.spring.dependency-management") version "1.1.7"
+    kotlin("jvm") version "1.9.0"
+    kotlin("plugin.spring") version "1.9.0"
+    kotlin("plugin.jpa") version "1.9.0"
     jacoco
 }
 
@@ -15,9 +15,16 @@ group = "com.onecosys"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_19
 
-val testcontainersVersion = "1.19.0"
-val jwtVersion = "0.12.2"
-val openApiWebMvc = "2.3.0"
+val testcontainersVersion = "1.20.4"
+val jwtVersion = "0.12.6"
+val openApiWebMvc = "2.6.0"
+val jacksonModule = "2.18.2"
+val postgresVersion = "42.7.4"
+val h2databaseVersion = "2.3.232"
+val jupiterVersion = "5.11.3"
+val assertjVersion = "3.27.1"
+val mockkVersion = "1.13.10"
+val kotestVersion = "5.8.1"
 
 repositories {
     mavenCentral()
@@ -39,13 +46,13 @@ jacoco {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModule")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework.boot:spring-boot-starter-security:3.0.4")
-    runtimeOnly("org.postgresql:postgresql:42.5.4")
-    runtimeOnly("com.h2database:h2:2.2.222")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    runtimeOnly("org.postgresql:postgresql:$postgresVersion")
+    runtimeOnly("com.h2database:h2:$h2databaseVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
     implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
@@ -55,17 +62,17 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiWebMvc")
 
     // Unit Testing stuff
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
-    testImplementation("org.assertj:assertj-core:3.24.2")
-    testImplementation("io.mockk:mockk:1.13.7")
+    testImplementation("org.junit.jupiter:junit-jupiter:$jupiterVersion")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.assertj:assertj-core:$assertjVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.springframework.security:spring-security-test")
 
     // Integration Testing
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:5.7.2")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
 }
 
 openApiGenerate {

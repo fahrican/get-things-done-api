@@ -1,6 +1,7 @@
 package com.onecosys.getthingsdone.user.repository
 
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
+import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
