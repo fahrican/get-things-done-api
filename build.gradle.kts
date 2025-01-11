@@ -24,6 +24,7 @@ val h2databaseVersion = "2.3.232"
 val jupiterVersion = "5.11.3"
 val assertjVersion = "3.27.1"
 val mockkVersion = "1.13.10"
+val kotestVersion = "5.8.1"
 
 repositories {
     mavenCentral()
@@ -71,7 +72,7 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:5.7.2")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
 }
 
 openApiGenerate {
