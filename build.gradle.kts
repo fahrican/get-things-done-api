@@ -17,7 +17,7 @@ java.sourceCompatibility = JavaVersion.VERSION_19
 
 val testcontainersVersion = "1.20.4"
 val jwtVersion = "0.12.6"
-val openApiWebMvc = "2.3.0"
+val openApiWebMvc = "2.6.0"
 
 repositories {
     mavenCentral()
