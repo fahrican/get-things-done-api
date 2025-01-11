@@ -3,10 +3,10 @@ package com.onecosys.getthingsdone.security.service
 import com.onecosys.getthingsdone.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.dto.RegisterRequest
 import com.onecosys.getthingsdone.security.application.AccountManagementServiceImpl
+import com.onecosys.getthingsdone.security.application.EmailService
 import com.onecosys.getthingsdone.security.application.JwtService
 import com.onecosys.getthingsdone.security.application.SignUpMapper
 import com.onecosys.getthingsdone.security.domain.VerificationToken
-import com.onecosys.getthingsdone.security.infrastructure.EmailService
 import com.onecosys.getthingsdone.security.infrastructure.VerificationTokenRepository
 import com.onecosys.getthingsdone.shared.error.AccountVerificationException
 import com.onecosys.getthingsdone.shared.error.SignUpException

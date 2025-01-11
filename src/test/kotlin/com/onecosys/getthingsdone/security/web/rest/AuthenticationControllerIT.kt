@@ -7,6 +7,7 @@ import com.onecosys.getthingsdone.dto.EmailConfirmedResponse
 import com.onecosys.getthingsdone.dto.RegisterRequest
 import com.onecosys.getthingsdone.security.application.AccountManagementService
 import com.onecosys.getthingsdone.security.application.JwtService
+import com.onecosys.getthingsdone.security.web.AuthenticationController
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`

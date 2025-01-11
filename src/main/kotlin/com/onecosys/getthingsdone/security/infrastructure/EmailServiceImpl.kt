@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.security.infrastructure
 
+import com.onecosys.getthingsdone.security.application.EmailService
 import com.onecosys.getthingsdone.shared.error.SignUpException
 import com.onecosys.getthingsdone.user.domain.AppUser
 import jakarta.mail.MessagingException

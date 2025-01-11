@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.security.web.rest
+package com.onecosys.getthingsdone.security.web
 
 import com.onecosys.getthingsdone.api.AuthenticationResource
 import com.onecosys.getthingsdone.dto.AuthenticationRequest

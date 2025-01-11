@@ -5,7 +5,6 @@ import com.onecosys.getthingsdone.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.dto.EmailConfirmedResponse
 import com.onecosys.getthingsdone.dto.RegisterRequest
 import com.onecosys.getthingsdone.security.domain.VerificationToken
-import com.onecosys.getthingsdone.security.infrastructure.EmailService
 import com.onecosys.getthingsdone.security.infrastructure.VerificationTokenRepository
 import com.onecosys.getthingsdone.shared.error.AccountVerificationException
 import com.onecosys.getthingsdone.shared.error.SignUpException

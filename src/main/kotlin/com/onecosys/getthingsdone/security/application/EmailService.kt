@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.security.infrastructure
+package com.onecosys.getthingsdone.security.application
 
 import com.onecosys.getthingsdone.user.domain.AppUser
 
