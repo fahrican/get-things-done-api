@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.authentication.util
+package com.onecosys.getthingsdone.authentication.application
 
 import com.onecosys.getthingsdone.dto.RegisterRequest
 import com.onecosys.getthingsdone.user.entity.AppUser

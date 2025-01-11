@@ -1,8 +1,8 @@
 package com.onecosys.getthingsdone.authentication.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.authentication.service.AccountManagementService
-import com.onecosys.getthingsdone.authentication.service.JwtService
+import com.onecosys.getthingsdone.authentication.application.AccountManagementService
+import com.onecosys.getthingsdone.authentication.application.JwtService
 import com.onecosys.getthingsdone.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.dto.EmailConfirmedResponse

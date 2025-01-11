@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.authentication.service
+package com.onecosys.getthingsdone.authentication.application
 
 import com.onecosys.getthingsdone.user.entity.AppUser
 import org.springframework.security.core.Authentication

@@ -1,6 +1,8 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.authentication.util.JwtKey
+import com.onecosys.getthingsdone.authentication.application.JwtService
+import com.onecosys.getthingsdone.authentication.infrastructure.JwtKey
+import com.onecosys.getthingsdone.authentication.infrastructure.JwtServiceImpl
 import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import io.jsonwebtoken.Jwts
 import io.mockk.MockKAnnotations

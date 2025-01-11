@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.authentication.entity
+package com.onecosys.getthingsdone.authentication.domain
 
 import com.onecosys.getthingsdone.user.entity.AppUser
 import jakarta.persistence.Entity

@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.authentication.util
 
+import com.onecosys.getthingsdone.authentication.application.SignUpMapper
 import com.onecosys.getthingsdone.dto.RegisterRequest
 import io.mockk.every
 import io.mockk.mockk

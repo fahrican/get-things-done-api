@@ -1,5 +1,7 @@
 package com.onecosys.getthingsdone.authentication.service
 
+import com.onecosys.getthingsdone.authentication.application.ClientSessionService
+import com.onecosys.getthingsdone.authentication.application.ClientSessionServiceImpl
 import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.user.entity.AppUser
 import com.onecosys.getthingsdone.user.repository.AppUserRepository

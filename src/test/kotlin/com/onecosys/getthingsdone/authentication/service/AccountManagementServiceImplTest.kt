@@ -1,8 +1,11 @@
 package com.onecosys.getthingsdone.authentication.service
 
-import com.onecosys.getthingsdone.authentication.entity.VerificationToken
-import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
-import com.onecosys.getthingsdone.authentication.util.SignUpMapper
+import com.onecosys.getthingsdone.authentication.application.AccountManagementServiceImpl
+import com.onecosys.getthingsdone.authentication.application.JwtService
+import com.onecosys.getthingsdone.authentication.application.SignUpMapper
+import com.onecosys.getthingsdone.authentication.domain.VerificationToken
+import com.onecosys.getthingsdone.authentication.infrastructure.EmailService
+import com.onecosys.getthingsdone.authentication.infrastructure.VerificationTokenRepository
 import com.onecosys.getthingsdone.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.dto.RegisterRequest
 import com.onecosys.getthingsdone.error.AccountVerificationException

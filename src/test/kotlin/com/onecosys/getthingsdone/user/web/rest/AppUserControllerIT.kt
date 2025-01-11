@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.user.web.rest
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.authentication.service.ClientSessionService
+import com.onecosys.getthingsdone.authentication.application.ClientSessionService
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest

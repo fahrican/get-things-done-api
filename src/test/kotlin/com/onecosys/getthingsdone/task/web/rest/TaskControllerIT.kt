@@ -2,8 +2,8 @@ package com.onecosys.getthingsdone.task.web.rest
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onecosys.getthingsdone.authentication.service.ClientSessionService
-import com.onecosys.getthingsdone.authentication.service.JwtService
+import com.onecosys.getthingsdone.authentication.application.ClientSessionService
+import com.onecosys.getthingsdone.authentication.application.JwtService
 import com.onecosys.getthingsdone.dto.Priority
 import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse

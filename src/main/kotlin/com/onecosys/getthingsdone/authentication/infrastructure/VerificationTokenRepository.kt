@@ -1,6 +1,6 @@
-package com.onecosys.getthingsdone.authentication.repository
+package com.onecosys.getthingsdone.authentication.infrastructure
 
-import com.onecosys.getthingsdone.authentication.entity.VerificationToken
+import com.onecosys.getthingsdone.authentication.domain.VerificationToken
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository

@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.web
 
-import com.onecosys.getthingsdone.authentication.service.JwtService
+import com.onecosys.getthingsdone.authentication.application.JwtService
 import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

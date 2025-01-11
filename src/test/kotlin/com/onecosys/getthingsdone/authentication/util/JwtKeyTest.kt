@@ -1,5 +1,7 @@
 package com.onecosys.getthingsdone.authentication.util
 
+import com.onecosys.getthingsdone.authentication.infrastructure.JwtKey
+import com.onecosys.getthingsdone.authentication.infrastructure.KeyGenerator
 import com.onecosys.getthingsdone.error.JwtKeyException
 import io.mockk.every
 import io.mockk.mockk

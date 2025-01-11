@@ -1,6 +1,6 @@
-package com.onecosys.getthingsdone.authentication.service
+package com.onecosys.getthingsdone.authentication.infrastructure
 
-import com.onecosys.getthingsdone.authentication.util.JwtKey
+import com.onecosys.getthingsdone.authentication.application.JwtService
 import com.onecosys.getthingsdone.error.JwtAuthenticationException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts

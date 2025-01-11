@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.authentication.service
+package com.onecosys.getthingsdone.authentication.application
 
 import org.springframework.security.core.userdetails.UserDetails
 

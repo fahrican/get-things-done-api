@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.authentication.service
 
+import com.onecosys.getthingsdone.authentication.infrastructure.EmailServiceImpl
 import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.user.entity.AppUser
 import io.mockk.every

@@ -1,8 +1,8 @@
-package com.onecosys.getthingsdone.authentication.service
+package com.onecosys.getthingsdone.authentication.application
 
-import com.onecosys.getthingsdone.authentication.entity.VerificationToken
-import com.onecosys.getthingsdone.authentication.repository.VerificationTokenRepository
-import com.onecosys.getthingsdone.authentication.util.SignUpMapper
+import com.onecosys.getthingsdone.authentication.domain.VerificationToken
+import com.onecosys.getthingsdone.authentication.infrastructure.EmailService
+import com.onecosys.getthingsdone.authentication.infrastructure.VerificationTokenRepository
 import com.onecosys.getthingsdone.dto.AuthenticationRequest
 import com.onecosys.getthingsdone.dto.AuthenticationResponse
 import com.onecosys.getthingsdone.dto.EmailConfirmedResponse

@@ -1,6 +1,7 @@
 package com.onecosys.getthingsdone.authentication.repository
 
-import com.onecosys.getthingsdone.authentication.entity.VerificationToken
+import com.onecosys.getthingsdone.authentication.domain.VerificationToken
+import com.onecosys.getthingsdone.authentication.infrastructure.VerificationTokenRepository
 import com.onecosys.getthingsdone.user.entity.AppUser
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals

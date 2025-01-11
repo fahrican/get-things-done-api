@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.web.rest
 
 import com.onecosys.getthingsdone.api.TaskResource
-import com.onecosys.getthingsdone.authentication.service.ClientSessionService
+import com.onecosys.getthingsdone.authentication.application.ClientSessionService
 import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.dto.TaskStatus

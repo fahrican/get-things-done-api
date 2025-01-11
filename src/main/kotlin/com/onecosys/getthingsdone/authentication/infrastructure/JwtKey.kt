@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.authentication.util
+package com.onecosys.getthingsdone.authentication.infrastructure
 
 import com.onecosys.getthingsdone.error.JwtKeyException
 import io.jsonwebtoken.io.Decoders
