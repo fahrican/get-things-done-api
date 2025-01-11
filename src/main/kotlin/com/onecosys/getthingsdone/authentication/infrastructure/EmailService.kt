@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.infrastructure
 
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 
 interface EmailService {
 

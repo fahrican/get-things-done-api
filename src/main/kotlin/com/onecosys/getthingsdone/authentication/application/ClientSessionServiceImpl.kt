@@ -1,8 +1,8 @@
 package com.onecosys.getthingsdone.authentication.application
 
 import com.onecosys.getthingsdone.error.UserNotFoundException
-import com.onecosys.getthingsdone.user.entity.AppUser
-import com.onecosys.getthingsdone.user.repository.AppUserRepository
+import com.onecosys.getthingsdone.user.domain.AppUser
+import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails

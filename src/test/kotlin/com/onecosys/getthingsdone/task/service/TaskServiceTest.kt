@@ -15,7 +15,7 @@ import com.onecosys.getthingsdone.task.domain.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.Task
 import com.onecosys.getthingsdone.task.infrastructure.TaskRepository
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 import io.mockk.MockKAnnotations
 import io.mockk.called
 import io.mockk.every

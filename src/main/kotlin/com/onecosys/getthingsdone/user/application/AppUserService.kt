@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.user.service
+package com.onecosys.getthingsdone.user.application
 
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest

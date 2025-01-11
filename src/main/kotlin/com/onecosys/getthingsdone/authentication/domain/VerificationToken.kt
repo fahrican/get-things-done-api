@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.authentication.domain
 
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue

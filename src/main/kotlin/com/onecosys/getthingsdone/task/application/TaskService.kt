@@ -4,7 +4,7 @@ import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 
 interface TaskService {
 

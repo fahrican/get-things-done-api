@@ -1,6 +1,6 @@
-package com.onecosys.getthingsdone.user.repository
+package com.onecosys.getthingsdone.user.infrastructure
 
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository

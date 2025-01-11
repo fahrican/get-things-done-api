@@ -13,8 +13,8 @@ import com.onecosys.getthingsdone.error.SignUpException
 import com.onecosys.getthingsdone.error.TokenExpiredException
 import com.onecosys.getthingsdone.error.UserNotFoundException
 import com.onecosys.getthingsdone.error.UsernamePasswordMismatchException
-import com.onecosys.getthingsdone.user.entity.AppUser
-import com.onecosys.getthingsdone.user.repository.AppUserRepository
+import com.onecosys.getthingsdone.user.domain.AppUser
+import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk

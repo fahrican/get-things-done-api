@@ -6,9 +6,10 @@ import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.error.BadRequestException
 import com.onecosys.getthingsdone.error.PasswordMismatchException
-import com.onecosys.getthingsdone.user.entity.AppUser
-import com.onecosys.getthingsdone.user.repository.AppUserRepository
-import com.onecosys.getthingsdone.user.util.UserInfoMapper
+import com.onecosys.getthingsdone.user.application.AppUserServiceImpl
+import com.onecosys.getthingsdone.user.application.UserInfoMapper
+import com.onecosys.getthingsdone.user.domain.AppUser
+import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk

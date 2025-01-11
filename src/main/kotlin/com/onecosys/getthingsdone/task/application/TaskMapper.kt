@@ -3,7 +3,7 @@ package com.onecosys.getthingsdone.task.application
 import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.task.domain.Task
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.OffsetDateTime

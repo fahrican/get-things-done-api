@@ -2,7 +2,7 @@ package com.onecosys.getthingsdone.task.repository
 
 import com.onecosys.getthingsdone.task.domain.Task
 import com.onecosys.getthingsdone.task.infrastructure.TaskRepository
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

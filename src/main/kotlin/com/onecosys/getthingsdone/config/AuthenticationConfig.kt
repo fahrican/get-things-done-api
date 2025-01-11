@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.config
 
-import com.onecosys.getthingsdone.user.repository.AppUserRepository
+import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager

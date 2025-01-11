@@ -1,7 +1,7 @@
-package com.onecosys.getthingsdone.user.util
+package com.onecosys.getthingsdone.user.application
 
 import com.onecosys.getthingsdone.dto.UserInfoResponse
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 import org.springframework.stereotype.Component
 
 @Component

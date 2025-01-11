@@ -5,7 +5,7 @@ import com.onecosys.getthingsdone.authentication.application.ClientSessionServic
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.user.service.AppUserService
+import com.onecosys.getthingsdone.user.application.AppUserService
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing

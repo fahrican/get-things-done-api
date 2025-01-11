@@ -3,8 +3,8 @@ package com.onecosys.getthingsdone.authentication.service
 import com.onecosys.getthingsdone.authentication.application.ClientSessionService
 import com.onecosys.getthingsdone.authentication.application.ClientSessionServiceImpl
 import com.onecosys.getthingsdone.error.UserNotFoundException
-import com.onecosys.getthingsdone.user.entity.AppUser
-import com.onecosys.getthingsdone.user.repository.AppUserRepository
+import com.onecosys.getthingsdone.user.domain.AppUser
+import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK

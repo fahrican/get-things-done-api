@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.user.entity
+package com.onecosys.getthingsdone.user.domain
 
 import com.onecosys.getthingsdone.authentication.domain.VerificationToken
 import com.onecosys.getthingsdone.authorization.Role

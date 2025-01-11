@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.authentication.infrastructure
 
 import com.onecosys.getthingsdone.error.SignUpException
-import com.onecosys.getthingsdone.user.entity.AppUser
+import com.onecosys.getthingsdone.user.domain.AppUser
 import jakarta.mail.MessagingException
 import org.slf4j.LoggerFactory
 import org.springframework.mail.javamail.JavaMailSender
