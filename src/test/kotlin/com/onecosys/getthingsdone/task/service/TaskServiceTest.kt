@@ -5,8 +5,8 @@ import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.error.BadRequestException
-import com.onecosys.getthingsdone.error.TaskNotFoundException
+import com.onecosys.getthingsdone.shared.error.BadRequestException
+import com.onecosys.getthingsdone.shared.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.application.TaskMapper
 import com.onecosys.getthingsdone.task.application.TaskService
 import com.onecosys.getthingsdone.task.application.TaskServiceImpl

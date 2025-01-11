@@ -4,8 +4,8 @@ import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.error.BadRequestException
-import com.onecosys.getthingsdone.error.TaskNotFoundException
+import com.onecosys.getthingsdone.shared.error.BadRequestException
+import com.onecosys.getthingsdone.shared.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.domain.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.Task
