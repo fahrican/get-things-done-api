@@ -18,6 +18,9 @@ java.sourceCompatibility = JavaVersion.VERSION_19
 val testcontainersVersion = "1.20.4"
 val jwtVersion = "0.12.6"
 val openApiWebMvc = "2.6.0"
+val jacksonModule = "2.18.2"
+val postgresVersion = "42.7.4"
+val h2databaseVersion = "2.3.232"
 
 repositories {
     mavenCentral()
@@ -39,13 +42,13 @@ jacoco {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModule")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    runtimeOnly("org.postgresql:postgresql:42.7.4")
-    runtimeOnly("com.h2database:h2:2.3.232")
+    runtimeOnly("org.postgresql:postgresql:$postgresVersion")
+    runtimeOnly("com.h2database:h2:$h2databaseVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
     implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
