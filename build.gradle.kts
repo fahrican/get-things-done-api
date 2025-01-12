@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.openapi.generator") version "7.1.0"
-    id("org.sonarqube") version "3.5.0.2730"
+    id("org.openapi.generator") version "7.5.0"
+    id("org.sonarqube") version "5.1.0.4872"
     id("org.springframework.boot") version "3.3.7"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version "1.9.0"
