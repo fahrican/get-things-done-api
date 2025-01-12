@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.task.web.rest
+package com.onecosys.getthingsdone.task.web
 
 import com.onecosys.getthingsdone.api.TaskResource
 import com.onecosys.getthingsdone.dto.TaskCreateRequest

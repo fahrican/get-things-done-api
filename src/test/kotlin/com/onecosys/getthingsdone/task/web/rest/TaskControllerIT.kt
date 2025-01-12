@@ -14,6 +14,7 @@ import com.onecosys.getthingsdone.shared.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.application.TaskService
 import com.onecosys.getthingsdone.task.domain.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.web.TaskController
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
