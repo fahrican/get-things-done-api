@@ -1,6 +1,5 @@
-package com.onecosys.getthingsdone.shared.config
+package com.onecosys.getthingsdone.task.web
 
-import com.onecosys.getthingsdone.task.web.StringToTaskStatusConverter
 import org.springframework.context.annotation.Configuration
 import org.springframework.format.FormatterRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
