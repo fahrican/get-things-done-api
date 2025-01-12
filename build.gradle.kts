@@ -57,6 +57,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
     implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.modulith:spring-modulith-starter-core")
+
 
     // Swagger / Open API
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiWebMvc")
@@ -67,12 +69,21 @@ dependencies {
     testImplementation("org.assertj:assertj-core:$assertjVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 
     // Integration Testing
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
     testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
+    testImplementation("org.springframework.modulith:spring-modulith-starter-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.modulith:spring-modulith-bom:1.3.1")
+    }
 }
 
 openApiGenerate {
