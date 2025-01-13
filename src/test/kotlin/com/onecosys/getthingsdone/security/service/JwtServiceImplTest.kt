@@ -1,9 +1,9 @@
 package com.onecosys.getthingsdone.security.service
 
 import com.onecosys.getthingsdone.security.application.JwtService
+import com.onecosys.getthingsdone.security.domain.JwtAuthenticationException
 import com.onecosys.getthingsdone.security.infrastructure.JwtKey
 import com.onecosys.getthingsdone.security.infrastructure.JwtServiceImpl
-import com.onecosys.getthingsdone.shared.error.JwtAuthenticationException
 import io.jsonwebtoken.Jwts
 import io.mockk.MockKAnnotations
 import io.mockk.every

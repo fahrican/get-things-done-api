@@ -4,11 +4,11 @@ import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.shared.error.BadRequestException
-import com.onecosys.getthingsdone.shared.error.TaskNotFoundException
+import com.onecosys.getthingsdone.task.domain.BadTaskRequestException
 import com.onecosys.getthingsdone.task.domain.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.Task
+import com.onecosys.getthingsdone.task.domain.TaskNotFoundException
 import com.onecosys.getthingsdone.task.infrastructure.TaskRepository
 import com.onecosys.getthingsdone.user.domain.AppUser
 import org.springframework.stereotype.Service
@@ -45,10 +45,10 @@ class TaskServiceImpl(
     override fun createTask(createRequest: TaskCreateRequest, appUser: AppUser): TaskFetchResponse {
         val descriptionLength: Int = createRequest.description.length
         if (descriptionLength < MIN_DESCRIPTION_LENGTH || descriptionLength > MAX_DESCRIPTION_LENGTH) {
-            throw BadRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
+            throw BadTaskRequestException("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         }
         if (repository.doesDescriptionExist(createRequest.description)) {
-            throw BadRequestException("A task with the description '${createRequest.description}' already exists")
+            throw BadTaskRequestException("A task with the description '${createRequest.description}' already exists")
         }
         val task: Task = mapper.toEntity(createRequest, timestamp.createClockWithZone(), appUser)
         val savedTask: Task = repository.save(task)

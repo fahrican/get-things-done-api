@@ -9,11 +9,11 @@ import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
 import com.onecosys.getthingsdone.security.application.ClientSessionService
 import com.onecosys.getthingsdone.security.application.JwtService
-import com.onecosys.getthingsdone.shared.error.BadRequestException
-import com.onecosys.getthingsdone.shared.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.application.TaskService
+import com.onecosys.getthingsdone.task.domain.BadTaskRequestException
 import com.onecosys.getthingsdone.task.domain.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
+import com.onecosys.getthingsdone.task.domain.TaskNotFoundException
 import com.onecosys.getthingsdone.task.web.TaskController
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -180,8 +180,9 @@ internal class TaskControllerIT(@Autowired private val mockMvc: MockMvc) {
             timeTaken = 2,
             priority = Priority.low
         )
-        val badRequestException =
-            BadRequestException("Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH")
+        val badRequestException = BadTaskRequestException(
+            "Description needs to be at least $MIN_DESCRIPTION_LENGTH characters long or maximum $MAX_DESCRIPTION_LENGTH"
+        )
 
         `when`(mockService.createTask(request, mockUserProvider.getAuthenticatedUser())).thenThrow(badRequestException)
         val resultActions: ResultActions = mockMvc.perform(

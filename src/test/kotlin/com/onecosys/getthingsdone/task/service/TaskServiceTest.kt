@@ -5,15 +5,15 @@ import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.dto.TaskStatus
 import com.onecosys.getthingsdone.dto.TaskUpdateRequest
-import com.onecosys.getthingsdone.shared.error.BadRequestException
-import com.onecosys.getthingsdone.shared.error.TaskNotFoundException
 import com.onecosys.getthingsdone.task.application.TaskMapper
 import com.onecosys.getthingsdone.task.application.TaskService
 import com.onecosys.getthingsdone.task.application.TaskServiceImpl
 import com.onecosys.getthingsdone.task.application.TaskTimestamp
+import com.onecosys.getthingsdone.task.domain.BadTaskRequestException
 import com.onecosys.getthingsdone.task.domain.MAX_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.Task
+import com.onecosys.getthingsdone.task.domain.TaskNotFoundException
 import com.onecosys.getthingsdone.task.infrastructure.TaskRepository
 import com.onecosys.getthingsdone.user.domain.AppUser
 import io.mockk.MockKAnnotations
@@ -157,7 +157,7 @@ internal class TaskServiceTest {
     @Test
     fun `when task gets created with non unique description then check for bad request exception`() {
         every { mockRepository.doesDescriptionExist(any()) } returns true
-        val exception = assertThrows<BadRequestException> { objectUnderTest.createTask(createRequest, mockUser) }
+        val exception = assertThrows<BadTaskRequestException> { objectUnderTest.createTask(createRequest, mockUser) }
 
         assertThat(exception.message).isEqualTo("A task with the description '${createRequest.description}' already exists")
         verify { mockRepository.save(any()) wasNot called }
@@ -177,7 +177,7 @@ internal class TaskServiceTest {
         )
 
         val exception =
-            assertThrows<BadRequestException> { objectUnderTest.createTask(taskDescriptionTooLong, mockUser) }
+            assertThrows<BadTaskRequestException> { objectUnderTest.createTask(taskDescriptionTooLong, mockUser) }
         assertThat(exception.message).isEqualTo("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         verify { mockRepository.save(any()) wasNot called }
     }
@@ -196,7 +196,7 @@ internal class TaskServiceTest {
         )
 
         val exception =
-            assertThrows<BadRequestException> { objectUnderTest.createTask(taskDescriptionTooShort, mockUser) }
+            assertThrows<BadTaskRequestException> { objectUnderTest.createTask(taskDescriptionTooShort, mockUser) }
         assertThat(exception.message).isEqualTo("Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH characters in length")
         verify { mockRepository.save(any()) wasNot called }
     }

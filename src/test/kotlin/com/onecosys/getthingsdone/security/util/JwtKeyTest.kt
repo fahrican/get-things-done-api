@@ -1,8 +1,8 @@
 package com.onecosys.getthingsdone.security.util
 
+import com.onecosys.getthingsdone.security.domain.JwtKeyException
 import com.onecosys.getthingsdone.security.infrastructure.JwtKey
 import com.onecosys.getthingsdone.security.infrastructure.KeyGenerator
-import com.onecosys.getthingsdone.shared.error.JwtKeyException
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow

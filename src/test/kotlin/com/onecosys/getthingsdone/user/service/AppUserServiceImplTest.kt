@@ -4,11 +4,11 @@ import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.security.application.ClientSessionService
-import com.onecosys.getthingsdone.shared.error.BadRequestException
-import com.onecosys.getthingsdone.shared.error.PasswordMismatchException
 import com.onecosys.getthingsdone.user.application.AppUserServiceImpl
 import com.onecosys.getthingsdone.user.application.UserInfoMapper
 import com.onecosys.getthingsdone.user.domain.AppUser
+import com.onecosys.getthingsdone.user.domain.BadUserRequestException
+import com.onecosys.getthingsdone.user.domain.PasswordMismatchException
 import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import io.mockk.called
 import io.mockk.every
@@ -65,7 +65,7 @@ internal class AppUserServiceImplTest {
         val email = HashMap<String, String>()
         email["email"] = "invalid-email.com"
 
-        val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(email) }
+        val exception = assertThrows<BadUserRequestException> { objectUnderTest.changeEmail(email) }
 
         assertEquals("Email must contain '@' symbol", exception.message)
         verify { mockRepository.save(appUser) wasNot called }
@@ -79,7 +79,7 @@ internal class AppUserServiceImplTest {
         every { mockAuthUserService.findCurrentSessionUser() } returns appUser
         every { mockRepository.findByEmail(email) } returns appUser
 
-        val exception = assertThrows<BadRequestException> { objectUnderTest.changeEmail(request) }
+        val exception = assertThrows<BadUserRequestException> { objectUnderTest.changeEmail(request) }
 
         assertEquals(exceptionMessage, exception.message)
         verify(exactly = 1) { mockRepository.findByEmail(email) }
@@ -89,7 +89,7 @@ internal class AppUserServiceImplTest {
     fun `when change username gets triggered then expect invalid username exception`() {
         request["username"] = "test@"
 
-        val exception = assertThrows<BadRequestException> { objectUnderTest.changeUsername(request) }
+        val exception = assertThrows<BadUserRequestException> { objectUnderTest.changeUsername(request) }
 
         assertEquals("Username cannot contain '@' symbol", exception.message)
         verify { mockRepository.save(appUser) wasNot called }
@@ -101,7 +101,7 @@ internal class AppUserServiceImplTest {
 
         every { mockRepository.findByAppUsername(request["username"]!!) } returns appUser
 
-        val exception = assertThrows<BadRequestException> { objectUnderTest.changeUsername(request) }
+        val exception = assertThrows<BadUserRequestException> { objectUnderTest.changeUsername(request) }
         assertEquals("Username is already used by another user", exception.message)
         verify { mockRepository.save(appUser) wasNot called }
     }

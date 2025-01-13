@@ -2,7 +2,7 @@ package com.onecosys.getthingsdone.security.service
 
 import com.onecosys.getthingsdone.security.application.ClientSessionService
 import com.onecosys.getthingsdone.security.application.ClientSessionServiceImpl
-import com.onecosys.getthingsdone.shared.error.UserNotFoundException
+import com.onecosys.getthingsdone.security.domain.UserNotFoundException
 import com.onecosys.getthingsdone.user.domain.AppUser
 import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import io.mockk.MockKAnnotations

@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.web
 
 import com.onecosys.getthingsdone.dto.TaskStatus
-import com.onecosys.getthingsdone.shared.error.BadRequestException
+import com.onecosys.getthingsdone.task.domain.BadTaskRequestException
 import org.springframework.core.convert.converter.Converter
 import java.util.Locale
 
@@ -11,7 +11,7 @@ class StringToTaskStatusConverter : Converter<String, TaskStatus> {
         return when (source.lowercase(Locale.getDefault())) {
             "open" -> TaskStatus.open
             "closed" -> TaskStatus.closed
-            else -> throw BadRequestException("Query parameter 'status' can only be 'open' or 'closed'")
+            else -> throw BadTaskRequestException("Query parameter 'status' can only be 'open' or 'closed'")
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.security.infrastructure
 
 import com.onecosys.getthingsdone.security.application.JwtService
-import com.onecosys.getthingsdone.shared.error.JwtAuthenticationException
+import com.onecosys.getthingsdone.security.domain.JwtAuthenticationException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import org.slf4j.LoggerFactory

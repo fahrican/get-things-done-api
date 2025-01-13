@@ -1,6 +1,5 @@
 package com.onecosys.getthingsdone.user.domain
 
-import com.onecosys.getthingsdone.security.domain.Role
 import com.onecosys.getthingsdone.security.domain.VerificationToken
 import com.onecosys.getthingsdone.task.domain.Task
 import jakarta.persistence.CascadeType

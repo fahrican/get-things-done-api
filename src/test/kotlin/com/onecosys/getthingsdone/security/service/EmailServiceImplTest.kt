@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.security.service
 
+import com.onecosys.getthingsdone.security.domain.SignUpException
 import com.onecosys.getthingsdone.security.infrastructure.EmailServiceImpl
-import com.onecosys.getthingsdone.shared.error.SignUpException
 import com.onecosys.getthingsdone.user.domain.AppUser
 import io.mockk.every
 import io.mockk.mockk

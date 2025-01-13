@@ -1,5 +1,13 @@
-package com.onecosys.getthingsdone.shared.error
+package com.onecosys.getthingsdone.shared
 
+import com.onecosys.getthingsdone.security.domain.AccountVerificationException
+import com.onecosys.getthingsdone.security.domain.JwtAuthenticationException
+import com.onecosys.getthingsdone.security.domain.SignUpException
+import com.onecosys.getthingsdone.security.domain.TokenExpiredException
+import com.onecosys.getthingsdone.security.domain.UsernamePasswordMismatchException
+import com.onecosys.getthingsdone.task.domain.BadTaskRequestException
+import com.onecosys.getthingsdone.task.domain.TaskNotFoundException
+import com.onecosys.getthingsdone.user.domain.BadUserRequestException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -17,16 +25,12 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(
         UsernameNotFoundException::class,
-        UserNotFoundException::class,
         TaskNotFoundException::class
     )
     fun handleNotFoundException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.NOT_FOUND, exception.message)
 
-    @ExceptionHandler(
-        SignUpException::class,
-        PasswordMismatchException::class
-    )
+    @ExceptionHandler(SignUpException::class)
     fun handleConflictException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.CONFLICT, exception.message)
 
@@ -39,27 +43,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     fun handleUnauthorizedException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.UNAUTHORIZED, exception.message)
 
-    @ExceptionHandler(BadRequestException::class)
-    fun handleBadRequestException(exception: BadRequestException): ResponseEntity<ApiError> =
+    @ExceptionHandler(BadUserRequestException::class, BadTaskRequestException::class)
+    fun handleBadRequestException(exception: RuntimeException): ResponseEntity<ApiError> =
         buildResponseEntity(HttpStatus.BAD_REQUEST, exception.message)
 }
-
-class TaskNotFoundException(message: String) : RuntimeException(message)
-
-class BadRequestException(message: String) : RuntimeException(message)
-
-class SignUpException(message: String) : RuntimeException(message)
-
-class JwtAuthenticationException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
-
-class UserNotFoundException(message: String) : RuntimeException(message)
-
-class PasswordMismatchException(message: String) : RuntimeException(message)
-
-class UsernamePasswordMismatchException(message: String) : RuntimeException(message)
-
-class AccountVerificationException(message: String) : RuntimeException(message)
-
-class TokenExpiredException(message: String) : RuntimeException(message)
-
-class JwtKeyException(message: String) : IllegalStateException(message)

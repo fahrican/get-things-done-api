@@ -4,9 +4,9 @@ import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
 import com.onecosys.getthingsdone.security.application.ClientSessionService
-import com.onecosys.getthingsdone.shared.error.BadRequestException
-import com.onecosys.getthingsdone.shared.error.PasswordMismatchException
 import com.onecosys.getthingsdone.user.domain.AppUser
+import com.onecosys.getthingsdone.user.domain.BadUserRequestException
+import com.onecosys.getthingsdone.user.domain.PasswordMismatchException
 import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -23,7 +23,7 @@ class AppUserServiceImpl(
     override fun changeEmail(request: Map<String, String>): UserInfoResponse {
         val currentUser = service.findCurrentSessionUser()
 
-        val newEmail = request["email"] ?: throw BadRequestException("Email is missing in request")
+        val newEmail = request["email"] ?: throw BadUserRequestException("Email is missing in request")
         validateEmail(newEmail)
 
         currentUser.email = newEmail
@@ -35,7 +35,7 @@ class AppUserServiceImpl(
     override fun changeUsername(request: Map<String, String>): UserInfoResponse {
         val user = service.findCurrentSessionUser()
 
-        val newUsername = request["username"] ?: throw BadRequestException("Username can't be blank/null !")
+        val newUsername = request["username"] ?: throw BadUserRequestException("Username can't be blank/null !")
         validateUsername(newUsername)
         user.appUsername = newUsername
 
@@ -77,23 +77,23 @@ class AppUserServiceImpl(
 
     fun validateEmail(email: String, currentUserId: Long? = null) {
         if (!email.contains("@")) {
-            throw BadRequestException("Email must contain '@' symbol")
+            throw BadUserRequestException("Email must contain '@' symbol")
         }
 
         repository.findByEmail(email)?.let {
             if (currentUserId == null || it.id != currentUserId) {
-                throw BadRequestException("Email is already used by another user")
+                throw BadUserRequestException("Email is already used by another user")
             }
         }
     }
 
     fun validateUsername(username: String) {
         if (username.contains("@")) {
-            throw BadRequestException("Username cannot contain '@' symbol")
+            throw BadUserRequestException("Username cannot contain '@' symbol")
         }
 
         if (repository.findByAppUsername(username) != null) {
-            throw BadRequestException("Username is already used by another user")
+            throw BadUserRequestException("Username is already used by another user")
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.onecosys.getthingsdone.security.infrastructure
 
-import com.onecosys.getthingsdone.shared.error.JwtKeyException
+import com.onecosys.getthingsdone.security.domain.JwtKeyException
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.slf4j.LoggerFactory
