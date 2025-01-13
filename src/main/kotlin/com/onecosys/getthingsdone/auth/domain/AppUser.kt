@@ -1,6 +1,5 @@
 package com.onecosys.getthingsdone.auth.domain
 
-import com.onecosys.getthingsdone.task.domain.Task
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -10,18 +9,19 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import org.springframework.modulith.ApplicationModule
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
 @Table(name = "app_user")
+@ApplicationModule(type = ApplicationModule.Type.OPEN)
 class AppUser(
 
     @Id
@@ -54,9 +54,6 @@ class AppUser(
 
     @OneToOne(mappedBy = "appUser", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, optional = true)
     private val verificationToken: VerificationToken? = null,
-
-    @OneToMany(mappedBy = "appUser", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    private val tasks: Set<Task>? = null
 ) : UserDetails {
 
     override fun getAuthorities(): List<GrantedAuthority> = listOf(SimpleGrantedAuthority(role.name))
