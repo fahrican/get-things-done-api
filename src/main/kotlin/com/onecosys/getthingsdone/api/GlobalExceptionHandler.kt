@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.shared
+package com.onecosys.getthingsdone.api
 
 import com.onecosys.getthingsdone.auth.domain.AccountVerificationException
 import com.onecosys.getthingsdone.auth.domain.BadUserRequestException

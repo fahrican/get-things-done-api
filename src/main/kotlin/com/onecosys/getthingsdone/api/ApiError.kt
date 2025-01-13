@@ -1,4 +1,4 @@
-package com.onecosys.getthingsdone.shared
+package com.onecosys.getthingsdone.api
 
 import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
