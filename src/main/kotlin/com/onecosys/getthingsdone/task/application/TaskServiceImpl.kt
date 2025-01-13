@@ -1,5 +1,6 @@
 package com.onecosys.getthingsdone.task.application
 
+import com.onecosys.getthingsdone.auth.domain.AppUser
 import com.onecosys.getthingsdone.dto.TaskCreateRequest
 import com.onecosys.getthingsdone.dto.TaskFetchResponse
 import com.onecosys.getthingsdone.dto.TaskStatus
@@ -10,7 +11,6 @@ import com.onecosys.getthingsdone.task.domain.MIN_DESCRIPTION_LENGTH
 import com.onecosys.getthingsdone.task.domain.Task
 import com.onecosys.getthingsdone.task.domain.TaskNotFoundException
 import com.onecosys.getthingsdone.task.infrastructure.TaskRepository
-import com.onecosys.getthingsdone.user.domain.AppUser
 import org.springframework.stereotype.Service
 
 

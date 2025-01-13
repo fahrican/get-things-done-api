@@ -1,15 +1,15 @@
 package com.onecosys.getthingsdone.user.service
 
+import com.onecosys.getthingsdone.auth.application.AppUserServiceImpl
+import com.onecosys.getthingsdone.auth.application.ClientSessionService
+import com.onecosys.getthingsdone.auth.application.UserInfoMapper
+import com.onecosys.getthingsdone.auth.domain.AppUser
+import com.onecosys.getthingsdone.auth.domain.BadUserRequestException
+import com.onecosys.getthingsdone.auth.domain.PasswordMismatchException
+import com.onecosys.getthingsdone.auth.infrastructure.AppUserRepository
 import com.onecosys.getthingsdone.dto.UserInfoResponse
 import com.onecosys.getthingsdone.dto.UserInfoUpdateRequest
 import com.onecosys.getthingsdone.dto.UserPasswordUpdateRequest
-import com.onecosys.getthingsdone.security.application.ClientSessionService
-import com.onecosys.getthingsdone.user.application.AppUserServiceImpl
-import com.onecosys.getthingsdone.user.application.UserInfoMapper
-import com.onecosys.getthingsdone.user.domain.AppUser
-import com.onecosys.getthingsdone.user.domain.BadUserRequestException
-import com.onecosys.getthingsdone.user.domain.PasswordMismatchException
-import com.onecosys.getthingsdone.user.infrastructure.AppUserRepository
 import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk

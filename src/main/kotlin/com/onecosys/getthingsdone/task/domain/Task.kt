@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.domain
 
+import com.onecosys.getthingsdone.auth.domain.AppUser
 import com.onecosys.getthingsdone.dto.Priority
-import com.onecosys.getthingsdone.user.domain.AppUser
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

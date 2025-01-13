@@ -1,13 +1,13 @@
 package com.onecosys.getthingsdone.shared
 
-import com.onecosys.getthingsdone.security.domain.AccountVerificationException
-import com.onecosys.getthingsdone.security.domain.JwtAuthenticationException
-import com.onecosys.getthingsdone.security.domain.SignUpException
-import com.onecosys.getthingsdone.security.domain.TokenExpiredException
-import com.onecosys.getthingsdone.security.domain.UsernamePasswordMismatchException
+import com.onecosys.getthingsdone.auth.domain.AccountVerificationException
+import com.onecosys.getthingsdone.auth.domain.BadUserRequestException
+import com.onecosys.getthingsdone.auth.domain.JwtAuthenticationException
+import com.onecosys.getthingsdone.auth.domain.SignUpException
+import com.onecosys.getthingsdone.auth.domain.TokenExpiredException
+import com.onecosys.getthingsdone.auth.domain.UsernamePasswordMismatchException
 import com.onecosys.getthingsdone.task.domain.BadTaskRequestException
 import com.onecosys.getthingsdone.task.domain.TaskNotFoundException
-import com.onecosys.getthingsdone.user.domain.BadUserRequestException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException

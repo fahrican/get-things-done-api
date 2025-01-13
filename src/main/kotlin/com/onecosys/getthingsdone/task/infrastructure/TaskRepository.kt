@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.task.infrastructure
 
+import com.onecosys.getthingsdone.auth.domain.AppUser
 import com.onecosys.getthingsdone.task.domain.Task
-import com.onecosys.getthingsdone.user.domain.AppUser
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository

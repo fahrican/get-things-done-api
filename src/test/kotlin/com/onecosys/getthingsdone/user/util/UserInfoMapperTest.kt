@@ -1,7 +1,7 @@
 package com.onecosys.getthingsdone.user.util
 
-import com.onecosys.getthingsdone.user.application.UserInfoMapper
-import com.onecosys.getthingsdone.user.domain.AppUser
+import com.onecosys.getthingsdone.auth.application.UserInfoMapper
+import com.onecosys.getthingsdone.auth.domain.AppUser
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
